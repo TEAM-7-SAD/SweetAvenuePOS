@@ -1,0 +1,18 @@
+{
+  "name": "sweetavenuepos",
+  "version": "0.0.0",
+  "description": "Point-of-Sale for Sweet Avenue Coffe • Bakeshop",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TEAM-7-SAD/SweetAvenuePOS.git"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
