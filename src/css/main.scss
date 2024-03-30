@@ -1,0 +1,20 @@
+@import "../../vendor/node_modules/bootstrap/scss/functions";
+@import "../../vendor/node_modules/bootstrap/scss/variables";
+
+// override the font-family-base to montserrat
+$font-family-base: 'Montserrat', sans-serif;
+
+$brand-secondary: #C57C47;
+
+// add custom colors for UI
+$custom-colors: (
+    "rose-white": #FFF0E9,
+    "tiger-orange": #C57C47,
+    "timberwolf": #E0D4CC,
+    "carbon-grey": #5B5B5B,
+    "medium-brown": #88531E
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "../../vendor/node_modules/bootstrap/scss/bootstrap";
