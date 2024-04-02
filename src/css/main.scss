@@ -4,8 +4,6 @@
 // override the font-family-base to montserrat
 $font-family-base: 'Montserrat', sans-serif;
 
-$brand-secondary: #C57C47;
-
 // add custom colors for UI
 $custom-colors: (
     "rose-white": #FFF0E9,
@@ -18,3 +16,4 @@ $custom-colors: (
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
 @import "../../vendor/node_modules/bootstrap/scss/bootstrap";
+
