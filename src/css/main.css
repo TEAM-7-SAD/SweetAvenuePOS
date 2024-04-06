@@ -763,6 +763,7 @@ progress {
   width: auto; 
   box-sizing: border-box;
   margin-top: 40px;
+  cursor: pointer;
 }
   .btn[type="submit"] {
     border: none;
