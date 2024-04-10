@@ -4,7 +4,20 @@
 // override the font-family-base to montserrat
 $font-family-base: 'Montserrat', sans-serif;
 
-// add custom colors for UI
+// Customizes navbar text color
+$nav-link-color: #5B5B5B;
+
+// Customizes navbar text color when hovered
+$nav-link-hover-color: #C57C47;
+
+// Customize dropdown item color when clicked
+$dropdown-link-active-color: #ffffff;
+
+// Customize dropdown item background color when clicked
+$dropdown-link-active-bg: #C57C47;
+
+
+// Adds custom colors for UI
 $custom-colors: (
     "rose-white": #FFF0E9,
     "tiger-orange": #C57C47,
@@ -12,6 +25,12 @@ $custom-colors: (
     "carbon-grey": #5B5B5B,
     "medium-brown": #88531E
 );
+
+$custom-table-variants: (
+    "transparent": transparent
+);
+
+$table-variants: map-merge($table-variants , $custom-table-variants);
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
 

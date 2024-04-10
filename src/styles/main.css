@@ -754,7 +754,7 @@ progress {
   margin-right: auto;
   margin-left: auto;
 }
-  .form-sign-in{
+.form-sign-in{
   border-radius: 7px;
   background: #C57C47;
   display: flex;
@@ -2065,6 +2065,20 @@ progress {
   border-color: var(--bs-table-border-color);
 }
 
+.table-transparent {
+  --bs-table-color: #000;
+  --bs-table-bg: transparent;
+  --bs-table-border-color: rgba(0, 0, 0, 0.2);
+  --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+  --bs-table-striped-color: #fff;
+  --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+  --bs-table-active-color: #fff;
+  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+  --bs-table-hover-color: #fff;
+  color: var(--bs-table-color);
+  border-color: var(--bs-table-border-color);
+}
+
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -2573,7 +2587,6 @@ textarea.form-control-lg {
 
 .form-floating {
   position: relative;
-  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2);
 }
 .form-floating > .form-control,
 .form-floating > .form-control-plaintext,
@@ -3593,8 +3606,8 @@ textarea.form-control-lg {
   --bs-dropdown-link-color: var(--bs-body-color);
   --bs-dropdown-link-hover-color: var(--bs-body-color);
   --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
-  --bs-dropdown-link-active-color: #fff;
-  --bs-dropdown-link-active-bg: #0d6efd;
+  --bs-dropdown-link-active-color: #ffffff;
+  --bs-dropdown-link-active-bg: #C57C47;
   --bs-dropdown-link-disabled-color: var(--bs-tertiary-color);
   --bs-dropdown-item-padding-x: 1rem;
   --bs-dropdown-item-padding-y: 0.25rem;
@@ -3969,8 +3982,8 @@ textarea.form-control-lg {
   --bs-nav-link-padding-x: 1rem;
   --bs-nav-link-padding-y: 0.5rem;
   --bs-nav-link-font-weight: ;
-  --bs-nav-link-color: var(--bs-link-color);
-  --bs-nav-link-hover-color: var(--bs-link-hover-color);
+  --bs-nav-link-color: #5B5B5B;
+  --bs-nav-link-hover-color: #C57C47;
   --bs-nav-link-disabled-color: var(--bs-secondary-color);
   display: flex;
   flex-wrap: wrap;
