@@ -23,11 +23,14 @@ $custom-colors: (
     "tiger-orange": #C57C47,
     "timberwolf": #E0D4CC,
     "carbon-grey": #5B5B5B,
-    "medium-brown": #88531E
+    "medium-brown": #88531E,
+    "pigment-green": #3e9c35,
+    "gainsboro": #EEEEEE
 );
 
 $custom-table-variants: (
-    "transparent": transparent
+    "transparent": transparent,
+    "clicked-orders": #E0D4CC
 );
 
 $table-variants: map-merge($table-variants , $custom-table-variants);
