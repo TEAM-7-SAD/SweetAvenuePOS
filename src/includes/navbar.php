@@ -1,3 +1,16 @@
+<?php
+require_once 'includes/db-connector.php';
+
+// Query user table to display the current user
+$sql = $db->prepare("SELECT id, first_name FROM user WHERE id = ?");
+$sql->bind_param('i', $_SESSION['id']);
+$sql->execute();
+$result = $sql->get_result();
+
+$current_user = $result->fetch_assoc();
+
+?>
+
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg bg-rose-white shadow-sm sticky-top">
     <div class="container-fluid ps-5">
@@ -23,7 +36,7 @@
 
                 <!--Create Order button-->
                 <li class="nav-item">
-                    <a href="#"><button class="btn btn-tiger-orange text-light">Create Order</button></a>
+                    <a href="#" ><button class="btn btn-sm btn-tiger-orange fw-semibold px-3 py-2">Create Order</button></a>
                 </li>
 
                 <!--Home-->
@@ -50,8 +63,8 @@
             <!--Logged in User-->
             <ul class="nav pe-3">
                 <li class="nav-item dropdown">
-                    <a class="fw-bolder text-tiger-orange nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Reggie
+                    <a class="fw-bolder text-tiger-orange nav-link dropdown-toggle text-capitalize" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php echo $current_user['first_name']; ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg-end">
                         <li><a class="dropdown-item" href="#">
@@ -60,7 +73,7 @@
                             </svg>
                             Accounts</a>
                         </li>
-                        <li><a class="dropdown-item" href="#">
+                        <li><a class="dropdown-item" href="logout.php">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
                             <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
