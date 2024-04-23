@@ -13,7 +13,7 @@ if(isset($_SESSION['id'])) {
   <?php
   include 'includes/head-element.php';
   ?>
-
+  
   <body class="bg-timberwolf">
 
     <!--Navbar-->
@@ -29,15 +29,13 @@ if(isset($_SESSION['id'])) {
         <div class="col-lg-7 mb-4">
           <div class="row">
 
-
                 <?php 
                 // Query the food and drink category table
-                $sql = "SELECT id, LOWER(REPLACE(name, 'and', '&')) AS name FROM food_category 
+                $sql = "SELECT id, name FROM food_category 
                 UNION 
-                SELECT id, LOWER(REPLACE(name, 'and', '&')) AS name FROM drink_category";
+                SELECT id, name FROM drink_category";
         
                 $result = $db->query($sql);
-
                 $categories = array();
 
                 if($result->num_rows > 0) {
@@ -51,9 +49,17 @@ if(isset($_SESSION['id'])) {
                 
                 echo '<div class="btn-group text-capitalize" role="group" aria-label="Basic radio toggle button group">';
 
+                // Variable to store the default category ID
+                $defaultCategoryId = null;
+
                 foreach($categories as $category) {
                     // Check if the category is "Snacks and Rice Meals"
-                    $isChecked = ($category['name'] === 'snacks and rice meals') ? 'checked' : '';
+                    $isChecked = ($category['name'] === 'snacks & rice meals') ? 'checked' : '';
+                    
+                    // Set the default category ID
+                    if ($isChecked) {
+                        $defaultCategoryId = $category['id'];
+                    }
                 
                     // Output the radio button for each category
                     echo '<input type="radio" class="btn-check" name="category" id="category' . $category['id'] . '" autocomplete="off" value="' . $category['id'] . '" ' . $isChecked . '>';
@@ -62,55 +68,37 @@ if(isset($_SESSION['id'])) {
                 
                 echo '</div>';
                 ?>
-                
-            
             <!--Products Container-->
             <div class="col-lg-12 col-xl-12 col-xxl-12 mt-3 pb-3 product-container" style="max-height: 630px; overflow-y: auto;">
               <div class="row">
-                <!--Products output here through AJAX request-->
+                <?php
+                // Fetch and display the default category's list of items
+                if ($defaultCategoryId !== null) {
+                    include 'get-products.php';
+                }
+                ?>
               </div>
             </div>
 
           </div>
         </div>
 
-      <?php
-      include 'billing-section.php';
-      ?>
+
+        <?php
+        include 'billing-section.php';
+        ?>
 
       </div>
     </div>
     <!--End of Main Content-->
     
-    
+
+    <!--jQuery via CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-      <script>
-          document.addEventListener('DOMContentLoaded', function() {
-              // Add event listeners to category radio buttons
-              var categoryRadios = document.querySelectorAll('input[name="category"]');
-              categoryRadios.forEach(function(radio) {
-                  radio.addEventListener('change', function(event) {
-                      var categoryId = this.value;
-                      fetchProducts(categoryId);
-                  });
-              });
-
-              function fetchProducts(categoryId) {
-                  // Send AJAX request to fetch products for the selected category
-                  var xhr = new XMLHttpRequest();
-                  xhr.onreadystatechange = function() {
-                      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                          // Update product container with the new products
-                          document.querySelector('.product-container').innerHTML = this.responseText;
-                      }
-                  };
-                  xhr.open('GET', 'get-products.php?category=' + categoryId, true);
-                  xhr.send();
-              }
-          });
-      </script>
-
+    <!--Custom JavaScript/jQuery-->
+    <script src="javascript/get-products.js"></script>
 
   </body>
 </html>

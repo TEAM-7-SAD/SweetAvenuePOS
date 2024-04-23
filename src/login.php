@@ -14,6 +14,12 @@ if(isset($_POST['sign_in_btn'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    if(empty($username) || empty($password)) {
+        $_SESSION['error_message'] = 'Please do not leave the input fields empty.';
+        header("Location: login.php");
+        exit();
+    }
+
     // Query the user table for the entered username
     $stmt = $db->prepare("SELECT id, username, password FROM user WHERE username = ?");
     $stmt->bind_param('s', $username);
@@ -24,21 +30,30 @@ if(isset($_POST['sign_in_btn'])) {
     if($result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
-    // Verify if password match the entered username
-    if($row['password'] == $password) {
-        $_SESSION['id'] = $row['id'];
-        header("location: index.php");
-        exit();
-    }
-    // If username and password mismatched, display this      
-    else {
-        echo 'Oops, Username and Password do not matched!';
+        // Verify if password match the entered username
+        if($row['password'] == $password) {
+            $_SESSION['id'] = $row['id'];
+            header("location: index.php");
+            exit();
         }
+        // If username and password mismatched, display this      
+        else {
+            $_SESSION['error_message'] = 'Oops, Username and Password do not matched!';
+            header("Location: login.php");
+            exit();
+            }
     }
     // If there is no user with the username, display this
     else {
-    echo 'User not found.';
+        $_SESSION['error_message'] = 'User with this username does not exist.';
+        header("Location: login.php");
+        exit();
     }
+}
+
+if (isset($_SESSION['error_message'])) {
+    $errorMessage = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
 }
 
 ?>
@@ -63,20 +78,31 @@ if(isset($_POST['sign_in_btn'])) {
                         <h2 class="coffee-bakeshop mb-4" style="font-size: 2vw;"><dt><strong>COFFEE • BAKESHOP</strong></dt></h2>
                     </div>
                     <form action="login.php" method="post" id="login-form" class="needs-validation" novalidate>
+                        
+                        <?php if (isset($errorMessage)) : ?>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong><?php echo $errorMessage; ?></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="form-floating">
                             <input type="text" class="form-control shadow-sm" name="username" id="username" placeholder="Username" required>
                             <label for="username">Username<span style="color: red;"> *</span></label>
-                            <div class="invalid-feedback" id="username-error"></div>
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <div class="valid-feedback">
-                        </div>
-                        <div style="margin-bottom: 20px;"></div>
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback text-start">
+                            Please enter a Username.
+                        </div>                    
+                        <div class="mb-4"></div>
                         <div class="form-floating shadow-sm">
                             <input type="password" class="form-control shadow-sm" name="password" id="password" placeholder="Password" required>
                             <label for="password">Password<span style="color: red;"> *</span></label>
-                            <div class="invalid-feedback" id="password-error"></div>
-                        </div>
-                        <div class="valid-feedback">
+                            <div class="invalid-feedback"></div>           
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback text-start">
+                            Please enter a Password.
                         </div>
                         <div for="submitForm" class="justify-content-center d-md-flex pt-4">
                             <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 btn-tiger-orange text-light py-3 px-3">Sign In</button>
@@ -86,10 +112,9 @@ if(isset($_POST['sign_in_btn'])) {
             </div>
         </div>
     </div>
-
-    <script src="javascript/login.js"></script>
+    
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="javascript/login.js"></script>
 </body>
 
 </html>
