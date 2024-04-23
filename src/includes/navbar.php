@@ -36,12 +36,12 @@ $current_user = $result->fetch_assoc();
 
                 <!--Create Order button-->
                 <li class="nav-item">
-                    <a href="#" ><button class="btn btn-sm btn-tiger-orange fw-semibold px-3 py-2">Create Order</button></a>
+                    <a href="create-order.php" ><button class="btn btn-sm btn-tiger-orange fw-semibold px-3 py-2">Create Order</button></a>
                 </li>
 
                 <!--Home-->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
 
                 <!--Sale-->
