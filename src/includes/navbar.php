@@ -16,9 +16,9 @@ $current_user = $result->fetch_assoc();
     <div class="container-fluid ps-5">
 
         <!--Shop Logo and Name-->
-        <a class="navbar-brand" href="#">
+        <span class="navbar-brand" href="#">
             <img src="images/logo-removebg-preview.png" alt="Sweet Avenue Logo" width="60" height="60">
-        </a>
+        </span>
         <div class="text-tiger-orange text-uppercase">
             <h4 class="mb-0 fw-semibold"><strong>sweet avenue</strong></h4>
             <h6 class="mb-0 fw-medium"><strong>coffee • bakeshop</strong></h6>
