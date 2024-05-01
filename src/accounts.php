@@ -9,10 +9,19 @@ if(isset($_SESSION['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 
-  <!--Head elements-->
-  <?php
-  include 'includes/head-element.php';
-  ?>
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+    <!--CSS-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" />   
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
+    <!--Site Icon-->
+    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+</head>
   
   <body class="bg-timberwolf">
 
@@ -64,55 +73,22 @@ if(isset($_SESSION['id'])) {
                               </tr>
                           </thead>
                           <tbody>
+                            <?php 
+                            $sql = "SELECT * FROM user";
+                            $result = $db->query($sql);
+
+                            while($row = $result->fetch_assoc()) {
+                              echo '
                               <tr>
-                                  <td>Arcilla</td>
-                                  <td>Juan</td>
-                                  <td>Tamad</td>
-                                  <td>Juan123</td>
-                                  <td>juan456</td>
+                                  <td>'.$row['last_name'].'</td>
+                                  <td>'.$row["first_name"].'</td>
+                                  <td>'.$row['middle_name'].'</td>
+                                  <td>'.$row['username'].'</td>
+                                  <td>'.$row['password'].'</td>
                               </tr>
-                              <tr>
-                                  <td>Arc</td>
-                                  <td>Romeo</td>
-                                  <td>Damat</td>
-                                  <td>romeo123</td>
-                                  <td>damat456</td>
-                              </tr>
-                              <tr>
-                                  <td>Arilla</td>
-                                  <td>Tamad</td>
-                                  <td>Juan</td>
-                                  <td>tamad123</td>
-                                  <td>arilla456</td>
-                              </tr>
-                              <tr>
-                                  <td>Acilla</td>
-                                  <td>Shernan</td>
-                                  <td>Gomez</td>
-                                  <td>gomez456</td>
-                                  <td>shernan123</td>
-                              </tr>
-                              <tr>
-                                <td>Sy</td>
-                                <td>Henry</td>
-                                <td>Arnold</td>
-                                <td>Arnold123</td>
-                                <td>Sy456</td>
-                              </tr>
-                              <tr>
-                                <td>Bev</td>
-                                <td>Pat</td>
-                                <td>Rick</td>
-                                <td>Rick123</td>
-                                <td>Bev456</td>
-                              </tr>
-                              <tr>
-                                <td>Jordan</td>
-                                <td>Lebron</td>
-                                <td>James</td>
-                                <td>James123</td>
-                                <td>jordan456</td>
-                              </tr>
+                              ';
+                            }
+                            ?>
                           </tbody>
                           <tfoot>
                         </tfoot>
@@ -229,7 +205,6 @@ if(isset($_SESSION['id'])) {
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script src="script_save.js"></script>
