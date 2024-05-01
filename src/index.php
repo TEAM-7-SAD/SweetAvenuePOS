@@ -6,20 +6,28 @@ if(isset($_SESSION['id'])) {
 
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+    <!--CSS-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" />   
+    <!--Site Icon-->
+    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+</head>
+
+
+  <body class="bg-timberwolf">
     <!--Navbar-->
     <?php
     include 'includes/navbar.php';
     ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-  <!--Head elements-->
-  <?php
-  include 'includes/head-element.php';
-  ?>
-
-  <body class="bg-timberwolf">
           <!-- Main Content -->
           <div class="col px-5">
             <!-- Content goes here -->
