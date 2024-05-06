@@ -38,7 +38,7 @@ if(isset($_POST['sign_in_btn'])) {
         }
         // If username and password mismatched, display this      
         else {
-            $_SESSION['error_message'] = 'Oops, Username and Password do not matched!';
+            $_SESSION['error_message'] = 'Username and Password do not match!';
             header("Location: login.php");
             exit();
             }
@@ -61,11 +61,18 @@ if (isset($_SESSION['error_message'])) {
 <!DOCTYPE html>
 <html lang="en">
 
-  <!--Head elements-->
-  <?php
-  include 'includes/head-element.php'
-  ?>
-
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+    <!--CSS-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" />   
+    <!--Site Icon-->
+    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+</head>
 
 <body class="bg-rose-white ">
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
@@ -80,7 +87,7 @@ if (isset($_SESSION['error_message'])) {
                     <form action="login.php" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong><?php echo $errorMessage; ?></strong>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>

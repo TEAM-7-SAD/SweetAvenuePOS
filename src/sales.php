@@ -9,10 +9,19 @@ if(isset($_SESSION['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 
-  <!--Head elements-->
-  <?php
-  include 'includes/head-element.php';
-  ?>
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+    <!--CSS-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" />   
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
+    <!--Site Icon-->
+    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+</head>
   
   <body class="bg-timberwolf">
 
@@ -20,8 +29,6 @@ if(isset($_SESSION['id'])) {
     <?php
     include 'includes/navbar.php';
     ?>
-
-  <body>
 
     <!--Main Container-->
     <div class="container-fluid px-0 bg-timberwolf">
@@ -62,72 +69,30 @@ if(isset($_SESSION['id'])) {
                               </tr>
                           </thead>
                           <tbody>
+                          <?php 
+                          $sql = "SELECT 
+                                      transaction.*,
+                                      CONCAT(user.first_name, ' ', user.middle_name, ' ', user.last_name) AS full_name,
+                                      DATE(transaction.timestamp) AS transaction_date,
+                                      TIME_FORMAT(transaction.timestamp, '%h:%i %p') AS transaction_time
+                                  FROM 
+                                      transaction
+                                  JOIN 
+                                      user ON transaction.user_id = user.id;";
+                          $result = $db->query($sql);
+
+                          while($row = $result->fetch_assoc()) {
+                              echo '
                               <tr>
-                                  <td>2024-11-28</td>
-                                  <td>10:30</td>
-                                  <td>Admin</td>
-                                  <td>162.00</td>
+                                  <td>'.$row['transaction_date'].'</td>
+                                  <td>'.$row['transaction_time'].'</td>
+                                  <td>'.$row['full_name'].'</td>
+                                  <td>'.$row['total_amount'].'</td>
                               </tr>
-                              <tr>
-                                  <td>2024-11-21</td>
-                                  <td>1:30</td>
-                                  <td>Sean</td>
-                                  <td>200.00</td>
-                              </tr>
-                              <tr>
-                                  <td>2024-05-5</td>
-                                  <td>10:38</td>
-                                  <td>Andrei</td>
-                                  <td>192.00</td>
-                              </tr>
-                              <tr>
-                                  <td>2024-03-17</td>
-                                  <td>10:30</td>
-                                  <td>Admin</td>
-                                  <td>162.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-09-28</td>
-                                <td>8:30</td>
-                                <td>Admin</td>
-                                <td>163.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-12-25</td>
-                                <td>9:30</td>
-                                <td>Admin</td>
-                                <td>164.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-12-31</td>
-                                <td>7:30</td>
-                                <td>Admin</td>
-                                <td>169.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-11-22</td>
-                                <td>10:38</td>
-                                <td>Admin</td>
-                                <td>100.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-11-2</td>
-                                <td>9:37</td>
-                                <td>Admin</td>
-                                <td>110.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-11-1</td>
-                                <td>9:30</td>
-                                <td>Jonas</td>
-                                <td>111.00</td>
-                              </tr>
-                              <tr>
-                                <td>2024-12-23</td>
-                                <td>10:31</td>
-                                <td>Admin</td>
-                                <td>161.00</td>
-                            </tr>
+                              ';
+                          }                  
+                          ?>
+
                           </tbody>
                           <tfoot>
                             <tr>
@@ -206,7 +171,6 @@ if(isset($_SESSION['id'])) {
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script src="Select_Deselect.js"></script>
