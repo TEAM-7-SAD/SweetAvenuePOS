@@ -72,14 +72,30 @@ if (isset($_SESSION['error_message'])) {
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+
+    <style>
+        body {
+            background-image: url('images/sweet_background.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .solid-color-container {
+            background-color: #FFF0E9;
+            padding: 40px;
+            border-radius: 50px; 
+        }
+    </style>
 </head>
 
 <body class="bg-rose-white ">
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
-                <div class="text-center">
-                    <img src="images/logo-removebg-preview.png" height="250" width="250" style="margin-bottom: 20px;">
+                <div class="text-center solid-color-container">
+                    <img src="images/logo-removebg-preview.png" height="200" width="200" style="margin-bottom: 20px;">
                     <div class="text-tiger-orange text-center ">
                         <h1 class="sweet-avenue" style="font-size: 3vw;"><dt><strong>SWEET AVENUE</strong></dt></h1>
                         <h2 class="coffee-bakeshop mb-4" style="font-size: 2vw;"><dt><strong>COFFEE • BAKESHOP</strong></dt></h2>
