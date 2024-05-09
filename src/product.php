@@ -9,18 +9,28 @@ if(isset($_SESSION['id'])) {
 <!DOCTYPE html>
 <html lang="en">
 
-  <!--Head elements-->
-  <?php
-  include 'includes/head-element.php';
-  ?>
-  <style>
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+    <!--CSS-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" />   
+    <!--Site Icon-->
+    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+
+    <style>
     .image-cell img {
-    max-width: 50px; /* Set maximum width for the image */
-    max-height: 50px; /* Set maximum height for the image */
-    width: auto; /* Allow the image to resize proportionally */
-    height: auto; /* Allow the image to resize proportionally */
-}
+      max-width: 50px; /* Set maximum width for the image */
+      max-height: 50px; /* Set maximum height for the image */
+      width: auto; /* Allow the image to resize proportionally */
+      height: auto; /* Allow the image to resize proportionally */
+    }
   </style>
+</head>
+
   <body class="bg-timberwolf">
 
     <!--Navbar-->
