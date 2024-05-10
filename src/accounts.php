@@ -71,8 +71,7 @@ if(isset($_SESSION['id'])) {
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>Middle Name</th>
-                        <th>Username</th>
-                        <th>Password</th>
+                        <th>Email Address</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -87,8 +86,7 @@ if(isset($_SESSION['id'])) {
                                       <td>'.$row['last_name'].'</td>
                                       <td>'.$row["first_name"].'</td>
                                       <td>'.$row['middle_name'].'</td>
-                                      <td>'.$row['username'].'</td>
-                                      <td>'.$row['password'].'</td>
+                                      <td>'.$row['email'].'</td>
                                   </tr>
                                   ';
                               }
