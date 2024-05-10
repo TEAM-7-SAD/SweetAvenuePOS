@@ -49,9 +49,9 @@ if(isset($_SESSION['id'])) {
 
                   <!--Main Content-->
               <div class="col">
-                    <div class="container main-content">
-                    <h3 class="accounts text-tiger-orange bg-rose-white rounded-3 fw-semibold">Reports</h3>
-                    <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addProductModal">Generate Report</button>
+                    <div class="container main-content mt-5 mb-4">
+                    <h3 class="text-medium-brown fw-bolder text-capitalize">Reports</h3>
+                    <!-- <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addProductModal">Generate Report</button> -->
                     </div>
                     <div class="table container-lg bg-white">
                       <div class="container">
@@ -137,7 +137,7 @@ if(isset($_SESSION['id'])) {
     </div>
 
         <!-- Add Product Modal -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+<!--     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -168,7 +168,7 @@ if(isset($_SESSION['id'])) {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -176,6 +176,57 @@ if(isset($_SESSION['id'])) {
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script src="script_save_product.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
+
+    <script>
+ new DataTable('#example', {
+    dom: "<'row'<'col-sm-1'l><'col-sm-9'><'col-sm-2'f>>" + // Place search box and buttons in separate columns
+         "<'row'<'col-sm-12'tr>>" + // Place the table in a separate row
+         "<'row'<'col-sm-3'i><'col-sm-2'><'col-sm-3'p><'col-sm-4'B>>", // Place information and pagination in separate columns
+    buttons: {
+        buttons: [
+          {
+                extend: 'copy',
+                text: 'Copy',
+                className: 'btn btn-tiger-orange' 
+            },
+            {
+                extend: 'csv',
+                text: 'CSV',
+                className: 'btn btn-tiger-orange' 
+            },
+            {
+                extend: 'excel',
+                text: 'Excel',
+                className: 'btn btn-tiger-orange' 
+            },
+            {
+                extend: 'pdf',
+                text: 'PDF',
+                className: 'btn btn-tiger-orange' 
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                className: 'btn btn-tiger-orange' 
+            }
+        ],
+        dom: {
+            button: {
+                tag: 'button',
+                className: 'btn btn-secondary'
+            }
+        }
+    }
+});
+
+    </script>
 
   </body>
 </html>
