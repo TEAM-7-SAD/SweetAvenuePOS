@@ -51,7 +51,6 @@ if(isset($_SESSION['id'])) {
               <div class="col">
                     <div class="container main-content mt-5 mb-4">
                     <h3 class="text-medium-brown fw-bolder text-capitalize">Reports</h3>
-                    <!-- <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addProductModal">Generate Report</button> -->
                     </div>
                     <div class="table container-lg bg-white">
                       <div class="container">
@@ -135,40 +134,6 @@ if(isset($_SESSION['id'])) {
         </div>   
       </div>
     </div>
-
-        <!-- Add Product Modal -->
-<!--     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProductModalLabel ">Generate Report</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div id="errorContainer" class="alert alert-danger" style="display: none;" role="alert">
-                    <div>
-                      <img src="images/x-circle.svg">
-                       An error occured.
-                    </div>
-                  </div>                  
-                    <form>
-                    <div class="mb-3">
-                        <label for="startDate" class="form-label">Start Date:</label>
-                        <input type="date" class="form-control" id="startDate" name="startDate">
-                    </div>
-                    <div class="mb-3">
-                        <label for="endDate" class="form-label">End Date:</label>
-                        <input type="date" class="form-control" id="endDate" name="endDate">
-                    </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="saveChangesBtn" class="btn btn-tiger-orange text-white" onclick="">Download</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
