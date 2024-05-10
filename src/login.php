@@ -132,13 +132,13 @@ if (isset($_SESSION['error_message'])) {
                     <form action="login.php" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
-                            <div class="alert border borderless bg-transparent alert-danger alert-dismissible fade show" role="alert">
-                                <strong><?php echo $errorMessage; ?></strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <span class="fw-medium text-danger"><?php echo $errorMessage; ?></>
+                                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php endif; ?>
 
-                        <div class="form-floating mb-2">
+                        <div class="form-floating mb-2"> 
                             <input type="text" class="form-control" onkeypress="return avoidSpace(event)" name="username" id="username" placeholder="Username" required>
                             <label for="username">Username<span style="color: red;"> *</span></label>
                             <div class="valid-feedback"></div>
@@ -163,7 +163,7 @@ if (isset($_SESSION['error_message'])) {
                         </div>
 
                         <div for="submitForm" class="justify-content-center d-md-flex pt-4">
-                            <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 fw-semibold btn-tiger-orange text-capitalize py-3 px-4">Sign In</button>
+                            <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 fw-semibold btn-tiger-orange text-capitalize py-3">Sign In</button>
                         </div>
                     </form>
                 </div>
