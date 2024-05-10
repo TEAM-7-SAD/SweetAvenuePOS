@@ -37,15 +37,11 @@ if(isset($_SESSION['id'])) {
       <div class="overflow-hidden flex-column">
         <div class="row">
 
-          <div class="input-group mt-5 d-flex justify-content-between align-items-center">
-              <h3 class="text-medium-brown fw-bolder ms-4 text-capitalize">products</h3>          
-          </div>
-
-
           <!-- Food Table -->
-          <div class="col-md-12 mt-4">
-              <div class="table container-lg bg-white table-borderless">
-                  <div class="container">
+          <div class="col-md-12">
+            <div class="container mt-5">
+              <h3 class="text-medium-brown fw-bolder mb-4 text-capitalize">products</h3> 
+              <div class="table container-lg bg-white table-borderless">      
                   <div class="text-carbon-grey pt-4 fs-5 fw-bold text-uppercase">foods</div><hr>
                       <div class="table-container table-transparent">
                           <table id="food" class="table table-transparent">
@@ -94,11 +90,11 @@ if(isset($_SESSION['id'])) {
           </div>
 
           <!-- Drink Table -->
-          <div class="col-md-12 my-5">
-              <div class="table container-lg bg-white table-hover table-striped table-borderless">
-                  <div class="container">
-                    <div class="text-carbon-grey pt-4 fs-5 fw-bold text-uppercase">drinks</div><hr>
-                      <div class="table-container table-transparent">          
+          <div class="col-md-12">
+            <div class="container mt-5">
+              <div class="table container-lg bg-white table-borderless">      
+                  <div class="text-carbon-grey pt-4 fs-5 fw-bold text-uppercase">drinks</div><hr>
+                      <div class="table-container table-transparent">
                           <table id="drink" class="table table-transparent">
                               <thead>
                                   <tr>
@@ -143,28 +139,10 @@ if(isset($_SESSION['id'])) {
                   </div>
               </div>
           </div>
-          
+        </div>  
       </div>
   </div>
-    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Sale Details</h1>
-          </div>
-          <div class="modal-body">
-            <!-- Modal body content -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  
   
   <!-- Confirmation Modal -->
   <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
