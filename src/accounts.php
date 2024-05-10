@@ -10,27 +10,26 @@ if(isset($_SESSION['id'])) {
 <html lang="en">
 
 <head>
-    <!--Site Meta Information-->
-    <meta charset="UTF-8" />
-    <title>Sweet Avenue POS</title>
-    <!--Mobile Specific Metas-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
-    <!--CSS-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/main.css" />   
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
-    <!--Site Icon-->
-    <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+  <!--Site Meta Information-->
+  <meta charset="UTF-8" />
+  <title>Sweet Avenue POS</title>
+  <!--Mobile Specific Metas-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--CSS-->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
+  <!--Site Icon-->
+  <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
 </head>
-  
-  <body class="bg-timberwolf">
 
-    <!--Navbar-->
-    <?php
+<body class="bg-timberwolf">
+
+  <!--Navbar-->
+  <?php
     include 'includes/navbar.php';
     ?>
-
-  <body>
 
     <!--Main Container-->
     <div class="container-fluid px-0 bg-timberwolf">
@@ -39,79 +38,105 @@ if(isset($_SESSION['id'])) {
         <div class="overflow-hidden flex-column">
           <div class="row overflow-y-auto" style="height: calc(100vh - 94px);">
 
-                  <!--Main Content-->
-              <div class="col">
-                    <div class="container main-content">
-                    <h3 class="accounts text-tiger-orange bg-rose-white">Accounts</h3>
-                    <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Accounts</button>
-                    </div>
-                    <div class="table container-lg bg-white">
-                      <div class="container">
-                        <div class="row justify-content-end">
-                          <div class="col-md-4 text-center">
-                            <br>
-                            <div class="container p-2">
-                              <button id="selectAll"  class="btn btn-tiger-orange text-white">Select All</button>
-                              <button id="deselectAll" style="display: none; cursor: pointer;"   class="btn btn-tiger-orange text-white">Deselect All</button>
-                              <button id="viewBtn" type="button" class="btn btn-tiger-orange text-white" style="cursor: pointer;"
-                              onclick="viewSelected()">View</button>
-                              <button id="deleteBtn" type="button" class="btn btn-tiger-orange text-white" style="cursor: pointer;"
-                              onclick="confirmDelete()">Delete</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="table-container">
-                      <table id="example" class="table">
-                          <thead>
-                              <tr>
-                                  <th>Last Name</th>
-                                  <th>First Name</th>
-                                  <th>Middle Name</th>
-                                  <th>Username</th>
-                                  <th>Password</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                            <?php 
-                            $sql = "SELECT * FROM user";
-                            $result = $db->query($sql);
-
-                            while($row = $result->fetch_assoc()) {
-                              echo '
-                              <tr>
-                                  <td>'.$row['last_name'].'</td>
-                                  <td>'.$row["first_name"].'</td>
-                                  <td>'.$row['middle_name'].'</td>
-                                  <td>'.$row['username'].'</td>
-                                  <td>'.$row['password'].'</td>
-                              </tr>
-                              ';
-                            }
-                            ?>
-                          </tbody>
-                          <tfoot>
-                        </tfoot>
-                      </table>
-                      </div>
-                      <br>
-                    </div>    
+            <!--Main Content-->
+            <div class="col">
+              <div class="container main-content">
+                <div class="input-group mt-5 mb-4 d-flex justify-content-between align-items-center">
+                  <h3 class="text-medium-brown fw-bolder text-capitalize">accounts</h3>
                 </div>
-              </div> 
+              </div>
+              <div class="table container-lg bg-white">
+                <div class="container">
+                  <div class="row justify-content-end">
+                    <div class="col-md-4 text-center">
+                      <br>
+                      <div class="container p-2">
+                        <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2"
+                          data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
+                        <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 edit-account"
+                          disabled>Edit</button>
+                        <button class="btn btn-danger fw-semibold px-3 py-2 delete-account"
+                          data-account-id="<?php echo $row['id']; ?>">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="successMessage" class="alert alert-success" style="display: none;" role="alert"></div>
+
+                <div class="table-container">
+                  <table id="example" class="table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                              $sql = "SELECT * FROM user";
+                              $result = $db->query($sql);
+
+                              while($row = $result->fetch_assoc()) {
+                                  echo '
+                                  <tr data-id="'.$row['id'].'" class="selectable">
+                                      <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+                                      <td>'.$row['last_name'].'</td>
+                                      <td>'.$row["first_name"].'</td>
+                                      <td>'.$row['middle_name'].'</td>
+                                      <td>'.$row['username'].'</td>
+                                      <td>'.$row['password'].'</td>
+                                  </tr>
+                                  ';
+                              }
+                              ?>
+                    </tbody>
+
+                    <tfoot>
+                    </tfoot>
+                  </table>
+                </div>
+                <br>
+              </div>
+            </div>
           </div>
-        </div>   
+        </div>
       </div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Sale Details</h1>
+            <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation</h5>
           </div>
           <div class="modal-body">
-            <!-- Modal body content -->
+            Are you sure you want to delete this account permanently?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-tiger-orange text-white delete-selected-accounts"
+              id="confirmDeleteBtn">Continue</button>
+            <input type="hidden" id="accountIdToDelete">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success</h5>
+          </div>
+          <div class="modal-body">
+            Account successfully deleted.
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -119,241 +144,335 @@ if(isset($_SESSION['id'])) {
         </div>
       </div>
     </div>
-  
-  
-  <!-- Confirmation Modal -->
-  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation</h5>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to delete this sales permanently?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-tiger-orange text-white" onclick="deleteSelectedRows()">Continue</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Success Modal -->
-  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="successModalLabel">Success</h5>
-        </div>
-        <div class="modal-body">
-          Sale successfully deleted.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-        <!-- Add Accounts Modal -->
+    <!-- Add Accounts Modal -->
     <div class="modal fade" id="addAccountsModal" tabindex="-1" aria-labelledby="addAccountsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAccountsModalLabel ">Add Accounts</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      aria-hidden="true">
+      <div class="modal-dialog px-3">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addAccountsModalLabel">Add a new account</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="addAccountForm">
+            <div class="modal-body">
+              <div id="errorContainer" class="alert alert-danger" style="display: none;" role="alert">
+                <div>
+                  <img src="images/x-circle.svg">
+                  An error occurred.
                 </div>
-                <div class="modal-body">
-                  <div id="errorContainer" class="alert alert-danger" style="display: none;" role="alert">
-                    <div>
-                      <img src="images/x-circle.svg">
-                       An error occured.
-                    </div>
-                  </div>                  
-                    <form>
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="middleName" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control" id="middleName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="userName" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="text" class="form-control" id="password" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="saveChangesBtn" class="btn btn-tiger-orange text-white" onclick="addNewAccount()">Add</button>
-                </div>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="last_name" class="form-control" id="lastName" required>
+                <label for="lastName" class="form-label text-carbon-grey fw-medium">Last Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="first_name" class="form-control" id="firstName" required>
+                <label for="firstName" class="form-label text-carbon-grey fw-medium">First Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="middle_name" class="form-control" id="middleName" required>
+                <label for="middleName" class="form-label text-carbon-grey fw-medium">Middle Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="username" class="form-control" id="username" required>
+                <label for="userName" class="form-label text-carbon-grey fw-medium">Username<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="password" name="password" class="form-control" id="password" required>
+                <label for="password" class="form-label text-carbon-grey fw-medium">Password<span
+                    style="color: red;"> *</span></label>
+              </div>
+
             </div>
+            <div class="modal-footer">
+              <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
+                data-bs-dismiss="modal" aria-label="Close">cancel</button>
+              <button type="button" id="saveChangesBtn"
+                class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">add account</button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+
+    <!-- Edit Account Modal -->
+    <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModal"
+      aria-hidden="true">
+      <div class="modal-dialog px-3">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editAccountModal">Edit Account</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="updateAccountForm">
+            <div class="modal-body">
+              <div class="form-floating py-3">
+                <input type="text" name="last_name" class="form-control" id="editLastName" required>
+                <label for="editLastName" class="form-label text-carbon-grey fw-medium">Last Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="first_name" class="form-control" id="editfirstName" required>
+                <label for="editfirstName" class="form-label text-carbon-grey fw-medium">First Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="middle_name" class="form-control" id="editmiddleName" required>
+                <label for="editmiddleName" class="form-label text-carbon-grey fw-medium">Middle Name<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="text" name="username" class="form-control" id="editusername" required>
+                <label for="editusername" class="form-label text-carbon-grey fw-medium">Username<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+              <div class="form-floating py-3">
+                <input type="password" name="password" class="form-control" id="editpassword" required>
+                <label for="editpassword" class="form-label text-carbon-grey fw-medium">Password<span
+                    style="color: red;"> *</span></label>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
+                data-bs-dismiss="modal" aria-label="Close">cancel</button>
+              <button type="button" id="updateChangesBtn"
+                class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
 
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
-    <script src="script_save.js"></script>
-    <script src="Select_Deselect.js"></script>
 
-<script>
-  new DataTable('#example', {
-    responsive: true
-  });
-  function viewSelected() {
-  // Get all selected rows
-  var selectedRows = $('#example').DataTable().rows('.selected').data();
-  // Get the modal body element
-  var modalBody = document.querySelector('.modal-body');
-  
-  // Clear previous content
-  modalBody.innerHTML = '';
+    <!-- Adding of Accounts -->
+    <script>
+      $(document).ready(function () {
+          var table = $('#example').DataTable();
+      });
 
-  // Check if there are no selected rows
-  if (selectedRows.length === 0) {
-    // If no rows are selected, display a message in the modal
-    modalBody.innerText = "No sales selected.";
-  } else {
-    // Loop through selected rows and populate modal body
-    selectedRows.each(function(rowData, index) {
-      // Create a div for each row
-      var rowDiv = document.createElement('div');
+      $(document).ready(function () {
+          $('#addAccountsModal').on('hidden.bs.modal', function () {
+              // Reset the form fields
+              $('#addAccountForm').trigger('reset');
+              // Clear any previous error messages
+              $('#errorContainer').hide().empty();
+          });
 
-      // Create elements for each piece of data
-      var lastNameParagraph = document.createElement('p');
-      var firstNameParagraph = document.createElement('p');
-      var middleNameParagraph = document.createElement('p');
-      var usernameParagraph = document.createElement('p');
-      var passwordParagraph = document.createElement('p');
+          $('#saveChangesBtn').click(function () {
+              // Validate form inputs
+              var lastName = $('#lastName').val();
+              var firstName = $('#firstName').val();
+              var middleName = $('#middleName').val();
+              var username = $('#username').val();
+              var password = $('#password').val();
 
-      // Set the inner text of the paragraphs to the row data
-      lastNameParagraph.innerText = "Last Name: " + rowData[0];
-      firstNameParagraph.innerText = "First Name: " + rowData[1];
-      middleNameParagraph.innerText = "Middle Name: " + rowData[2];
-      usernameParagraph.innerText = "Username: " + rowData[3];
-      passwordParagraph.innerText = "Password: " + rowData[4];
+              if (lastName.trim() === '' || firstName.trim() === '' || middleName.trim() === '' || username.trim() === '' || password.trim() === '') {
+                  $('#errorContainer').show().html('<div>Please fill in all fields.</div>');
+                  return; // Stop form submission if any field is empty
+              }
 
+              // Serialize the form data
+              var formData = $('#addAccountForm').serialize();
 
-      // Append the paragraphs to the row div
-      rowDiv.appendChild(lastNameParagraph);
-      rowDiv.appendChild(firstNameParagraph);
-      rowDiv.appendChild(middleNameParagraph);
-      rowDiv.appendChild(usernameParagraph);
-      rowDiv.appendChild(passwordParagraph);
+              // Send an AJAX request
+              $.ajax({
+                  url: 'add-account.php',
+                  type: 'POST',
+                  data: formData,
+                  success: function (response) {
+                      // Insert the new row into the table
+                      $('#example tbody').append(response);
 
-      // Append the row div to the modal body
-      modalBody.appendChild(rowDiv);
+                      // Close the modal
+                      $('#addAccountsModal').modal('hide');
 
-      // Add a horizontal line after each row except for the last one
-      if (index < selectedRows.length - 1) {
-        modalBody.appendChild(document.createElement('hr'));
-      }
-    });
-  }
+                      // Show success message
+                      $('#successMessage').text('Account added successfully').fadeIn().delay(2000).fadeOut();
+                  },
+                  error: function (xhr, status, error) {
+                      // Handle errors if any
+                      console.error(xhr.responseText);
+                  }
+              });
+          });
+      });
+    </script>
 
-  // Display the modal
-  var modal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
-  modal.show();
-}
-function addNewAccount() {
-    // Get the values from the input fields
-    var lastName = document.getElementById('lastName').value.trim();
-    var firstName = document.getElementById('firstName').value.trim();
-    var middleName = document.getElementById('middleName').value.trim();
-    var username = document.getElementById('username').value.trim();
-    var password = document.getElementById('password').value.trim();
+    <!-- Deleting of Accounts -->
+    <script>
+        $(document).ready(function() {
+            // Disable delete button by default
+            $('.delete-account').prop('disabled', true);
 
-    // Check if any of the fields are empty
-    if (lastName === '' || firstName === '' || middleName === '' || username === '' || password === '') {
-        // Show an error message indicating that all fields are required
-        document.getElementById('errorContainer').style.display = 'block';
-        return; // Exit the function early if any field is empty
-    }
+            // Add event listener to table rows for row selection
+            $('.selectable').click(function() {
+                // Toggle checkbox when clicking anywhere on the row
+                $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
+                // Check if at least one checkbox is checked
+                var anyChecked = $('.account-checkbox:checked').length > 0;
+                // Enable or disable the delete button based on checkbox status
+                $('.delete-account').prop('disabled', !anyChecked);
+            });
 
-    // Add the new row to the DataTable at the bottom
-    var table = $('#example').DataTable();
-    var newRow = table.row.add([lastName, firstName, middleName, username, password]).draw(false).node();
-
-    // Clear form fields
-    document.getElementById('lastName').value = '';
-    document.getElementById('firstName').value = '';
-    document.getElementById('middleName').value = '';
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-
-    // Close the modal
-    $('#addAccountsModal').modal('hide');
-
-    // Hide the error message container if it was displayed
-    document.getElementById('errorContainer').style.display = 'none';
-}
+            // Add event listener to delete buttons
+            $('.delete-account').click(function() {
+                // Show the confirmation modal
+                $('#deleteConfirmationModal').modal('show');
+                // Set the data-account-id attribute of the continue button in the modal
+                $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
+            });
 
 
+            // Function to handle single account deletion
+            $('#confirmDeleteBtn').click(function() {
+                var accountId = $('#deleteConfirmationModal').data('account-id');
 
-$(document).ready(function() {
-  // Bind event handler to reset modal content on close
-  $('#deleteConfirmationModal').on('hidden.bs.modal', function () {
-    // Reset modal content to default message
-    $('#deleteConfirmationModal .modal-body').text('Are you sure you want to delete this sales permanently?');
-  });
-});
+                // Send an AJAX request to delete the selected account
+                $.ajax({
+                    url: 'delete-account.php',
+                    method: 'POST',
+                    data: {accountIds: [accountId]},
+                    success: function(response) {
+                        if (response === 'success') {
+                            // Hide the confirmation modal
+                            $('#deleteConfirmationModal').modal('hide');
+                            // Show the success modal
+                            $('#successModal').modal('show');
+                            // Remove the deleted row from the table
+                            $('tr[data-id="' + accountId + '"]').remove();
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to delete the account. Please try again later.');
+                    }
+                });
+            });
 
-function confirmDelete() {
-  // Get all selected rows
-  var selectedRows = $('#example').DataTable().rows('.selected');
+            // Function to handle batch deletion
+            $('.delete-selected-accounts').click(function() {
+                var selectedAccounts = [];
+                // Iterate over each checked checkbox
+                $('.account-checkbox:checked').each(function() {
+                    selectedAccounts.push($(this).data('account-id'));
+                });
 
-  // Check if any rows are selected
-  if (selectedRows.any()) {
-    // Show the confirmation modal with the Continue button
-    $('#deleteConfirmationModal .modal-body').text('Are you sure you want to delete the sales permanently?');
-    $('#deleteConfirmationModal .btn-tiger-orange').show();
-    $('#deleteConfirmationModal').modal('show');
-  } else {
-    // No rows are selected, show a message indicating that no rows are selected
-    $('#deleteConfirmationModal .modal-body').text('No sales selected.');
-    
-    // Hide the Continue button
-    $('#deleteConfirmationModal .btn-tiger-orange').hide();
+                // Send an AJAX request to delete the selected accounts
+                $.ajax({
+                    url: 'delete-account.php',
+                    method: 'POST',
+                    data: {accountIds: selectedAccounts},
+                    success: function(response) {
+                        if (response === 'success') {
+                            // Hide the confirmation modal
+                            $('#deleteConfirmationModal').modal('hide');
+                            // Show the success modal
+                            $('#successModal').modal('show');
+                            // Remove the deleted rows from the table
+                            selectedAccounts.forEach(function(accountId) {
+                                $('tr[data-id="' + accountId + '"]').remove();
+                            });
+                        } else {
+                            alert('Failed to delete the selected accounts.');
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to delete the selected accounts. Please try again later.');
+                    }
+                });
+            });
+        });
+    </script>
 
-    // Show the confirmation modal without the Continue button
-    $('#deleteConfirmationModal').modal('show');
-  }
-}
+    <!-- Updating of Accounts -->
+    <script>
+      $(document).ready(function() {
+          // Disable edit button by default
+          $('.edit-account').prop('disabled', true);
 
-function deleteSelectedRows() {
-  // Get all selected rows
-  var selectedRows = $('#example').DataTable().rows('.selected');
+          // Add event listener to table rows for row selection
+          $('.selectable').click(function() {
+              // Toggle checkbox when clicking anywhere on the row
+              $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
+              // Check if at least one checkbox is checked
+              var anyChecked = $('.account-checkbox:checked').length > 0;
+              // Enable or disable the delete and edit buttons based on checkbox status
+              $('.delete-account').prop('disabled', !anyChecked);
+              $('.edit-account').prop('disabled', anyChecked != 1);
+        });
 
-  // Check if any rows are selected
-  if (selectedRows.any()) {
-    // Remove the selected rows from the DataTable
-    selectedRows.remove().draw();
+        $(document).ready(function() {
+            // Add event listener to edit buttons
+            $('.edit-account').click(function() {
+                // Fetch data from the selected row and populate the edit modal's input fields
+                var row = $(this).closest('tr');
+                $('#editLastName').val(row.find('td:eq(1)').text());
+                $('#editfirstName').val(row.find('td:eq(2)').text());
+                $('#editmiddleName').val(row.find('td:eq(3)').text());
+                $('#editusername').val(row.find('td:eq(4)').text());
+                $('#editpassword').val(row.find('td:eq(5)').text());
 
-    // Hide the confirmation modal
-    $('#deleteConfirmationModal').modal('hide');
+                // Show the edit modal
+                $('#editAccountModal').modal('show');
+            });
 
-    // Show the success modal
-    $('#successModal').modal('show');
-  } else {
-    // If no rows are selected, directly show the confirmation modal
-    confirmDelete();
-  }
-}
-</script>
+            // Function to handle edit submission
+            $('#updateChangesBtn').click(function() {
+                // Fetch edited data from the edit modal's input fields
+                var editedData = {
+                    last_name: $('#editLastName').val(),
+                    first_name: $('#editfirstName').val(),
+                    middle_name: $('#editmiddleName').val(),
+                    username: $('#editusername').val(),
+                    password: $('#editpassword').val()
+                };
+
+                // Send an AJAX request to update the selected account
+                $.ajax({
+                    url: 'update-account.php',
+                    method: 'POST',
+                    data: editedData,
+                    success: function(response) {
+                        // Assuming the response contains updated data from the server
+                        // Update the row in the table with the edited data
+                        var row = $('.selectable[data-id="' + response.id + '"]');
+                        row.find('td:eq(1)').text(response.last_name);
+                        row.find('td:eq(2)').text(response.first_name);
+                        row.find('td:eq(3)').text(response.middle_name);
+                        row.find('td:eq(4)').text(response.username);
+                        row.find('td:eq(5)').text(response.password);
+
+                        // Hide the edit modal
+                        $('#editAccountModal').modal('hide');
+                    },
+                    error: function() {
+                        alert('Failed to update the account. Please try again later.');
+                    }
+                });
+            });
+        });
+      });
+    </script>
 
   </body>
 </html>
