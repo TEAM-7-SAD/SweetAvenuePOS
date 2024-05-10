@@ -6,6 +6,7 @@ $first_name = $_POST['first_name'];
 $middle_name = $_POST['middle_name'];
 $username = $_POST['username'];
 $password = $_POST['password'];
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($username) || empty($password)) {
     header("Location: accounts.php");
@@ -14,7 +15,7 @@ if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($user
 
 $sql = "INSERT INTO user (last_name, first_name, middle_name, username, password) VALUES (?, ?, ?, ?, ?)";
 $stmt = $db->prepare($sql);
-$stmt->bind_param('sssss', $last_name, $first_name, $middle_name, $username, $password);
+$stmt->bind_param('sssss', $last_name, $first_name, $middle_name, $username, $hashed_password);
 $stmt->execute();
 $stmt->close();
 
@@ -32,7 +33,6 @@ $html = '
         <td>'.$row["first_name"].'</td>
         <td>'.$row['middle_name'].'</td>
         <td>'.$row['username'].'</td>
-        <td>'.$row['password'].'</td>
     </tr>
 ';
 
