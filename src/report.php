@@ -50,7 +50,7 @@ if(isset($_SESSION['id'])) {
                   <!--Main Content-->
               <div class="col">
                     <div class="container main-content">
-                    <h3 class="accounts text-tiger-orange bg-rose-white">Reports</h3>
+                    <h3 class="accounts text-tiger-orange bg-rose-white rounded-3 fw-semibold">Reports</h3>
                     <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addProductModal">Generate Report</button>
                     </div>
                     <div class="table container-lg bg-white">
@@ -66,8 +66,8 @@ if(isset($_SESSION['id'])) {
                           <thead>
                               <tr>
                                   <th>Item Sets</th>
-                                  <th>Confidence</th>
                                   <th>Support</th>
+                                  <th>Confidence</th>
                                   <th>Lift</th>
                                   <th>Conviction</th>
                               </tr>
