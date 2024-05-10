@@ -50,10 +50,10 @@ if(isset($_SESSION['id'])) {
                   <div class="row justify-content-end">
                     <div class="col-md-4 text-center">
                       <br>
-                      <div class="container p-2">
+                      <div class="p-2">
                         <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2"
                           data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
-                        <button class="btn btn-danger fw-semibold px-3 py-2 delete-account"
+                        <button class="btn btn-danger fw-semibold py-2 delete-account"
                           data-account-id="<?php echo $row['id']; ?>">Delete</button>
                       </div>
                     </div>
@@ -261,87 +261,87 @@ if(isset($_SESSION['id'])) {
 
     <!-- Deleting of Accounts -->
     <script>
-        $(document).ready(function() {
-            // Disable delete button by default
-            $('.delete-account').prop('disabled', true);
+      $(document).ready(function() {
+          // Disable delete button by default
+          $('.delete-account').prop('disabled', true);
 
-            // Add event listener to table rows for row selection
-            $('.selectable').click(function() {
-                // Toggle checkbox when clicking anywhere on the row
-                $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
-                // Check if at least one checkbox is checked
-                var anyChecked = $('.account-checkbox:checked').length > 0;
-                // Enable or disable the delete button based on checkbox status
-                $('.delete-account').prop('disabled', !anyChecked);
-            });
+          // Add event listener to table rows for row selection
+          $('.selectable').click(function() {
+              // Toggle checkbox when clicking anywhere on the row
+              $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
+              // Check if at least one checkbox is checked
+              var anyChecked = $('.account-checkbox:checked').length > 0;
+              // Enable or disable the delete button based on checkbox status
+              $('.delete-account').prop('disabled', !anyChecked);
+          });
 
-            // Add event listener to delete buttons
-            $('.delete-account').click(function() {
-                // Show the confirmation modal
-                $('#deleteConfirmationModal').modal('show');
-                // Set the data-account-id attribute of the continue button in the modal
-                $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
-            });
+          // Add event listener to delete buttons
+          $('.delete-account').click(function() {
+              // Show the confirmation modal
+              $('#deleteConfirmationModal').modal('show');
+              // Set the data-account-id attribute of the continue button in the modal
+              $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
+          });
 
 
-            // Function to handle single account deletion
-            $('#confirmDeleteBtn').click(function() {
-                var accountId = $('#deleteConfirmationModal').data('account-id');
+          // Function to handle single account deletion
+          $('#confirmDeleteBtn').click(function() {
+              var accountId = $('#deleteConfirmationModal').data('account-id');
 
-                // Send an AJAX request to delete the selected account
-                $.ajax({
-                    url: 'delete-account.php',
-                    method: 'POST',
-                    data: {accountIds: [accountId]},
-                    success: function(response) {
-                        if (response === 'success') {
-                            // Hide the confirmation modal
-                            $('#deleteConfirmationModal').modal('hide');
-                            // Show the success modal
-                            $('#successModal').modal('show');
-                            // Remove the deleted row from the table
-                            $('tr[data-id="' + accountId + '"]').remove();
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to delete the account. Please try again later.');
-                    }
-                });
-            });
+              // Send an AJAX request to delete the selected account
+              $.ajax({
+                  url: 'delete-account.php',
+                  method: 'POST',
+                  data: {accountIds: [accountId]},
+                  success: function(response) {
+                      if (response === 'success') {
+                          // Hide the confirmation modal
+                          $('#deleteConfirmationModal').modal('hide');
+                          // Show the success modal
+                          $('#successModal').modal('show');
+                          // Remove the deleted row from the table
+                          $('tr[data-id="' + accountId + '"]').remove();
+                      }
+                  },
+                  error: function() {
+                      alert('Failed to delete the account. Please try again later.');
+                  }
+              });
+          });
 
-            // Function to handle batch deletion
-            $('.delete-selected-accounts').click(function() {
-                var selectedAccounts = [];
-                // Iterate over each checked checkbox
-                $('.account-checkbox:checked').each(function() {
-                    selectedAccounts.push($(this).data('account-id'));
-                });
+          // Function to handle batch deletion
+          $('.delete-selected-accounts').click(function() {
+              var selectedAccounts = [];
+              // Iterate over each checked checkbox
+              $('.account-checkbox:checked').each(function() {
+                  selectedAccounts.push($(this).data('account-id'));
+              });
 
-                // Send an AJAX request to delete the selected accounts
-                $.ajax({
-                    url: 'delete-account.php',
-                    method: 'POST',
-                    data: {accountIds: selectedAccounts},
-                    success: function(response) {
-                        if (response === 'success') {
-                            // Hide the confirmation modal
-                            $('#deleteConfirmationModal').modal('hide');
-                            // Show the success modal
-                            $('#successModal').modal('show');
-                            // Remove the deleted rows from the table
-                            selectedAccounts.forEach(function(accountId) {
-                                $('tr[data-id="' + accountId + '"]').remove();
-                            });
-                        } else {
-                            alert('Failed to delete the selected accounts.');
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to delete the selected accounts. Please try again later.');
-                    }
-                });
-            });
-        });
+              // Send an AJAX request to delete the selected accounts
+              $.ajax({
+                  url: 'delete-account.php',
+                  method: 'POST',
+                  data: {accountIds: selectedAccounts},
+                  success: function(response) {
+                      if (response === 'success') {
+                          // Hide the confirmation modal
+                          $('#deleteConfirmationModal').modal('hide');
+                          // Show the success modal
+                          $('#successModal').modal('show');
+                          // Remove the deleted rows from the table
+                          selectedAccounts.forEach(function(accountId) {
+                              $('tr[data-id="' + accountId + '"]').remove();
+                          });
+                      } else {
+                          alert('Failed to delete the selected accounts.');
+                      }
+                  },
+                  error: function() {
+                      alert('Failed to delete the selected accounts. Please try again later.');
+                  }
+              });
+          });
+      });
     </script>
 
   </body>
