@@ -49,8 +49,8 @@ if(isset($_SESSION['id'])) {
 
                   <!--Main Content-->
               <div class="col">
-                    <div class="container main-content">
-                    <h3 class="accounts text-tiger-orange bg-rose-white rounded-3 fw-semibold">Reports</h3>
+                    <div class="container main-content mt-5 mb-4">
+                    <h3 class="text-medium-brown fw-bolder text-capitalize">Reports</h3>
                     <button class="add btn btn-tiger-orange text-white" data-bs-toggle="modal" data-bs-target="#addProductModal">Generate Report</button>
                     </div>
                     <div class="table container-lg bg-white">
