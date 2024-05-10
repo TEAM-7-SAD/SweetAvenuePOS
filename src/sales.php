@@ -39,8 +39,8 @@ if(isset($_SESSION['id'])) {
 
                   <!--Main Content-->
               <div class="col">
-                    <div class="container main-content">
-                    <h3 class="sales text-tiger-orange bg-rose-white">All Sales</h3>
+                    <div class="container main-content mt-5 mb-4">
+                    <h3 class="text-medium-brown fw-bolder text-capitalize">Sales</h3>  
                     </div>
                     <div class="table container-lg bg-white">
                       <div class="container">
