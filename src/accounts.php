@@ -46,19 +46,18 @@ if(isset($_SESSION['id'])) {
                 </div>
               </div>
               <div class="table container-lg bg-white">
-                <div class="container">
-                  <div class="row justify-content-end">
-                    <div class="col-md-4 text-center">
-                      <br>
-                      <div class="p-2">
-                        <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2"
-                          data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
-                        <button class="btn btn-danger fw-semibold py-2 delete-account"
-                          data-account-id="<?php echo $row['id']; ?>">Delete</button>
-                      </div>
-                    </div>
+                
+              <div class="row">
+                <div class="col mt-4 align-items-end">
+                  <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
+                    <div class="mx-2"></div>
+                    <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">Delete</button>
                   </div>
                 </div>
+              </div>
+
+                
                 <div id="successMessage" class="alert alert-success" style="display: none;" role="alert"></div>
 
                 <div class="table-container">
