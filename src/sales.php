@@ -49,7 +49,7 @@ if(isset($_SESSION['id'])) {
                             <br>
                             <div class="container p-2">
                               <button id="deselectAll" style="display: none; cursor: pointer;"   class="btn btn-tiger-orange text-white">Deselect All</button>
-                              <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-account"
+                              <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-sale"
                               disabled>View</button>
                               <button class="btn btn-danger fw-semibold px-3 py-2 delete-sale"
                                 data-sale-id="<?php echo $row['id']; ?>">Delete</button>
@@ -61,7 +61,7 @@ if(isset($_SESSION['id'])) {
                       <table id="example" class="table">
                           <thead>
                               <tr>
-                                  <th><th>
+                                  <th></th>
                                   <th>Date</th>
                                   <th>Time</th>
                                   <th>Processed by</th>
@@ -83,7 +83,7 @@ if(isset($_SESSION['id'])) {
 
                           while($row = $result->fetch_assoc()) {
                               echo '
-                              <tr>
+                              <tr data-id="'.$row['id'].'" class="selectable">
                                   <td><input type="checkbox" class="sale-checkbox" data-sale-id="'.$row['id'].'"></td>
                                   <td>'.$row['transaction_date'].'</td>
                                   <td>'.$row['transaction_time'].'</td>
@@ -171,14 +171,18 @@ if(isset($_SESSION['id'])) {
             $('.delete-sale').prop('disabled', true);
 
             // Add event listener to table rows for row selection
-            $('.selectable').click(function() {
-                // Toggle checkbox when clicking anywhere on the row
-                $(this).find('.sale-checkbox').prop('checked', !$(this).find('.sale-checkbox').prop('checked'));
+            $('.selectable').click(function(event) {
+                // Check if the click occurred on the checkbox
+                if (!$(event.target).is('input[type="checkbox"]')) {
+                    // Toggle checkbox when clicking anywhere on the row (except the checkbox)
+                    $(this).find('.sale-checkbox').prop('checked', !$(this).find('.sale-checkbox').prop('checked'));
+                }
                 // Check if at least one checkbox is checked
                 var anyChecked = $('.sale-checkbox:checked').length > 0;
                 // Enable or disable the delete button based on checkbox status
                 $('.delete-sale').prop('disabled', !anyChecked);
             });
+
 
             // Add event listener to delete buttons
             $('.delete-sale').click(function() {
@@ -216,10 +220,10 @@ if(isset($_SESSION['id'])) {
 
             // Function to handle batch deletion
             $('.delete-selected-sales').click(function() {
-                var selectedAccounts = [];
+                var selectedSales = [];
                 // Iterate over each checked checkbox
                 $('.sale-checkbox:checked').each(function() {
-                    selectedAccounts.push($(this).data('sale-id'));
+                    selectedSales.push($(this).data('sale-id'));
                 });
 
                 // Send an AJAX request to delete the selected accounts
@@ -235,7 +239,7 @@ if(isset($_SESSION['id'])) {
                             $('#successModal').modal('show');
                             // Remove the deleted rows from the table
                             selectedSales.forEach(function(saleId) {
-                                $('tr[data-id="' + accountId + '"]').remove();
+                                $('tr[data-id="' + saleId + '"]').remove();
                             });
                         } else {
                             alert('Failed to delete the selected sales.');

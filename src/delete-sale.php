@@ -8,7 +8,7 @@ if (isset($_POST['saleIds']) && is_array($_POST['saleIds'])) {
     $saleIds = $_POST['saleIds'];
 
     // Prepare and execute the SQL query to delete selected accounts
-    $sql = "DELETE FROM user WHERE id IN (" . implode(',', array_fill(0, count($saleIds), '?')) . ")";
+    $sql = "DELETE FROM transaction WHERE id IN (" . implode(',', array_fill(0, count($saleIds), '?')) . ")";
     $stmt = $db->prepare($sql);
     $types = str_repeat('i', count($saleIds));
     $stmt->bind_param($types, ...$saleIds);

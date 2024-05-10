@@ -62,7 +62,7 @@ if(isset($_SESSION['id'])) {
 
                 foreach($categories as $category) {
                     // Check if the category is "Snacks and Rice Meals"
-                    $isChecked = ($category['name'] === 'snacks & rice meals') ? 'checked' : '';
+                    $isChecked = ($category['name'] === 'snacks and rice meals') ? 'checked' : '';
                     
                     // Set the default category ID
                     if ($isChecked) {
