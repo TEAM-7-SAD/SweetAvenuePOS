@@ -21,14 +21,14 @@ if(isset($_POST['sign_in_btn'])) {
     }
 
     // Query the user table for the entered username
-    $stmt = $db->prepare("SELECT id, username, password FROM user WHERE username = ?");
+    $stmt = $db->prepare("SELECT id, username, password FROM user WHERE BINARY username = ?");
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Check if a user of this username exists
     if($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
+        $row = $result->fetch_assoc();
 
         // Verify if password match the entered username
         if (password_verify($password, $row['password'])) {

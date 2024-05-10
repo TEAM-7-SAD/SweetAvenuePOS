@@ -50,12 +50,10 @@ if(isset($_SESSION['id'])) {
                   <div class="row justify-content-end">
                     <div class="col-md-4 text-center">
                       <br>
-                      <div class="container p-2">
+                      <div class="p-2">
                         <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2"
                           data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
-                        <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 edit-account"
-                          disabled>Edit</button>
-                        <button class="btn btn-danger fw-semibold px-3 py-2 delete-account"
+                        <button class="btn btn-danger fw-semibold py-2 delete-account"
                           data-account-id="<?php echo $row['id']; ?>">Delete</button>
                       </div>
                     </div>
@@ -202,60 +200,6 @@ if(isset($_SESSION['id'])) {
       </div>
     </div>
 
-    <!-- Edit Account Modal -->
-    <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModal"
-      aria-hidden="true">
-      <div class="modal-dialog px-3">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editAccountModal">Edit Account</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form id="updateAccountForm">
-            <div class="modal-body">
-              <div class="form-floating py-3">
-                <input type="text" name="last_name" class="form-control" id="editLastName" required>
-                <label for="editLastName" class="form-label text-carbon-grey fw-medium">Last Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="first_name" class="form-control" id="editfirstName" required>
-                <label for="editfirstName" class="form-label text-carbon-grey fw-medium">First Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="middle_name" class="form-control" id="editmiddleName" required>
-                <label for="editmiddleName" class="form-label text-carbon-grey fw-medium">Middle Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="username" class="form-control" id="editusername" required>
-                <label for="editusername" class="form-label text-carbon-grey fw-medium">Username<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="password" name="password" class="form-control" id="editpassword" required>
-                <label for="editpassword" class="form-label text-carbon-grey fw-medium">Password<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
-                data-bs-dismiss="modal" aria-label="Close">cancel</button>
-              <button type="button" id="updateChangesBtn"
-                class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">Save Changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -317,94 +261,9 @@ if(isset($_SESSION['id'])) {
 
     <!-- Deleting of Accounts -->
     <script>
-        $(document).ready(function() {
-            // Disable delete button by default
-            $('.delete-account').prop('disabled', true);
-
-            // Add event listener to table rows for row selection
-            $('.selectable').click(function() {
-                // Toggle checkbox when clicking anywhere on the row
-                $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
-                // Check if at least one checkbox is checked
-                var anyChecked = $('.account-checkbox:checked').length > 0;
-                // Enable or disable the delete button based on checkbox status
-                $('.delete-account').prop('disabled', !anyChecked);
-            });
-
-            // Add event listener to delete buttons
-            $('.delete-account').click(function() {
-                // Show the confirmation modal
-                $('#deleteConfirmationModal').modal('show');
-                // Set the data-account-id attribute of the continue button in the modal
-                $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
-            });
-
-
-            // Function to handle single account deletion
-            $('#confirmDeleteBtn').click(function() {
-                var accountId = $('#deleteConfirmationModal').data('account-id');
-
-                // Send an AJAX request to delete the selected account
-                $.ajax({
-                    url: 'delete-account.php',
-                    method: 'POST',
-                    data: {accountIds: [accountId]},
-                    success: function(response) {
-                        if (response === 'success') {
-                            // Hide the confirmation modal
-                            $('#deleteConfirmationModal').modal('hide');
-                            // Show the success modal
-                            $('#successModal').modal('show');
-                            // Remove the deleted row from the table
-                            $('tr[data-id="' + accountId + '"]').remove();
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to delete the account. Please try again later.');
-                    }
-                });
-            });
-
-            // Function to handle batch deletion
-            $('.delete-selected-accounts').click(function() {
-                var selectedAccounts = [];
-                // Iterate over each checked checkbox
-                $('.account-checkbox:checked').each(function() {
-                    selectedAccounts.push($(this).data('account-id'));
-                });
-
-                // Send an AJAX request to delete the selected accounts
-                $.ajax({
-                    url: 'delete-account.php',
-                    method: 'POST',
-                    data: {accountIds: selectedAccounts},
-                    success: function(response) {
-                        if (response === 'success') {
-                            // Hide the confirmation modal
-                            $('#deleteConfirmationModal').modal('hide');
-                            // Show the success modal
-                            $('#successModal').modal('show');
-                            // Remove the deleted rows from the table
-                            selectedAccounts.forEach(function(accountId) {
-                                $('tr[data-id="' + accountId + '"]').remove();
-                            });
-                        } else {
-                            alert('Failed to delete the selected accounts.');
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to delete the selected accounts. Please try again later.');
-                    }
-                });
-            });
-        });
-    </script>
-
-    <!-- Updating of Accounts -->
-    <script>
       $(document).ready(function() {
-          // Disable edit button by default
-          $('.edit-account').prop('disabled', true);
+          // Disable delete button by default
+          $('.delete-account').prop('disabled', true);
 
           // Add event listener to table rows for row selection
           $('.selectable').click(function() {
@@ -412,61 +271,76 @@ if(isset($_SESSION['id'])) {
               $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
               // Check if at least one checkbox is checked
               var anyChecked = $('.account-checkbox:checked').length > 0;
-              // Enable or disable the delete and edit buttons based on checkbox status
+              // Enable or disable the delete button based on checkbox status
               $('.delete-account').prop('disabled', !anyChecked);
-              $('.edit-account').prop('disabled', anyChecked != 1);
-        });
+          });
 
-        $(document).ready(function() {
-            // Add event listener to edit buttons
-            $('.edit-account').click(function() {
-                // Fetch data from the selected row and populate the edit modal's input fields
-                var row = $(this).closest('tr');
-                $('#editLastName').val(row.find('td:eq(1)').text());
-                $('#editfirstName').val(row.find('td:eq(2)').text());
-                $('#editmiddleName').val(row.find('td:eq(3)').text());
-                $('#editusername').val(row.find('td:eq(4)').text());
-                $('#editpassword').val(row.find('td:eq(5)').text());
+          // Add event listener to delete buttons
+          $('.delete-account').click(function() {
+              // Show the confirmation modal
+              $('#deleteConfirmationModal').modal('show');
+              // Set the data-account-id attribute of the continue button in the modal
+              $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
+          });
 
-                // Show the edit modal
-                $('#editAccountModal').modal('show');
-            });
 
-            // Function to handle edit submission
-            $('#updateChangesBtn').click(function() {
-                // Fetch edited data from the edit modal's input fields
-                var editedData = {
-                    last_name: $('#editLastName').val(),
-                    first_name: $('#editfirstName').val(),
-                    middle_name: $('#editmiddleName').val(),
-                    username: $('#editusername').val(),
-                    password: $('#editpassword').val()
-                };
+          // Function to handle single account deletion
+          $('#confirmDeleteBtn').click(function() {
+              var accountId = $('#deleteConfirmationModal').data('account-id');
 
-                // Send an AJAX request to update the selected account
-                $.ajax({
-                    url: 'update-account.php',
-                    method: 'POST',
-                    data: editedData,
-                    success: function(response) {
-                        // Assuming the response contains updated data from the server
-                        // Update the row in the table with the edited data
-                        var row = $('.selectable[data-id="' + response.id + '"]');
-                        row.find('td:eq(1)').text(response.last_name);
-                        row.find('td:eq(2)').text(response.first_name);
-                        row.find('td:eq(3)').text(response.middle_name);
-                        row.find('td:eq(4)').text(response.username);
-                        row.find('td:eq(5)').text(response.password);
+              // Send an AJAX request to delete the selected account
+              $.ajax({
+                  url: 'delete-account.php',
+                  method: 'POST',
+                  data: {accountIds: [accountId]},
+                  success: function(response) {
+                      if (response === 'success') {
+                          // Hide the confirmation modal
+                          $('#deleteConfirmationModal').modal('hide');
+                          // Show the success modal
+                          $('#successModal').modal('show');
+                          // Remove the deleted row from the table
+                          $('tr[data-id="' + accountId + '"]').remove();
+                      }
+                  },
+                  error: function() {
+                      alert('Failed to delete the account. Please try again later.');
+                  }
+              });
+          });
 
-                        // Hide the edit modal
-                        $('#editAccountModal').modal('hide');
-                    },
-                    error: function() {
-                        alert('Failed to update the account. Please try again later.');
-                    }
-                });
-            });
-        });
+          // Function to handle batch deletion
+          $('.delete-selected-accounts').click(function() {
+              var selectedAccounts = [];
+              // Iterate over each checked checkbox
+              $('.account-checkbox:checked').each(function() {
+                  selectedAccounts.push($(this).data('account-id'));
+              });
+
+              // Send an AJAX request to delete the selected accounts
+              $.ajax({
+                  url: 'delete-account.php',
+                  method: 'POST',
+                  data: {accountIds: selectedAccounts},
+                  success: function(response) {
+                      if (response === 'success') {
+                          // Hide the confirmation modal
+                          $('#deleteConfirmationModal').modal('hide');
+                          // Show the success modal
+                          $('#successModal').modal('show');
+                          // Remove the deleted rows from the table
+                          selectedAccounts.forEach(function(accountId) {
+                              $('tr[data-id="' + accountId + '"]').remove();
+                          });
+                      } else {
+                          alert('Failed to delete the selected accounts.');
+                      }
+                  },
+                  error: function() {
+                      alert('Failed to delete the selected accounts. Please try again later.');
+                  }
+              });
+          });
       });
     </script>
 
