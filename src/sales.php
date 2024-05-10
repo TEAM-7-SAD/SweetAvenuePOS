@@ -46,14 +46,12 @@ if(isset($_SESSION['id'])) {
                     <div class="table container-lg bg-white">
                       <div class="container">
                         <div class="row justify-content-end">
-                          <div class="col-md-4 text-center">
-                            <br>
-                            <div class="container p-2">
-                              <button id="deselectAll" style="display: none; cursor: pointer;"   class="btn btn-tiger-orange text-white">Deselect All</button>
-                              <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-sale"
-                              >View</button>
-                              <button class="btn btn-danger fw-semibold px-3 py-2 delete-sale"
-                                data-sale-id="<?php echo $row['id']; ?>">Delete</button>
+                          <div class="col-md-4 mt-4 text-center">
+                            <div class="container p-2 d-flex justify-content-end">
+                              <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-tiger-orange text-white">Deselect All</button>
+                              <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-sale">View</button>
+                              <div class="mx-2"></div>
+                              <button class="btn btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button>
                             </div>
                           </div>
                         </div>
