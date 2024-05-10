@@ -146,43 +146,42 @@ if(isset($_SESSION['id'])) {
     <!-- Add Accounts Modal -->
     <div class="modal fade" id="addAccountsModal" tabindex="-1" aria-labelledby="addAccountsModalLabel"
       aria-hidden="true">
-      <div class="modal-dialog px-3">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="addAccountsModalLabel">Add a new account</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form id="addAccountForm">
-            <div class="modal-body">
-              <div id="errorContainer" class="alert alert-danger" style="display: none;" role="alert">
-                <div>
-                  <img src="images/x-circle.svg">
-                  An error occurred.
+            <div class="modal-body mx-4">
+              <div class="input-group">
+                <div class="form-floating py-3 pe-5">
+                  <input type="text" name="last_name" class="form-control rounded-3" id="lastName" required>
+                  <label for="lastName" class="form-label text-carbon-grey fw-medium">Last Name<span
+                      style="color: red;"> *</span></label>
+                </div>
+                <div class="form-floating py-3 pe-5">
+                  <input type="text" name="first_name" class="form-control rounded-3" id="firstName" required>
+                  <label for="firstName" class="form-label text-carbon-grey fw-medium">First Name<span
+                      style="color: red;"> *</span></label>
+                </div>  
+                <div class="form-floating py-3">
+                  <input type="text" name="middle_name" class="form-control rounded-3" id="middleName" required>
+                  <label for="middleName" class="form-label text-carbon-grey fw-medium">Middle Name</label>
                 </div>
               </div>
 
-              <div class="form-floating py-3">
-                <input type="text" name="last_name" class="form-control" id="lastName" required>
-                <label for="lastName" class="form-label text-carbon-grey fw-medium">Last Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="first_name" class="form-control" id="firstName" required>
-                <label for="firstName" class="form-label text-carbon-grey fw-medium">First Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="middle_name" class="form-control" id="middleName" required>
-                <label for="middleName" class="form-label text-carbon-grey fw-medium">Middle Name<span
-                    style="color: red;"> *</span></label>
-              </div>
-
-              <div class="form-floating py-3">
-                <input type="text" name="username" class="form-control" id="username" required>
-                <label for="userName" class="form-label text-carbon-grey fw-medium">Username<span
-                    style="color: red;"> *</span></label>
+              <div class="input-group">
+                <div class="form-floating py-3 pe-5">
+                  <input type="text" name="username" class="form-control rounded-3" id="username" required>
+                  <label for="userName" class="form-label text-carbon-grey fw-medium">Username<span
+                      style="color: red;"> *</span></label>
+                </div> 
+                <div class="form-floating py-3">
+                  <input type="email" name="email" class="form-control rounded-3" id="email" required>
+                  <label for="email" class="form-label text-carbon-grey fw-medium">Email Address<span
+                      style="color: red;"> *</span></label>
+                </div>                    
               </div>
 
               <div class="form-floating py-3">
@@ -281,11 +280,10 @@ if(isset($_SESSION['id'])) {
               // Validate form inputs
               var lastName = $('#lastName').val();
               var firstName = $('#firstName').val();
-              var middleName = $('#middleName').val();
               var username = $('#username').val();
               var password = $('#password').val();
 
-              if (lastName.trim() === '' || firstName.trim() === '' || middleName.trim() === '' || username.trim() === '' || password.trim() === '') {
+              if (lastName.trim() === '' || firstName.trim() === '' || username.trim() === '' || password.trim() === '') {
                   $('#errorContainer').show().html('<div>Please fill in all fields.</div>');
                   return; // Stop form submission if any field is empty
               }
