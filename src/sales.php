@@ -331,6 +331,8 @@ if(isset($_SESSION['id'])) {
                             $('#saleDetailsContent').append('<p><strong>Time:</strong> ' + saleDetails.transaction_time + '</p>');
                             $('#saleDetailsContent').append('<p><strong>Processed By:</strong> ' + saleDetails.full_name + '</p>');
                             $('#saleDetailsContent').append('<p><strong>Total:</strong> ' + saleDetails.total_amount + '</p>');
+                            // Add a line break after displaying the total
+                            $('#saleDetailsContent').append('<br>');
                         },
                         error: function() {
                             alert('Failed to fetch sale details. Please try again later.');
