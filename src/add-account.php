@@ -9,7 +9,7 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($username) || empty($password)) {
+if(empty($last_name) || empty($first_name) || empty($username) || empty($password)) {
     header("Location: accounts.php");
     exit();
 }
