@@ -56,7 +56,7 @@ $current_user = $result->fetch_assoc();
 
                 <!--Reports-->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Reports</a>
+                    <a class="nav-link" href="report.php">Reports</a>
                 </li>
             </ul>
 
