@@ -21,6 +21,7 @@ if(isset($_SESSION['id'])) {
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+
 </head>
   
   <body class="bg-timberwolf">
@@ -50,7 +51,7 @@ if(isset($_SESSION['id'])) {
                             <div class="container p-2">
                               <button id="deselectAll" style="display: none; cursor: pointer;"   class="btn btn-tiger-orange text-white">Deselect All</button>
                               <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-sale"
-                              disabled>View</button>
+                              >View</button>
                               <button class="btn btn-danger fw-semibold px-3 py-2 delete-sale"
                                 data-sale-id="<?php echo $row['id']; ?>">Delete</button>
                             </div>
@@ -147,6 +148,31 @@ if(isset($_SESSION['id'])) {
       </div>
     </div>
   </div>
+</div>
+
+<!-- Sale Details Modal -->
+<div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-labelledby="saleDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saleDetailsModalLabel">Sale Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Sale details will be populated here -->
+                <div id="saleDetailsContent">
+                    <!-- Sale details will be dynamically populated here -->
+                    <p><strong>Date:</strong> <span id="saleDate"></span></p>
+                    <p><strong>Time:</strong> <span id="saleTime"></span></p>
+                    <p><strong>Processed By:</strong> <span id="processedBy"></span></p>
+                    <p><strong>Total:</strong> <span id="saleTotal"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -252,6 +278,73 @@ if(isset($_SESSION['id'])) {
             });
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+        // Disable view button by default
+        $('.view-sale').prop('disabled', true);
+
+        // Function to enable or disable the "View" button based on selection
+        function updateViewButton() {
+            var anyChecked = $('.sale-checkbox:checked').length > 0;
+            $('.view-sale').prop('disabled', !anyChecked);
+        }
+
+        // Add event listener to table rows for row selection
+        $('.selectable').click(function(event) {
+            if (!$(event.target).is('input[type="checkbox"]')) {
+                $(this).find('.sale-checkbox').prop('checked', !$(this).find('.sale-checkbox').prop('checked'));
+            }
+            updateViewButton(); // Update button state
+        });
+
+        // Add event listener to checkboxes for selection
+        $('.sale-checkbox').change(function() {
+            updateViewButton(); // Update button state
+        });
+
+        // Function to handle "View" button click
+        $('.view-sale').click(function() {
+            var selectedSales = []; // Array to store selected sale IDs
+            $('.sale-checkbox:checked').each(function() {
+                selectedSales.push($(this).attr('data-sale-id')); // Push the sale ID of each checked checkbox into the array
+            });
+
+            if (selectedSales.length > 0) {
+                // Clear the modal content before appending the details of each selected sale
+                $('#saleDetailsContent').html('');
+                
+                // Send an AJAX request to fetch sale details for each selected sale
+                selectedSales.forEach(function(saleId) {
+                    $.ajax({
+                        url: 'view-sales.php', // Update with your PHP script to fetch sale details
+                        method: 'GET',
+                        data: { saleId: saleId },
+                        success: function(response) {
+                            // Populate the modal with sale details for each selected sale
+                            // Here, you need to ensure that only relevant sale details are displayed
+                            // For example, assuming your response contains JSON data with sale details
+                            var saleDetails = JSON.parse(response);
+                            $('#saleDetailsModal').modal('show'); // Show the modal
+                            // Append the sale details to the modal content
+                            $('#saleDetailsContent').append('<p><strong>Date:</strong> ' + saleDetails.transaction_date + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Time:</strong> ' + saleDetails.transaction_time + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Processed By:</strong> ' + saleDetails.full_name + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Total:</strong> ' + saleDetails.total_amount + '</p>');
+                            // Add a line break after displaying the total
+                            $('#saleDetailsContent').append('<br>');
+                        },
+                        error: function() {
+                            alert('Failed to fetch sale details. Please try again later.');
+                        }
+                    });
+                });
+            } else {
+                alert("Please select at least one sale to view.");
+            }
+        });
+    });
+</script>
   </body>
 </html>
 <?php 

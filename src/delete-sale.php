@@ -1,18 +1,17 @@
 <?php
 // Include the database connection file
 require_once 'includes/db-connector.php';
-
 // Check if account IDs are provided
 if (isset($_POST['saleIds']) && is_array($_POST['saleIds'])) {
     // Get the account IDs from the POST data
     $saleIds = $_POST['saleIds'];
 
     // Prepare and execute the SQL query to delete selected accounts
+    $sql = "DELETE FROM user WHERE id IN (" . implode(',', array_fill(0, count($saleIds), '?')) . ")";
     $sql = "DELETE FROM transaction WHERE id IN (" . implode(',', array_fill(0, count($saleIds), '?')) . ")";
     $stmt = $db->prepare($sql);
     $types = str_repeat('i', count($saleIds));
     $stmt->bind_param($types, ...$saleIds);
-
     if ($stmt->execute()) {
         // If the deletion is successful, return a success response
         echo 'success';
