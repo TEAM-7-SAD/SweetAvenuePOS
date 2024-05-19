@@ -76,15 +76,15 @@ if (isset($_SESSION['error_message'])) {
 
     <style>
         body {
-            background-image: url('images/sweet_background.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-image: url('images/sweet_background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
 
-        .solid-color-container {
-            background-color: #FFF0E9;
+        .login-form-gradient {
+            background: linear-gradient(to bottom left, #ce9165, #ebd1be, #efdccd, #FFF0E9, #f4e6dc);
             padding: 40px;
             border-radius: 10px; 
         }
@@ -101,13 +101,18 @@ if (isset($_SESSION['error_message'])) {
             <h5 class="modal-title" id="forgotPasswordModal">Forgot Password</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <form action="includes/send-password-reset.php" method="post">
+          <form action="includes/send-password-reset.php" class="needs-validation" method="post" novalidate>
                 <div class="modal-body">
                     <div class="form-floating py-3">
-                        <input type="text" name="email" class="form-control" id="email" required>
+                        <input type="text" name="email" onkeypress="return avoidSpace(event)" class="form-control" id="email" required>
                         <label for="email" class="form-label text-carbon-grey fw-medium">Email Adddress<span
                             style="color: red;"> *</span></label>
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback text-start">
+                            Please enter a valid email.
+                        </div> 
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
@@ -123,7 +128,7 @@ if (isset($_SESSION['error_message'])) {
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
-                <div class="text-center solid-color-container shadow-lg">
+                <div class="text-center login-form-gradient shadow-lg">
                     <img src="images/logo-removebg-preview.png" class="mb-3" height="130" width="130">
                     <div class="text-tiger-orange text-center ">
                         <h3 class="sweet-avenue mb-0 fw-semibold"><strong>SWEET AVENUE</strong></h3>
@@ -140,7 +145,7 @@ if (isset($_SESSION['error_message'])) {
 
                         <div class="form-floating mb-3"> 
                             <input type="text" class="form-control" onkeypress="return avoidSpace(event)" name="username" id="username" placeholder="Username" required>
-                            <label for="username" style="font-size: 14px;">Username<span style="color: red;"> *</span></label>
+                            <label for="username" class="fw-semibold text-muted" style="font-size: 14px;">Username<span style="color: red;"> *</span></label>
                             <div class="valid-feedback"></div>
                             <div class="invalid-feedback text-start">
                                 Please enter a username.
@@ -149,7 +154,7 @@ if (isset($_SESSION['error_message'])) {
                    
                         <div class="form-floating">
                             <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="password" id="password" placeholder="Password" required>
-                            <label for="password" style="font-size: 14px;">Password<span style="color: red;"> *</span></label>          
+                            <label for="password" class="fw-semibold text-muted" style="font-size: 14px;">Password<span style="color: red;"> *</span></label>          
                         <div class="valid-feedback"></div>
                         <div class="invalid-feedback text-start">
                             Please enter a password.
@@ -171,27 +176,15 @@ if (isset($_SESSION['error_message'])) {
         </div>
     </div>
     
+    
+
+
+
 
 
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="javascript/login.js"></script>
-    <script>
-        // Disallow whitespaces from input fields
-        function avoidSpace(event) {
-        var k = event ? event.which : window.event.keyCode;
-        if (k == 32) return false;
-        }
 
-        function myFunction() {
-        var x = document.getElementById("password");
-        if (x.type === "password") {
-            x.type = "text";
-        } else {
-            x.type = "password";
-        }
-        }
-
-    </script>
 </body>
 
 </html>
