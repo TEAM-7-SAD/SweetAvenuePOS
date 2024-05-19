@@ -1,10 +1,10 @@
 <?php
 
 // Calculate the timestamp for the beginning of May 7th, 2024
-$prev_week_start = date('Y-m-d', strtotime('2024-05-07'));
+$prev_week_start = date('Y-m-d', strtotime('2024-05-12'));
 
 // Calculate the timestamp for the end of May 12th, 2024
-$prev_week_end = date('Y-m-d', strtotime('2024-05-12'));
+$prev_week_end = date('Y-m-d', strtotime('2024-05-19'));
 
 // Fetching sales data from the database
 $sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales 
@@ -14,36 +14,31 @@ $sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales
 $result = $db->query($sql);
 
 $sales_data = array();
-
 $weekly_sales = 0;
 
 // Process the query result
 if ($result->num_rows > 0) {
-  while($row = $result->fetch_assoc()) {
-      // Extract date and total sales from the row
-      $date = date('l', strtotime($row['date']));
-      $total_sales = $row['total_sales'];
-      
-      // Update sales data for the corresponding day
-      $sales_data[$date] = $total_sales;
-      $weekly_sales += $total_sales;
-  }
+    while($row = $result->fetch_assoc()) {
+        // Extract date and total sales from the row
+        $date = $row['date'];
+        $total_sales = $row['total_sales'];
+        
+        // Update sales data for the corresponding day
+        $sales_data[] = [
+            'date' => $date,
+            'total_sales' => floatval($total_sales)
+        ];
+        $weekly_sales += $total_sales;
+    }
 }
 
-// Prepare data for the graph
-$data = [];
-foreach ($sales_data as $day => $sales) {
-    $data[] = [
-        'country' => $day,
-        'value' => floatval($sales)
-    ];
-}
-
+// Encode the data as JSON
+$json_sales_data = json_encode($sales_data);
 ?>
 
 <!-- Styles -->
 <style>
-#chartdiv {
+#weeklySales {
   width: 100%;
   height: 300px;
 }
@@ -54,114 +49,92 @@ foreach ($sales_data as $day => $sales) {
 <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
-<!-- Chart code -->
 <script>
 am5.ready(function() {
 
-// Create root element
-// https://www.amcharts.com/docs/v5/getting-started/#Root_element
-var root = am5.Root.new("chartdiv");
+  // Create root element
+  var root = am5.Root.new("weeklySales");
 
-// Set themes
-// https://www.amcharts.com/docs/v5/concepts/themes/
-root.setThemes([
-  am5themes_Animated.new(root)
-]);
+  // Set themes
+  root.setThemes([
+    am5themes_Animated.new(root)
+  ]);
 
-// Create chart
-// https://www.amcharts.com/docs/v5/charts/xy-chart/
-var chart = root.container.children.push(am5xy.XYChart.new(root, {
-  panX: true,
-  panY: true,
-  wheelX: "panX",
-  wheelY: "zoomX",
-  pinchZoomX: true,
-  paddingLeft:0,
-  paddingRight:1
-}));
+  // Create chart
+  var chart = root.container.children.push(am5xy.XYChart.new(root, {
+    panX: false,
+    panY: false,
+    wheelX: "panX",
+    wheelY: "zoomX",
+    paddingLeft: 0
+  }));
 
-// Add cursor
-// https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-cursor.lineY.set("visible", false);
+  // Add cursor
+  var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+    behavior: "zoomX"
+  }));
+  cursor.lineY.set("visible", false);
 
+  // Create axes
+  var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+    maxDeviation: 0,
+    baseInterval: {
+      timeUnit: "day",
+      count: 1
+    },
+    renderer: am5xy.AxisRendererX.new(root, {
+      minorGridEnabled: true,
+      minGridDistance: 30,
+      minorLabelsEnabled: true
+    }),
+    tooltip: am5.Tooltip.new(root, {})
+  }));
 
-// Create axes
-// https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-var xRenderer = am5xy.AxisRendererX.new(root, { 
-  minGridDistance: 30, 
-  minorGridEnabled: true
-});
+  var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+    renderer: am5xy.AxisRendererY.new(root, {})
+  }));
 
-xRenderer.labels.template.setAll({
-  rotation: -90,
-  centerY: am5.p50,
-  centerX: am5.p100,
-  paddingRight: 15
-});
+  // Add series
+  var series = chart.series.push(am5xy.LineSeries.new(root, {
+    name: "Sales",
+    xAxis: xAxis,
+    yAxis: yAxis,
+    valueYField: "total_sales",
+    valueXField: "date",
+    tooltip: am5.Tooltip.new(root, {
+      labelText: "{valueY}"
+    }),
+    stroke: am5.color("#C57C47")
+  }));
 
-xRenderer.grid.template.setAll({
-  location: 1
-})
+  // Add bullet
+  series.bullets.push(function() {
+    var bulletCircle = am5.Circle.new(root, {
+      radius: 5,
+      fill: am5.color("#88531E") 
+    });
+    return am5.Bullet.new(root, {
+      sprite: bulletCircle
+    });
+  });
 
-var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-  maxDeviation: 0.3,
-  categoryField: "country",
-  renderer: xRenderer,
-  tooltip: am5.Tooltip.new(root, {})
-}));
+  // Add scrollbar
+  chart.set("scrollbarX", am5.Scrollbar.new(root, {
+    orientation: "horizontal"
+  }));
 
-var yRenderer = am5xy.AxisRendererY.new(root, {
-  strokeOpacity: 0.1
-})
+  // Set data
+  var salesData = <?php echo $json_sales_data; ?>;
+  series.data.setAll(salesData.map(function(item) {
+    return {
+      date: new Date(item.date).getTime(),
+      total_sales: item.total_sales
+    };
+  }));
 
-var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-  maxDeviation: 0.3,
-  renderer: yRenderer
-}));
-
-// Create series
-// https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-  name: "Series 1",
-  xAxis: xAxis,
-  yAxis: yAxis,
-  valueYField: "value",
-  sequencedInterpolation: true,
-  categoryXField: "country",
-  tooltip: am5.Tooltip.new(root, {
-    labelText: "{valueY}"
-  })
-}));
-
-series.columns.template.setAll({ 
-    cornerRadiusTL: 5, 
-    cornerRadiusTR: 5, 
-    strokeOpacity: 0,
-    fillOpacity: 0.8,
-    fill: am5.color("#C57C47")
-});
-
-// series.columns.template.adapters.add("fill", function (fill, target) {
-//   return chart.get("colors").getIndex(series.columns.indexOf(target));
-// });
-
-// series.columns.template.adapters.add("stroke", function (stroke, target) {
-//   return chart.get("colors").getIndex(series.columns.indexOf(target));
-// });
-
-
-// Set data
-var data = <?php echo json_encode($data); ?>;
-
-xAxis.data.setAll(data);
-series.data.setAll(data);
-
-
-// Make stuff animate on load
-// https://www.amcharts.com/docs/v5/concepts/animations/
-series.appear(1000);
-chart.appear(1000, 100);
+  // Make stuff animate on load
+  series.appear(1000);
+  chart.appear(1000, 100);
 
 }); // end am5.ready()
 </script>
