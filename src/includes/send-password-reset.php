@@ -1,6 +1,7 @@
 <?php
 
 require_once 'db-connector.php';
+require_once 'session-handler.php';
 
 if(!isset($_POST['send-email-btn'])) {
     $_SESSION['error_message'] = 'Something went wrong.';
@@ -9,6 +10,11 @@ if(!isset($_POST['send-email-btn'])) {
 }
 
 $email = $_POST["email"];
+if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['error_message'] = 'Please provide a valid email';
+    header("Location: ../login.php");
+    exit();
+}
 
 // Check if email exists
 $sql = "SELECT email FROM user WHERE email = ?";
