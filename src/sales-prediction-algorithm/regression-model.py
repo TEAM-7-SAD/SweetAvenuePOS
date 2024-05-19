@@ -1,5 +1,5 @@
 # Importing the libraries
-import mysql.connector
+import sqlalchemy
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,37 +10,41 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 from datetime import datetime, timedelta
 
-
 def connect_to_database(user, password, host, database):
     try: 
-        connector = mysql.connector.connect(user=user, password=password, host=host, database=database)
-        return connector
-    except mysql.connector.Error as err:
+        engine = sqlalchemy.create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}/{database}')
+        return engine
+    except Exception as err:
         print("Cannot connect to the database: ", err)
         return None
 
-
-def retrieve_data(connector, query):
+def retrieve_data(engine, query):
     try:
-        data = pd.read_sql(query, connector)
+        data = pd.read_sql(query, engine)
         return data
-    except mysql.connector.Error as exc:
+    except Exception as exc:
         print("Error retrieving data from database: ", exc)
         return None
 
-
 def preprocess_data(data):
     try:
-        # Remove time component from timestamp
-        data['timestamp'] = pd.to_datetime(data['timestamp']).dt.date     
-
+        # Convert timestamp to date
+        data['date'] = pd.to_datetime(data['timestamp']).dt.date
+        
+        # Filter data for the previous week
+        previous_week_start = datetime.now().date() - timedelta(days=7)
+        previous_week_end = datetime.now().date() - timedelta(days=1)
+        data = data[(data['date'] >= previous_week_start) & (data['date'] <= previous_week_end)]
+        
+        # Aggregate sales by date
+        daily_sales = data.groupby('date')['total_amount'].sum().reset_index()
+        
         # Convert date to Unix timestamp (seconds since the epoch)
-        data['timestamp'] = (pd.to_datetime(data['timestamp']).astype('int64') // 10**9).astype('int32')
-        return data
+        daily_sales['timestamp'] = pd.to_datetime(daily_sales['date']).astype('int64') // 10**9
+        return daily_sales
     except Exception as err:
         print("Error preprocessing the data: ", err)
         return None
-
 
 def train_model(X, y):
     try:
@@ -51,23 +55,19 @@ def train_model(X, y):
         return regressor, X_train, y_train, X_test, y_test
     except Exception as exc:
         print("Error training the regression model: ", exc)
-        return None, None, None
-    
+        return None, None, None, None, None
 
-def predict_sales(regressor, last_timestamp):
+def predict_sales(regressor):
     try:
-        # Get the last timestamp in the dataset
-        last_datetime = datetime.fromtimestamp(last_timestamp)
-
-        # Calculate the timestamp for the start of the next week
-        start_of_next_week = last_datetime + timedelta(days=7)
-
-        # Generate timestamps for each day of the next week
-        next_week_timestamps = pd.date_range(start=start_of_next_week, periods=7, freq='D')
-
+        # Get the current date
+        today = datetime.now().date()
+        
+        # Generate timestamps for each day of the next week starting from today
+        next_week_timestamps = pd.date_range(start=today, periods=7, freq='D')
+        
         # Convert timestamps to Unix timestamp format
         next_week_unix_timestamps = (next_week_timestamps.astype('int64') // 10**9).astype('int32')
-
+        
         # Create a DataFrame for the next week timestamps
         next_week_data = pd.DataFrame({'timestamp': next_week_unix_timestamps})
         
@@ -78,24 +78,23 @@ def predict_sales(regressor, last_timestamp):
         print("Error predicting sales: ", exc)
         return None, None
 
-
 def store_predictions(next_week_sales_pred, next_week_timestamps, output_dir):
     try:
         predictions = []
-        sales_sum = 0
         for i, sales_pred in enumerate(next_week_sales_pred):
             day = next_week_timestamps[i].strftime('%Y-%m-%d')
-            predictions.append({'date': day, 'sales_prediction': round(float(sales_pred), 2)})
-            sales_sum += sales_pred
-
+            predictions.append({'date': day, 'sales_prediction': round(float(sales_pred.item()), 2)})
+        
+        sales_sum = np.sum(next_week_sales_pred).item()  # Ensure this is a scalar value
+        
         output = {
             'predictions': predictions,
-            'sales_sum': round(float(sales_sum), 2)
+            'sales_sum': round(float(sales_sum), 2)  # Ensure conversion to float after summing
         }
-
+        
         # JSON file path
         output_file = os.path.join(output_dir, 'sales_prediction.json')
-
+        
         with open(output_file, 'w') as json_file:
             json.dump(output, json_file)
     except Exception as exc:
@@ -105,56 +104,48 @@ def store_predictions(next_week_sales_pred, next_week_timestamps, output_dir):
 # Main controller
 def main():
     # Connect to database
-    connector = connect_to_database(user='root', password='', host='localhost', database='sweet_avenue_db')
-    if not connector:
+    engine = connect_to_database(user='root', password='', host='localhost', database='sweet_avenue_db')
+    if not engine:
         return
     
     # Query the database
     query = "SELECT timestamp, total_amount FROM transaction"
-    data = retrieve_data(connector, query)
+    data = retrieve_data(engine, query)
     if data is None:
-        connector.close()
         return
-
+    
     # Preprocess data
     data = preprocess_data(data)
     if data is None:
-        connector.close()
         return
-
+    
     # Train the model
     X = data[['timestamp']]
     y = data[['total_amount']]
     regressor, X_train, y_train, X_test, y_test = train_model(X, y)
     if regressor is None:
-        connector.close()
         return
-
+    
     # Predict sales for the next week
-    last_timestamp = data['timestamp'].max()
-    next_week_sales_pred, next_week_timestamps = predict_sales(regressor, last_timestamp)
+    next_week_sales_pred, next_week_timestamps = predict_sales(regressor)
     if next_week_sales_pred is None or next_week_timestamps is None:
-        connector.close()
         return
-
+    
     # Store predictions in a directory
     output_directory = 'src/sales-prediction-algorithm/'
     store_predictions(next_week_sales_pred, next_week_timestamps, output_directory)
-
-    # Close database connection
-    connector.close()
-
+    
     # # Calculate Absolute Percentage Error (APE)
     # ape = np.abs((regressor.predict(X_test) - y_test.values) / y_test.values) * 100
-
+    
     # # Format MAPE to two decimal points only
     # mape = np.mean(ape)
-
+    
     # print(f"Mean Absolute Error of the model is : {metrics.mean_absolute_error(y_test, regressor.predict(X_test))}")
     # print(f"Mean Squared Error of the model is : {metrics.mean_squared_error(y_test, regressor.predict(X_test))}") 
     # print(f"Root Mean Squared Error of the model is : {np.sqrt(metrics.mean_squared_error(y_test, regressor.predict(X_test)))}") 
     # print(f"Mean Absolute Percentage Error of the model is : {mape: .2f}%") 
-
+    
     # # Visualising the Training and Testing set results
     # plt.scatter(X_train, y_train, color='green', label='Training points')
     # plt.scatter(X_test, y_test, color='red', label='Testing points')
