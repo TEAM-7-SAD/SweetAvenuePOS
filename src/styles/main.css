@@ -4,6 +4,15 @@
   transition: transform 0.5s ease;
 }
 
+.datetime {
+  font-size: 16px;
+  padding: 24px;
+  color: #88531E;
+  background: linear-gradient(to top right, #88531E, #88531E, #bd8359);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  font-weight: 500;
+}
+
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -4290,43 +4299,6 @@ textarea.form-control-lg {
   border: var(--bs-border-width) solid var(--bs-navbar-toggler-border-color);
   border-radius: var(--bs-navbar-toggler-border-radius);
   transition: var(--bs-navbar-toggler-transition);
-}
-#example th {
-  text-align: center;
-}
-#example td {
-  text-align: center;
-}
-.sales {
-  padding: 5px 30px; 
-  margin-bottom: 10px; 
-  margin-top: 10px;
-  border-radius: 20px;
-  max-width: 50%; 
-}
-.accounts {
-  padding: 5px 30px; 
-  margin-bottom: 10px; 
-  margin-top: 10px;
-  border-radius: 20px;
-  max-width: 100%; 
-}
-.main-content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-}
-.table{
-  border-radius: 10px;
-}
-.table-container {
-  overflow-x: hidden; 
-  max-width: 100%;
-}
-.add {
-  float: right;
-  margin-top: -50px; 
-  margin-right: 70px;
 }
 @media (prefers-reduced-motion: reduce) {
   .navbar-toggler {
