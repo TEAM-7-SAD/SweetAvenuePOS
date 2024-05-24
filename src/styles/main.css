@@ -13,20 +13,6 @@
   font-weight: 500;
 }
 
-.spinner-wrapper {
-  background-color: rgba(0, 0, 0, 0.8);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s;
-}
-
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -6644,10 +6630,10 @@ textarea.form-control-lg {
   }
 }
 .spinner-border {
-  --bs-spinner-width: 4rem;
-  --bs-spinner-height: 4rem;
+  --bs-spinner-width: 2rem;
+  --bs-spinner-height: 2rem;
   --bs-spinner-vertical-align: -0.125em;
-  --bs-spinner-border-width: 0.45em;
+  --bs-spinner-border-width: 0.25em;
   --bs-spinner-animation-speed: 0.75s;
   --bs-spinner-animation-name: spinner-border;
   border: var(--bs-spinner-border-width) solid currentcolor;
@@ -6670,8 +6656,8 @@ textarea.form-control-lg {
   }
 }
 .spinner-grow {
-  --bs-spinner-width: 4rem;
-  --bs-spinner-height: 4rem;
+  --bs-spinner-width: 2rem;
+  --bs-spinner-height: 2rem;
   --bs-spinner-vertical-align: -0.125em;
   --bs-spinner-animation-speed: 0.75s;
   --bs-spinner-animation-name: spinner-grow;
