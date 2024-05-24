@@ -1,6 +1,8 @@
 <?php
-require_once 'includes/db-connector.php';
-require_once 'includes/session-handler.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_SESSION['id'])) {
 
@@ -28,7 +30,8 @@ if(isset($_SESSION['id'])) {
 
     <!--Navbar-->
     <?php
-    include 'includes/navbar.php';
+    include_once FileUtils::normalizeFilePath('includes/navbar.php');
+    include FileUtils::normalizeFilePath('includes/preloader.html');
     ?>
 
     <!--Main Container-->
@@ -181,6 +184,7 @@ if(isset($_SESSION['id'])) {
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <script src="javascript/preloader.js"></script>
     
 
     <script>

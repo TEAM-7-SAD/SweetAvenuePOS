@@ -1,6 +1,7 @@
 <?php
-
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 $token = $_GET["token"];
 $token_hash = hash("sha256", $token);
@@ -57,6 +58,8 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
 </head>
 <body>
 
+<?php include 'includes/preloader.html';?>
+
 <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
@@ -94,5 +97,7 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
             </div>
         </div>
     </div>
+
+    <script src="javascript/preloader.js"></script>
 </body>
 </html>

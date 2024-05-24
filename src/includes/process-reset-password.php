@@ -1,6 +1,7 @@
 <?php
-
-require_once 'db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'file-utilities.php');
+require_once FileUtils::normalizeFilePath('db-connector.php');
+include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 $token = $_POST["token"];
 $token_hash = hash("sha256", $token);

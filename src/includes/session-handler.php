@@ -1,4 +1,7 @@
 <?php
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'file-utilities.php');
+include_once FileUtils::normalizeFilePath('default-timezone.php');
+include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_strict_mode', 1);

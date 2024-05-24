@@ -1,5 +1,7 @@
 <?php
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 $last_name = $_POST['last_name'];
 $first_name = $_POST['first_name'];

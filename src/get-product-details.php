@@ -1,6 +1,8 @@
 <?php
 // Include necessary files and connect to the database
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 // Check if the required parameters are present
 if(isset($_POST['productId']) && isset($_POST['productType'])) {

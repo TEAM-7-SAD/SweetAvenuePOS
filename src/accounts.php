@@ -1,8 +1,14 @@
 <?php
-require_once 'includes/db-connector.php';
-require_once 'includes/session-handler.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_SESSION['id'])) {
+
+  $sql = "SELECT * FROM user";
+  $result = $db->query($sql);
+  $row = $result->fetch_assoc();
 
 ?>
 
@@ -28,7 +34,8 @@ if(isset($_SESSION['id'])) {
 
   <!--Navbar-->
   <?php
-    include 'includes/navbar.php';
+    include FileUtils::normalizeFilePath('includes/navbar.php');
+    include FileUtils::normalizeFilePath('includes/preloader.html');
     ?>
 
     <!--Main Container-->
@@ -73,21 +80,21 @@ if(isset($_SESSION['id'])) {
                     </thead>
                     <tbody>
                       <?php 
-                              $sql = "SELECT * FROM user";
-                              $result = $db->query($sql);
-
-                              while($row = $result->fetch_assoc()) {
-                                  echo '
-                                  <tr data-id="'.$row['id'].'" class="selectable">
-                                      <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
-                                      <td>'.$row['last_name'].'</td>
-                                      <td>'.$row["first_name"].'</td>
-                                      <td>'.$row['middle_name'].'</td>
-                                      <td>'.$row['email'].'</td>
-                                  </tr>
-                                  ';
-                              }
-                              ?>
+                      $sql = "SELECT * FROM user";
+                      $result = $db->query($sql);
+                      while($row = $result->fetch_assoc()) {
+                          echo '
+                          <tr data-id="'.$row['id'].'" class="selectable">
+                              <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+                              <td>'.$row['last_name'].'</td>
+                              <td>'.$row["first_name"].'</td>
+                              <td>'.$row['middle_name'].'</td>
+                              <td>'.$row['email'].'</td>
+                          </tr>
+                          ';
+                      }
+                      $db->close();
+                      ?>
                     </tbody>
 
                     <tfoot>
@@ -204,6 +211,7 @@ if(isset($_SESSION['id'])) {
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <script src="javascript/preloader.js"></script>
 
     <!-- Adding of Accounts -->
     <script>
