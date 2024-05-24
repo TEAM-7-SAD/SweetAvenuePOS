@@ -1,55 +1,12 @@
 <?php
-
-require_once 'includes/session-handler.php';
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 // If session is set, disallow returning to login page
 if(isset($_SESSION['id'])) {
     header("Location: index.php");
     exit();
-}
-
-if(isset($_POST['sign_in_btn'])) {
-
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    if(empty($username) || empty($password)) {
-        $_SESSION['error_message'] = 'Please do not leave the input fields empty.';
-        header("Location: login.php");
-        exit();
-    }
-
-    // Query the user table for the entered username
-    $stmt = $db->prepare("SELECT id, username, password FROM user WHERE BINARY username = ?");
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Check if a user of this username exists
-    if($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-
-        // Verify if password match the entered username
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['id'] = $row['id'];
-            session_regenerate_id(true);
-            header("location: index.php");
-            exit();
-        }
-        // If username and password mismatched, display this      
-        else {
-            $_SESSION['error_message'] = 'Username and password mismatched.';
-            header("Location: login.php");
-            exit();
-            }
-    }
-    // If there is no user with the username, display this
-    else {
-        $_SESSION['error_message'] = 'User is not found.';
-        header("Location: login.php");
-        exit();
-    }
 }
 
 if (isset($_SESSION['error_message'])) {
@@ -93,6 +50,8 @@ if (isset($_SESSION['error_message'])) {
 
 <body>
 
+    <?php include FileUtils::normalizeFilePath('includes/preloader.html'); ?>
+
     <!-- Forgot Password Modal -->
     <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered px-3">
@@ -134,7 +93,7 @@ if (isset($_SESSION['error_message'])) {
                         <h3 class="sweet-avenue mb-0 fw-semibold"><strong>SWEET AVENUE</strong></h3>
                         <h5 class="coffee-bakeshop mb-4 fw-medium"><strong>COFFEE • BAKESHOP</strong></h5>
                     </div>
-                    <form action="login.php" method="post" id="login-form" class="needs-validation" novalidate>
+                    <form action="includes/login-authenticator.php" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -176,14 +135,9 @@ if (isset($_SESSION['error_message'])) {
         </div>
     </div>
     
-    
-
-
-
-
-
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="javascript/login.js"></script>
+    <script src="javascript/preloader.js"></script>
 
 </body>
 
