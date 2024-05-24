@@ -1,5 +1,7 @@
 <?php
-include_once 'default-timezone.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'file-utilities.php');
+include_once FileUtils::normalizeFilePath('default-timezone.php');
+include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 function should_execute_script() {
     // Get the current day of the week

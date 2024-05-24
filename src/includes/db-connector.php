@@ -1,4 +1,8 @@
 <?php
+
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'file-utilities.php');
+include_once FileUtils::normalizeFilePath('error-reporting.php');
+
 // Creates connection to the database
 $server = "localhost";
 $username = "root";

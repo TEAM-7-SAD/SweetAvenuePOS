@@ -4,7 +4,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require __DIR__ . "/../../vendor/autoload.php";
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'file-utilities.php');
+require FileUtils::normalizeFilePath(__DIR__ . "/../../vendor/autoload.php");
+include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 // CONFIGURATION
 

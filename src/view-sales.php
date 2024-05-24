@@ -1,6 +1,8 @@
 <?php
 // Include necessary files and initialize database connection
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 // Check if sale ID is provided
 if (isset($_GET['saleId'])) {
