@@ -1,7 +1,9 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
 require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
+include_once FileUtils::normalizeFilePath('includes/default-timezone.php');
 
 $token = $_GET["token"];
 $token_hash = hash("sha256", $token);
@@ -12,85 +14,125 @@ $stmt = $db->prepare($sql);
 $stmt->bind_param("s", $token_hash);
 $stmt->execute();
 $result = $stmt->get_result();
-$user = $result->fetch_assoc();
+$row = $result->fetch_assoc();
 
-if ($user === NULL) {
+if ($row === NULL) {
     $_SESSION['error_message'] = 'Reset link was not found.';
     header("Location: login.php");
     exit();
 }
 
-if (strtotime($user["reset_token_expires_at"]) <= time()) {
+if (strtotime($row["reset_token_expires_at"]) <= time()) {
     $_SESSION['error_message'] = 'Reset link has expired.';
     header("Location: login.php");
     exit();
 }
+
+if (isset($_SESSION['error_message'])) {
+    $errorMessage = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
+
 ?>
 
 <!DOCTYPE html>
 <html>
-<head> 
+<head>
+    <!--Site Meta Information-->
+    <meta charset="UTF-8" />
+    <title>Sweet Avenue POS</title>
+    <!--Mobile Specific Metas-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <!--CSS-->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
-    <title>Reset Password</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 
     <style>
         body {
-            background-image: url('images/sweet_background.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-image: url('images/sweet_background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
-
-        .solid-color-container {
-            background-color: #FFF0E9;
-            padding: 40px;
-            border-radius: 10px; 
-        }
     </style>
-    
 </head>
+
 <body>
 
-<?php include 'includes/preloader.html';?>
+    <?php include FileUtils::normalizeFilePath('includes/preloader.html'); ?>
 
-<div class="container-fluid position-absolute top-50 start-50 translate-middle">
+    <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
-                <div class="text-center solid-color-container">
-                    <img src="images/logo-removebg-preview.png" class="mb-3" height="150" width="150">
-                    <div class="text-tiger-orange text-center ">
-                        <h3 class="sweet-avenue fw-semibold"><strong>Create New Password</strong></h3>
+                <div class="text-center password-reset-form-gradient shadow-lg">
+                    <div class="d-flex align-items-center">
+                        <!-- Shop Logo and Name -->
+                        <span class="navbar-brand pe-3">
+                            <img src="images/logo-removebg-preview.png" alt="Sweet Avenue Logo" width="70" height="70">
+                        </span>
+                        <div class="text-tiger-orange text-uppercase text-start">
+                            <h4 class="mb-0 fw-semibold"><strong>sweet avenue</strong></h4>
+                            <h6 class="fw-medium"><strong>coffee • bakeshop</strong></h6>
+                        </div>                        
+                    </div><hr>
+                    <div class="text-carbon-grey text-start">
+                        <div class="fs-5 mb-0"><dt>Recover your account!</dt></div>
+                        <div class="mb-3 fw-medium font-13">Create a new and strong password.</div>
                     </div>
-                    <form action="includes/process-reset-password.php" method="post">
+                    <form id="passwordResetForm" class="needs-validation" novalidate>
+                        <input type="hidden" name="token" id="token" value="<?= htmlspecialchars($token) ?>">
 
-                    <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
-                        
-                        <div class="form-floating mb-2"> 
-                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="password" id="password" placeholder="New Password" required>
-                            <label for="password">New Password<span style="color: red;"> *</span></label>
+                        <!-- Display Error Message -->
+                        <?php if (isset($errorMessage)) : ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <span class="fw-medium text-danger font-13"><?php echo $errorMessage; ?></span>
+                                <button type="button" class="btn btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="form-floating mb-3"> 
+                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="new_password" id="newPassword" placeholder="New Password" required>
+                            <label for="new_password" class="fw-semibold text-muted font-13">New password<span style="color: red;"> *</span></label>
+                            <div class="password-requirements">
+                                <ul id="password-requirements-list">
+                                    <h6 class="reset-pass-title text-uppercase">Password must contain:</h6>
+                                    <li id="length" class="requirement unmet fw-medium"><span class="requirement-circle"></span> Between 8 to 20 characters of length</li>
+                                    <li id="uppercase" class="requirement unmet fw-medium"><span class="requirement-circle"></span> At least 1 uppercase letter (A...Z)</li>
+                                    <li id="lowercase" class="requirement unmet fw-medium"><span class="requirement-circle"></span> At least 1 lowercase letter (a...z)</li>
+                                    <li id="number" class="requirement unmet fw-medium"><span class="requirement-circle"></span> At least 1 number (1...9)</li>
+                                    <li id="special" class="requirement unmet fw-medium"><span class="requirement-circle"></span> At least 1 special character (!...$)</li>
+                                </ul>
+                            </div>
+                            <!-- Input validation -->
                             <div class="valid-feedback"></div>
-                            <div class="invalid-feedback text-start">
-                                Please enter a New password.
-                            </div> 
+                            <div class="invalid-feedback"></div> 
                         </div>
                    
                         <div class="form-floating">
-                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="password_confirmation" id="password_confirmation" placeholder="New Password" required>
-                            <label for="password_confirmation">Repeat password<span style="color: red;"> *</span></label>          
-                        <div class="valid-feedback"></div>
-                        <div class="invalid-feedback text-start">
-                            Please enter the new password.
+                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="confirm_password" id="confirmPassword" placeholder="Confirm new password" required>
+                            <label for="password" class="fw-semibold text-muted font-13">Confirm new password<span style="color: red;"> *</span></label>
+                            <!-- Input validation -->
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback text-start fw-medium font-13" id="passwordMismatched">
+                                <!-- Display error messages here -->
+                            </div> 
                         </div>
 
-                        <div for="" class="justify-content-center d-md-flex pt-4">
-                            <button type="" name="" id="" class="btn col-12 fw-semibold btn-tiger-orange text-capitalize py-3">Send</button>
+                        <!-- Show Password Toggle -->
+                        <div class="input-group mt-2 align-items-center">
+                            <div class="form-check ms-2">
+                                <input class="form-check-input fs-5" type="checkbox" id="showPassword" onclick="togglePassword()">
+                                <label class="form-check-label text-carbon-grey fw-semibold pt-1 font-13" for="showPassword">Show Password</label>
+                            </div>
+                        </div>     
+
+                        <!-- Change Password Button -->
+                        <div for="submitResetPassword" class="justify-content-center d-md-flex mt-4 mb-2">
+                            <button type="submit" name="change_password_btn" id="submitResetPassword" class="btn col-12 fw-medium btn-tiger-orange text-capitalize py-3 font-14">Change Password</button>
                         </div>
                     </form>
                 </div>
@@ -98,6 +140,12 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
         </div>
     </div>
 
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="javascript/preloader.js"></script>
+    <script src="javascript/reset-password.js"></script>
+
 </body>
 </html>
