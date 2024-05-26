@@ -14,7 +14,7 @@ include_once FileUtils::normalizeFilePath('error-reporting.php');
 $mail = new PHPMailer(true);
 
 // Enable verbose debug output. Uncomment if needed—debugging purposes
-$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
 
 // Send using SMTP
 $mail->isSMTP();
