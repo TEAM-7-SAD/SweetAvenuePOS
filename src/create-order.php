@@ -110,7 +110,7 @@ if(isset($_SESSION['id'])) {
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!--Custom JavaScript/jQuery-->
     <script src="javascript/get-products.js"></script>
-    <script src="javascript/get-products.js"></script>
+    <script src="javascript/preloader.js"></script>
 
     <script>
 $(document).ready(function() {
