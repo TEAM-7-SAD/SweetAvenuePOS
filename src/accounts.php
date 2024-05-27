@@ -26,6 +26,7 @@ if(isset($_SESSION['id'])) {
     rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
   <!--Site Icon-->
   <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
 </head>
@@ -148,30 +149,49 @@ if(isset($_SESSION['id'])) {
     </div>
 
     <!-- Add Accounts Modal -->
-    <div class="modal fade" id="addAccountsModal" tabindex="-1" aria-labelledby="addAccountsModalLabel"
-      aria-hidden="true">
+    <div class="modal fade" id="addAccountsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addAccountsModalLabel">Add a new account</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h4 class="modal-title text-carbon-grey fw-bold" id="addAccountsModalLabel">NEW ACCOUNT</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
           </div>
-          <form id="addAccountForm">
+          <form id="addAccountForm" class="needs-validation" novalidate>
             <div class="modal-body mx-4">
+              <p class="px-1 fs-5 fw-medium text-carbon-grey">Fill in the credentials needed to create a new account.</p>
+              <div class="invalid-feedback fw-medium mb-3 ps-1" id="errorContainer"></div>
               <div class="input-group">
                 <div class="form-floating py-3 pe-5">
                   <input type="text" name="last_name" class="form-control rounded-3" id="lastName" required>
                   <label for="lastName" class="form-label text-carbon-grey fw-medium">Last Name<span
                       style="color: red;"> *</span></label>
+                  <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorLastName">
+                    <!-- Display error messages here -->
+                  </div>
                 </div>
                 <div class="form-floating py-3 pe-5">
                   <input type="text" name="first_name" class="form-control rounded-3" id="firstName" required>
                   <label for="firstName" class="form-label text-carbon-grey fw-medium">First Name<span
                       style="color: red;"> *</span></label>
+                  <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorFirstName">
+                    <!-- Display error messages here -->
+                  </div>
                 </div>  
                 <div class="form-floating py-3">
                   <input type="text" name="middle_name" class="form-control rounded-3" id="middleName" required>
                   <label for="middleName" class="form-label text-carbon-grey fw-medium">Middle Name</label>
+                  <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorMiddleName">
+                    <!-- Display error messages here -->
+                  </div>
                 </div>
               </div>
 
@@ -180,24 +200,49 @@ if(isset($_SESSION['id'])) {
                   <input type="text" name="username" class="form-control rounded-3" id="username" required>
                   <label for="userName" class="form-label text-carbon-grey fw-medium">Username<span
                       style="color: red;"> *</span></label>
+                      <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorUsername">
+                    <!-- Display error messages here -->
+                  </div>
                 </div> 
                 <div class="form-floating py-3">
                   <input type="email" name="email" class="form-control rounded-3" id="email" required>
                   <label for="email" class="form-label text-carbon-grey fw-medium">Email Address<span
                       style="color: red;"> *</span></label>
+                      <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorEmailAddress">
+                    <!-- Display error messages here -->
+                  </div>
                 </div>                    
               </div>
 
-              <div class="form-floating py-3">
-                <input type="password" name="password" class="form-control" id="password" required>
-                <label for="password" class="form-label text-carbon-grey fw-medium">Password<span
-                    style="color: red;"> *</span></label>
+              <div class="input-group">
+                <div class="form-floating py-3 pe-4">
+                  <input type="password" name="password" class="form-control rounded-3" id="password" required>
+                  <label for="password" class="form-label text-carbon-grey fw-medium">Password<span
+                      style="color: red;"> *</span></label>
+                  <div class="valid-feedback font-13">
+                    Looks right!
+                  </div>
+                  <div class="invalid-feedback font-13" id="errorPassword">
+                    <!-- Display error messages here -->
+                  </div>
+                </div>
+                <div class="form-check align-self-center ms-2">
+                  <input class="form-check-input fs-3" type="checkbox" id="showPassword" onclick="togglePassword()">
+                  <label class="form-check-label text-carbon-grey fw-medium" for="showPassword">Show</label>
+                </div>              
               </div>
+
 
             </div>
             <div class="modal-footer">
               <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
-                data-bs-dismiss="modal" aria-label="Close">cancel</button>
+                data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()">cancel</button>
               <button type="button" id="saveChangesBtn"
                 class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">add account</button>
             </div>
@@ -206,150 +251,15 @@ if(isset($_SESSION['id'])) {
       </div>
     </div>
 
-    <!--Bootstrap JavaScript-->
+    <!-- Bootstrap JavaScript -->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CDN Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <!-- Custom JavacScript -->
     <script src="javascript/preloader.js"></script>
-
-    <!-- Adding of Accounts -->
-    <script>
-      $(document).ready(function () {
-          var table = $('#example').DataTable();
-      });
-
-      $(document).ready(function () {
-          $('#addAccountsModal').on('hidden.bs.modal', function () {
-              // Reset the form fields
-              $('#addAccountForm').trigger('reset');
-              // Clear any previous error messages
-              $('#errorContainer').hide().empty();
-          });
-
-          $('#saveChangesBtn').click(function () {
-              // Validate form inputs
-              var lastName = $('#lastName').val();
-              var firstName = $('#firstName').val();
-              var username = $('#username').val();
-              var password = $('#password').val();
-
-              if (lastName.trim() === '' || firstName.trim() === '' || username.trim() === '' || password.trim() === '') {
-                  $('#errorContainer').show().html('<div>Please fill in all fields.</div>');
-                  return; // Stop form submission if any field is empty
-              }
-
-              // Serialize the form data
-              var formData = $('#addAccountForm').serialize();
-
-              // Send an AJAX request
-              $.ajax({
-                  url: 'add-account.php',
-                  type: 'POST',
-                  data: formData,
-                  success: function (response) {
-                      // Insert the new row into the table
-                      $('#example tbody').append(response);
-
-                      // Close the modal
-                      $('#addAccountsModal').modal('hide');
-
-                      // Show success message
-                      $('#successMessage').text('Account added successfully').fadeIn().delay(2000).fadeOut();
-                  },
-                  error: function (xhr, status, error) {
-                      // Handle errors if any
-                      console.error(xhr.responseText);
-                  }
-              });
-          });
-      });
-    </script>
-
-    <!-- Deleting of Accounts -->
-    <script>
-      $(document).ready(function() {
-          // Disable delete button by default
-          $('.delete-account').prop('disabled', true);
-
-          // Add event listener to table rows for row selection
-          $('.selectable').click(function() {
-              // Toggle checkbox when clicking anywhere on the row
-              $(this).find('.account-checkbox').prop('checked', !$(this).find('.account-checkbox').prop('checked'));
-              // Check if at least one checkbox is checked
-              var anyChecked = $('.account-checkbox:checked').length > 0;
-              // Enable or disable the delete button based on checkbox status
-              $('.delete-account').prop('disabled', !anyChecked);
-          });
-
-          // Add event listener to delete buttons
-          $('.delete-account').click(function() {
-              // Show the confirmation modal
-              $('#deleteConfirmationModal').modal('show');
-              // Set the data-account-id attribute of the continue button in the modal
-              $('#confirmDeleteBtn').attr('data-account-id', $(this).data('account-id'));
-          });
-
-
-          // Function to handle single account deletion
-          $('#confirmDeleteBtn').click(function() {
-              var accountId = $('#deleteConfirmationModal').data('account-id');
-
-              // Send an AJAX request to delete the selected account
-              $.ajax({
-                  url: 'delete-account.php',
-                  method: 'POST',
-                  data: {accountIds: [accountId]},
-                  success: function(response) {
-                      if (response === 'success') {
-                          // Hide the confirmation modal
-                          $('#deleteConfirmationModal').modal('hide');
-                          // Show the success modal
-                          $('#successModal').modal('show');
-                          // Remove the deleted row from the table
-                          $('tr[data-id="' + accountId + '"]').remove();
-                      }
-                  },
-                  error: function() {
-                      alert('Failed to delete the account. Please try again later.');
-                  }
-              });
-          });
-
-          // Function to handle batch deletion
-          $('.delete-selected-accounts').click(function() {
-              var selectedAccounts = [];
-              // Iterate over each checked checkbox
-              $('.account-checkbox:checked').each(function() {
-                  selectedAccounts.push($(this).data('account-id'));
-              });
-
-              // Send an AJAX request to delete the selected accounts
-              $.ajax({
-                  url: 'delete-account.php',
-                  method: 'POST',
-                  data: {accountIds: selectedAccounts},
-                  success: function(response) {
-                      if (response === 'success') {
-                          // Hide the confirmation modal
-                          $('#deleteConfirmationModal').modal('hide');
-                          // Show the success modal
-                          $('#successModal').modal('show');
-                          // Remove the deleted rows from the table
-                          selectedAccounts.forEach(function(accountId) {
-                              $('tr[data-id="' + accountId + '"]').remove();
-                          });
-                      } else {
-                          alert('Failed to delete the selected accounts.');
-                      }
-                  },
-                  error: function() {
-                      alert('Failed to delete the selected accounts. Please try again later.');
-                  }
-              });
-          });
-      });
-    </script>
+    <script src="javascript/accounts.js"></script>
 
   </body>
 </html>
