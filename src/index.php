@@ -66,6 +66,8 @@ $stmt->close();
       <link rel="stylesheet" href="styles/main.css" />   
       <!--Site Icon-->
       <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+      <link rel="stylesheet" href="styles/main.scss" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
       <style>
         .card-gradient {
@@ -225,24 +227,56 @@ $stmt->close();
           </div>
 
           <!-- Third Quarter: Larger Container -->
-          <div class="col-md-6 mt-2"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
+          <div class="col-md-12 mt-2"> <!-- Increased py-4 for more padding -->
+              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 390px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 2 -->
                   <div class="p-2 mb-2 fw-bold text-uppercase text-muted">
                     weekly top sold products
                   </div>                              
-                  <div id="chartdiv1"></div>  
+                  <div class="table-container">
+                  <table id="example" class="styled-table">
+                      <thead>
+                          <tr>
+                              <th>Top Pick</th>
+                              <th></th>
+                              <th>Popular Combo</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <?php
+                              // Run the apriori_algo.py script
+                              $output = shell_exec('python apriori/apriori_algo.py 2>&1');
+                              
+                              // Fetch the specific item with ID 1 from the database
+                              $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
+                              $result = $db->query($sql);
+
+                              if ($row = $result->fetch_assoc()) {
+                                  echo "<tr>
+                                          <td>
+                                              <div class='product-info'>
+                                                  
+                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                  <span class='spaced-text'>" . htmlspecialchars($row["antecedent"]) . "</span>
+                                              </div>
+                                          </td>
+                                          <td class='plus-sign'>+</td>
+                                          <td>
+                                              <div class='product-info'>
+                                                  
+                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                  <span class='spaced-text'>" . htmlspecialchars($row["consequent"]) . "</span>
+                                              </div>
+                                          </td>
+                                      </tr>";
+                              }
+
+                              $db->close();
+                          ?>
+                      </tbody>
+                  </table>
               </div>
-          </div>
-          
-          <!-- Fourth Quarter: Larger Container -->
-          <div class="col-md-6 mt-2"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
-                  <!-- Larger Container 3 -->
-                  <div class="p-2 mb-2 fw-bold text-uppercase text-muted fs-6">
-                    weekly top sold category
-                  </div>
-                    <div id="chartdiv2"></div>
+
               </div>
           </div>
         </div>
@@ -252,6 +286,17 @@ $stmt->close();
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="javascript/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <script src="script_save_product.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
 
   </body>
 </html>
