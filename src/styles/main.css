@@ -13,6 +13,32 @@
   font-weight: 500;
 }
 
+.login-form-gradient {
+  background: linear-gradient(to bottom left, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.password-reset-form-gradient {
+  background: linear-gradient(to top right, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.spinner-wrapper {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+}
+
 /*!
  * Bootstrap  v5.3.3 (https://getbootstrap.com/)
  * Copyright 2011-2024 The Bootstrap Authors
@@ -6630,10 +6656,10 @@ textarea.form-control-lg {
   }
 }
 .spinner-border {
-  --bs-spinner-width: 2rem;
-  --bs-spinner-height: 2rem;
+  --bs-spinner-width: 4rem;
+  --bs-spinner-height: 4rem;
   --bs-spinner-vertical-align: -0.125em;
-  --bs-spinner-border-width: 0.25em;
+  --bs-spinner-border-width: 0.45em;
   --bs-spinner-animation-speed: 0.75s;
   --bs-spinner-animation-name: spinner-border;
   border: var(--bs-spinner-border-width) solid currentcolor;
@@ -6656,8 +6682,8 @@ textarea.form-control-lg {
   }
 }
 .spinner-grow {
-  --bs-spinner-width: 2rem;
-  --bs-spinner-height: 2rem;
+  --bs-spinner-width: 4rem;
+  --bs-spinner-height: 4rem;
   --bs-spinner-vertical-align: -0.125em;
   --bs-spinner-animation-speed: 0.75s;
   --bs-spinner-animation-name: spinner-grow;
@@ -12710,4 +12736,66 @@ textarea.form-control-lg {
   --bs-btn-active-color: #ffffff;
   --bs-btn-active-bg: #C57C47;
   --bs-btn-active-border-color: #C57C47;
+}
+
+.font-13 {
+  font-size: 13px;
+}
+
+.font-14 {
+  font-size: 14px;
+}
+
+.password-requirements {
+  display: none;
+  justify-content: left;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.password-requirements.show {
+  display: flex;
+}
+
+.password-requirements-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.requirement {
+  display: flex;
+  align-items: start;
+  margin-bottom: 7px;
+  font-size: 13px;
+  color: #5B5B5B;
+  position: relative;
+  left: -28px;
+}
+
+.requirement-circle {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid #000;
+  outline: 1px solid transparent;
+  border-color: white;
+  outline-color: gray;
+}
+
+.requirement.met .requirement-circle {
+  background-color: green;
+}
+
+.requirement.unmet .requirement-circle {
+  background-color: #5B5B5B;
+}
+
+.reset-pass-title {
+  color: #5B5B5B;
+  font-size: 14px;
+  font-weight: 600;
+  position: relative;
+  left: -28px;
 }

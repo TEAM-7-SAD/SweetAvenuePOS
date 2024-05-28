@@ -1,9 +1,10 @@
 <?php
-
-require_once 'includes/db-connector.php';
-require_once 'includes/session-handler.php';
-require_once 'includes/execute-prediction-script.php';
-include_once 'includes/default-timezone.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+require_once FileUtils::normalizeFilePath('includes/execute-prediction-script.php');
+include_once FileUtils::normalizeFilePath('includes/default-timezone.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(!isset($_SESSION['id'])) {
   header("Location: login.php");
@@ -39,11 +40,7 @@ $stmt->bind_result($order_today);
 $stmt->fetch();
 $stmt->close();
 
-$sql = "SELECT SUM(total_amount) AS monthly_sale 
-        FROM transaction 
-        WHERE YEAR(timestamp) = YEAR(CURRENT_DATE()) 
-        AND MONTH(timestamp) = MONTH(CURRENT_DATE()) 
-        AND DAY(timestamp) <= DAY(CURRENT_DATE())";
+$sql = "SELECT SUM(total_amount) AS monthly_sale FROM transaction WHERE YEAR(timestamp) = YEAR(CURRENT_DATE()) AND MONTH(timestamp) = MONTH(CURRENT_DATE()) AND DAY(timestamp) <= DAY(CURRENT_DATE())";
 $stmt = $db->prepare($sql);
 $stmt->execute();
 $stmt->bind_result($monthly_sale);
@@ -71,7 +68,7 @@ $stmt->close();
 
       <style>
         .card-gradient {
-          background: linear-gradient(to top right, #88531E, #88531E, #88531E, #C57C47);
+          background: linear-gradient(to top right, #88531E, #C57C47, #C57C47, #88531E);
         }
       </style>
   </head>
@@ -80,13 +77,14 @@ $stmt->close();
 
     <?php
     // Navbar
+    include 'includes/preloader.html';
     include 'includes/navbar.php';
 
     // Charts
-    include 'includes/charts/weekly-sales.php';
-    include 'includes/charts/predicted-weekly-sales.php';
-    include 'includes/charts/weekly-top-sold-products.php';
-    include 'includes/charts/weekly-top-sold-category.php';
+    include FileUtils::normalizeFilePath('includes/charts/weekly-sales.php');
+    include FileUtils::normalizeFilePath('includes/charts/predicted-weekly-sales.php');
+    include FileUtils::normalizeFilePath('includes/charts/weekly-top-sold-products.php');
+    include FileUtils::normalizeFilePath('includes/charts/weekly-top-sold-category.php');
     ?>
 
     <!-- Main Content -->
@@ -297,6 +295,8 @@ $stmt->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
+    <script src="javascript/preloader.js"></script>
+
 
   </body>
 </html>

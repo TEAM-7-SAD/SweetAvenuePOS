@@ -1,6 +1,9 @@
 <?php
 // Include the database connection file
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
+
 // Check if account IDs are provided
 if (isset($_POST['saleIds']) && is_array($_POST['saleIds'])) {
     // Get the account IDs from the POST data

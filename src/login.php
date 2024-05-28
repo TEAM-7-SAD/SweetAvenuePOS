@@ -1,55 +1,12 @@
 <?php
-
-require_once 'includes/session-handler.php';
-require_once 'includes/db-connector.php';
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 // If session is set, disallow returning to login page
 if(isset($_SESSION['id'])) {
     header("Location: index.php");
     exit();
-}
-
-if(isset($_POST['sign_in_btn'])) {
-
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    if(empty($username) || empty($password)) {
-        $_SESSION['error_message'] = 'Please do not leave the input fields empty.';
-        header("Location: login.php");
-        exit();
-    }
-
-    // Query the user table for the entered username
-    $stmt = $db->prepare("SELECT id, username, password FROM user WHERE BINARY username = ?");
-    $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Check if a user of this username exists
-    if($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-
-        // Verify if password match the entered username
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['id'] = $row['id'];
-            session_regenerate_id(true);
-            header("location: index.php");
-            exit();
-        }
-        // If username and password mismatched, display this      
-        else {
-            $_SESSION['error_message'] = 'Username and password mismatched.';
-            header("Location: login.php");
-            exit();
-            }
-    }
-    // If there is no user with the username, display this
-    else {
-        $_SESSION['error_message'] = 'User is not found.';
-        header("Location: login.php");
-        exit();
-    }
 }
 
 if (isset($_SESSION['error_message'])) {
@@ -82,93 +39,102 @@ if (isset($_SESSION['error_message'])) {
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
-
-        .login-form-gradient {
-            background: linear-gradient(to bottom left, #ce9165, #ebd1be, #efdccd, #FFF0E9, #f4e6dc);
-            padding: 40px;
-            border-radius: 10px; 
-        }
     </style>
 </head>
 
 <body>
 
-    <!-- Forgot Password Modal -->
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModal" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered px-3">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="forgotPasswordModal">Forgot Password</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <form action="includes/send-password-reset.php" class="needs-validation" method="post" novalidate>
-                <div class="modal-body">
-                    <div class="form-floating py-3">
-                        <input type="text" name="email" onkeypress="return avoidSpace(event)" class="form-control" id="email" required>
-                        <label for="email" class="form-label text-carbon-grey fw-medium">Email Adddress<span
-                            style="color: red;"> *</span></label>
-                        <div class="valid-feedback"></div>
-                        <div class="invalid-feedback text-start">
-                            Please enter a valid email.
-                        </div> 
-                    </div>
+    <?php include FileUtils::normalizeFilePath('includes/preloader.html'); ?>
 
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered px-3">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-carbon-grey fw-bold" id="forgotPasswordModalLabel">Let's recover your account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                <p class="px-1 font-14 fw-medium">Please provide your registered email address for sending of reset link.</p>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Email Address" onkeypress="return avoidSpace(event)" required>
+                    <label for="email" class="fw-semibold text-muted font-13">Email Address<span style="color: red;"> *</span></label>
+                    <div class="valid-feedback font-13" id="email-valid">
+                        <!-- Display valid email message -->
+                    </div>
+                    <div class="invalid-feedback font-13" id="email-error">
+                        <!-- Display error messages -->
+                    </div>
+                </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
-                        data-bs-dismiss="modal" aria-label="Close">cancel</button>
-                    <button type="submit" name="send-email-btn" class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">Send Link</button>
+                    <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3 font-14" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()">Cancel</button>
+                    <button type="submit" name="send-email-btn" id="sendEmailBtn" class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4 font-14">Send Link</button>
                 </div>
             </form>
             </div>
         </div>
-      </div>
     </div>
 
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
                 <div class="text-center login-form-gradient shadow-lg">
-                    <img src="images/logo-removebg-preview.png" class="mb-3" height="130" width="130">
-                    <div class="text-tiger-orange text-center ">
-                        <h3 class="sweet-avenue mb-0 fw-semibold"><strong>SWEET AVENUE</strong></h3>
-                        <h5 class="coffee-bakeshop mb-4 fw-medium"><strong>COFFEE • BAKESHOP</strong></h5>
+                    <div class="d-flex align-items-center">
+                        <!-- Shop Logo and Name -->
+                        <span class="navbar-brand pe-3">
+                            <img src="images/logo-removebg-preview.png" alt="Sweet Avenue Logo" width="70" height="70">
+                        </span>
+                        <div class="text-tiger-orange text-uppercase text-start">
+                            <h4 class="mb-0 fw-semibold"><strong>sweet avenue</strong></h4>
+                            <h6 class="fw-medium"><strong>coffee • bakeshop</strong></h6>
+                        </div>                        
+                    </div><hr>
+                    <div class="text-carbon-grey justify-content-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="fs-4 mb-0 fw-bold">Welcome!</div>  
+                            <img src="images/waving-hand.svg" height="35" width="45" alt="waving-icon">                          
+                        </div>
+                        <div class="mb-4 fw-medium font-14">Sign in to your account to get started.</div>                                                   
                     </div>
-                    <form action="login.php" method="post" id="login-form" class="needs-validation" novalidate>
+
+
+                    <form action="includes/login-authenticator.php" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <span class="fw-medium text-danger"><?php echo $errorMessage; ?></>
-                                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <span class="fw-medium text-danger font-13"><?php echo $errorMessage; ?></span>
+                                <button type="button" class="btn btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php endif; ?>
 
                         <div class="form-floating mb-3"> 
                             <input type="text" class="form-control" onkeypress="return avoidSpace(event)" name="username" id="username" placeholder="Username" required>
-                            <label for="username" class="fw-semibold text-muted" style="font-size: 14px;">Username<span style="color: red;"> *</span></label>
+                            <label for="username" class="fw-semibold text-muted font-13">Username<span style="color: red;"> *</span></label>
                             <div class="valid-feedback"></div>
-                            <div class="invalid-feedback text-start">
+                            <div class="invalid-feedback text-start font-13">
                                 Please enter a username.
                             </div> 
                         </div>
                    
                         <div class="form-floating">
                             <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="password" id="password" placeholder="Password" required>
-                            <label for="password" class="fw-semibold text-muted" style="font-size: 14px;">Password<span style="color: red;"> *</span></label>          
+                            <label for="password" class="fw-semibold text-muted font-13">Password<span style="color: red;"> *</span></label>          
                         <div class="valid-feedback"></div>
-                        <div class="invalid-feedback text-start">
+                        <div class="invalid-feedback text-start font-13">
                             Please enter a password.
                         </div>
                         <div class="input-group mt-2 align-items-center">
-                            <div class="form-check form-switch ms-3">
-                                <input class="form-check-input fs-5" type="checkbox" id="showPassword" onclick="myFunction()">
-                                <label class="form-check-label text-carbon-grey fw-medium pt-1" for="showPassword" style="font-size: 14px;">Show</label>
+                            <div class="form-check ms-2">
+                                <input class="form-check-input fs-5" type="checkbox" id="showPassword" onclick="togglePassword()">
+                                <label class="form-check-label text-carbon-grey fw-medium pt-1 font-13" for="showPassword">Show</label>
                             </div>
-                            <a href="#" class="text-carbon-grey ms-auto fw-medium" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" style="font-size: 14px;">Forgot Password?</a>
+                            <a href="#" class="text-carbon-grey ms-auto fw-medium font-13" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
                         </div>
 
                         <div for="submitForm" class="justify-content-center d-md-flex mt-4 mb-2">
-                            <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 fw-medium btn-tiger-orange text-capitalize py-3">Sign In</button>
+                            <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 fw-medium btn-tiger-orange text-capitalize py-3 font-14">Sign In</button>
                         </div>
                     </form>
                 </div>
@@ -176,14 +142,12 @@ if (isset($_SESSION['error_message'])) {
         </div>
     </div>
     
-    
-
-
-
-
-
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="javascript/login.js"></script>
+    <script src="javascript/preloader.js"></script>
 
 </body>
 
