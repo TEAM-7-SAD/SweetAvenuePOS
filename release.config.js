@@ -6,6 +6,7 @@ const config = {
     "@semantic-release/npm",
     "@semantic-release/github",
   ],
+  tagFormat: "${version}-Alpha",
 };
 
 module.exports = config;
