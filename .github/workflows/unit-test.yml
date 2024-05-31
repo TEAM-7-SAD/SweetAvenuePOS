@@ -1,8 +1,8 @@
-name: PHP Composer
+name: PHP Unit Test
 
 on:
   push:
-    branches: [ "testing" ]
+    branches: [ "main", "testing" ]
   pull_request:
     branches: [ "testing" ]
 
