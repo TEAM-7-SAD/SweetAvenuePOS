@@ -37,3 +37,7 @@ jobs:
 
     - name: Run test suite
       run: composer run-script test
+
+    - name: Debug
+      run: |
+        ls -l ./vendor/phpunit/phpunit/phpunit
