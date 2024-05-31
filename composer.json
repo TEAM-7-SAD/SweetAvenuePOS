@@ -1,4 +1,6 @@
 {
+    "name": "team-7-sad/sweetavenuepos",
+    "description": "Point-of-Sale (POS) for Sweet Avenue Coffe • Bakeshop.",
     "require": {
         "phpmailer/phpmailer": "^6.9",
         "php": "^7.4 || ^8.0",
