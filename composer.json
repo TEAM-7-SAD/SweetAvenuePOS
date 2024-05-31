@@ -3,3 +3,8 @@
         "phpmailer/phpmailer": "^6.9"
     }
 }
+{
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}
