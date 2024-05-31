@@ -36,7 +36,7 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Set execute permission
-      run: chmod +x ./vendor/phpunit/phpunit/phpunit
+      run: chmod +x ./vendor/bin/phpunit
     
-    - name: Run PHPUnit
+    - name: Run test suite
       run: composer run-script test
