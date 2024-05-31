@@ -35,9 +35,8 @@ jobs:
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: Run test suite
-      run: composer run-script test
-
-    - name: Debug
-      run: |
-        ls -l ./vendor/phpunit/phpunit/phpunit
+    - name: Set execute permission
+      run: chmod +x ./vendor/phpunit/phpunit/phpunit
+    
+    - name: Run PHPUnit
+      run: ./vendor/phpunit/phpunit/phpunit
