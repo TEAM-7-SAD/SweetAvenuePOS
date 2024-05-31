@@ -10,7 +10,7 @@
         "phpunit/phpunit": "^9.6"
     },
     "scripts": {
-        "test": "vendor/phpunit/phpunit/phpunit"
+        "test": "./vendor/phpunit/phpunit/phpunit"
     },
     "license": "MIT"
 }
