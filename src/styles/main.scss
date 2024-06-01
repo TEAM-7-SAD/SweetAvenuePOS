@@ -41,7 +41,7 @@ $custom-table-variants: (
 
 .datetime {
     font-size: 16px;
-    padding: 24px;
+    padding: 27px;
     color: #88531E;
     background: linear-gradient(to top right, #88531E, #88531E, #bd8359);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
@@ -222,6 +222,9 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     font-size: 14px;
 }
 
+.font-12 {
+    font-size: 12px;
+}
 .password-requirements {
     display: none;
     justify-content: left;
