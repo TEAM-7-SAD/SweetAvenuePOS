@@ -47,6 +47,39 @@ $stmt->bind_result($monthly_sale);
 $stmt->fetch();
 $stmt->close();
 
+$start_of_month = date('F 01');
+$current_day = date('F d, Y');
+$date_range = $start_of_month . ' - ' . $current_day;
+
+// Weekly Sale
+$current_day_of_week = date('N');
+
+// Calculate the start and end dates of the current week
+if ($current_day_of_week == 1) {
+    // If today is Monday, start from today (Monday) and end on Saturday
+    $start_of_week = date('Y-m-d');
+    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
+} else {
+    // If today is not Monday, start from last Monday and end on next Saturday
+    $start_of_week = date('Y-m-d', strtotime('last Monday'));
+    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
+}
+
+// SQL query to get the sum of total_amount for the current week
+$sql = "SELECT SUM(total_amount) AS weekly_sale 
+        FROM transaction 
+        WHERE timestamp >= ? AND timestamp <= ?";
+$stmt = $db->prepare($sql);
+$stmt->bind_param("ss", $start_of_week, $end_of_week);
+$stmt->execute();
+$stmt->bind_result($weekly_sale);
+$stmt->fetch();
+$stmt->close();
+
+$start_of_week_formatted = date('F d', strtotime($start_of_week));
+$end_of_week_formatted = date('F d, Y', strtotime($end_of_week));
+$week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
+
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +100,7 @@ $stmt->close();
 
       <style>
         .card-gradient {
-          background: linear-gradient(to top right, #88531E, #C57C47, #C57C47, #88531E);
+          background: linear-gradient(to top left, #88531E, #88531E, #C57C47);
         }
       </style>
   </head>
@@ -127,10 +160,11 @@ $stmt->close();
           <div class="col-md-6 mt-5 mb-4">
             <div class="row">
               <div class="col-md-6">
-                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 1 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold">Sales Today</span>
+                    <span class="fw-bold fs-5">Sales Today</span>
+                    <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
                       if ($today_sale !== NULL) {
@@ -145,10 +179,11 @@ $stmt->close();
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 2 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold">Orders Today</span>
+                    <span class="fw-bold fs-5">Orders Today</span>
+                    <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php 
                       if ($order_today !== NULL) {
@@ -165,14 +200,15 @@ $stmt->close();
             </div>
             <div class="row">
               <div class="col-md-6">
-                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 3 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold">Weekly Sales</span>
+                    <span class="fw-bold fs-5">Weekly Sales</span>
+                    <div class="font-12"><?php echo htmlspecialchars($week_duration); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
-                      if ($weekly_sales !== NULL) {
-                        echo number_format($weekly_sales, 2); 
+                      if ($weekly_sale !== NULL) {
+                        echo number_format($weekly_sale, 2); 
                       }
                       else {
                         echo "0.00";
@@ -183,10 +219,11 @@ $stmt->close();
               </div>
               </div>
               <div class="col-md-6">
-                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 4 -->
-                  <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold">Monthly Sales</span>
+                  <div class="text-center fw-medium text-white py-2">
+                    <span class="fw-bold fs-5">Monthly Sales</span>
+                    <div class="font-12"><?php echo htmlspecialchars($date_range); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
                       if ($monthly_sale !== NULL) {
