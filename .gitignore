@@ -1,2 +1,4 @@
 # Ignore
 src/includes/error-logs.txt
+
+.phpunit.result.cache

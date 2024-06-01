@@ -26,7 +26,6 @@ if(isset($_SESSION['id'])) {
     rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
   <!--Site Icon-->
   <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
 </head>
@@ -53,26 +52,35 @@ if(isset($_SESSION['id'])) {
                   <h3 class="text-medium-brown fw-bolder text-capitalize">accounts</h3>
                 </div>
               </div>
-              <div class="table container-lg bg-white">
-                
-              <div class="row">
-                <div class="col mt-4 align-items-end">
-                  <div class="d-flex justify-content-end">
-                    <button class="btn btn-outline-medium-brown fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addAccountsModal">+ Add Account</button>
-                    <div class="mx-2"></div>
-                    <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">Delete</button>
+
+              <div class="container px-5 py-1 bg-rose-white rounded-3">                 
+                <div class="row mb-5">
+                  <div class="col mt-4 align-items-end">
+                    <div class="d-flex justify-content-end">
+                      <button class="btn btn-tiger-orange fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addAccountsModal">              
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FFFF" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                          <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+                        </svg>
+                        <span>Add Account</span>
+                      </button>
+                      <!-- <div class="mx-2"></div>
+                      <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                        </svg>
+                        <span>Delete</span>
+                      </button> -->
+                    </div>
                   </div>
                 </div>
-              </div>
-
-                
+        
                 <div id="successMessage" class="alert alert-success" style="display: none;" role="alert"></div>
 
                 <div class="table-container">
                   <table id="example" class="table">
                     <thead>
                       <tr>
-                        <th></th>
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>Middle Name</th>
@@ -84,9 +92,17 @@ if(isset($_SESSION['id'])) {
                       $sql = "SELECT * FROM user";
                       $result = $db->query($sql);
                       while($row = $result->fetch_assoc()) {
+                          // echo '
+                          // <tr data-id="'.$row['id'].'" class="selectable">
+                          //     <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+                          //     <td>'.$row['last_name'].'</td>
+                          //     <td>'.$row["first_name"].'</td>
+                          //     <td>'.$row['middle_name'].'</td>
+                          //     <td>'.$row['email'].'</td>
+                          // </tr>
+                          // ';
                           echo '
-                          <tr data-id="'.$row['id'].'" class="selectable">
-                              <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+                          <tr>
                               <td>'.$row['last_name'].'</td>
                               <td>'.$row["first_name"].'</td>
                               <td>'.$row['middle_name'].'</td>
@@ -101,8 +117,7 @@ if(isset($_SESSION['id'])) {
                     <tfoot>
                     </tfoot>
                   </table>
-                </div>
-                <br>
+                </div><br>
               </div>
             </div>
           </div>
@@ -150,44 +165,54 @@ if(isset($_SESSION['id'])) {
 
     <!-- Add Accounts Modal -->
     <div class="modal fade" id="addAccountsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title text-carbon-grey fw-bold" id="addAccountsModalLabel">NEW ACCOUNT</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
+          <div class="modal-header bg-medium-brown">
+            <div class="ps-4 d-flex align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#FFFF" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+              </svg>
+              <h5 class="modal-title text-white fw-semibold ps-3" id="addAccountsModalLabel">Add New Account?</h5>  
+            </div>
+
+            <button type="button" class="btn-close bg-white me-2 rounded-5" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
           </div>
           <form id="addAccountForm" class="needs-validation" novalidate>
             <div class="modal-body mx-4">
-              <p class="px-1 fs-5 fw-medium text-carbon-grey">Fill in the credentials needed to create a new account.</p>
-              <div class="invalid-feedback fw-medium mb-3 ps-1" id="errorContainer"></div>
-              <div class="input-group">
-                <div class="form-floating py-3 pe-5">
-                  <input type="text" name="last_name" class="form-control rounded-3" id="lastName" required>
-                  <label for="lastName" class="form-label text-carbon-grey fw-medium">Last Name<span
-                      style="color: red;"> *</span></label>
-                  <div class="valid-feedback font-13">
-                    Looks right!
+              <p class="fw-medium text-carbon-grey fw-semibold">Fill in the credentials needed to create a new account.</p>
+
+              <div class="input-group mb-3">
+                <!-- Last Name -->
+                <div class="col pe-5">
+                  <label for="lastName" class="form-label text-carbon-grey fw-semibold font-13">Last Name<span style="color: red;"> *</span></label>
+                  <input type="text" name="last_name" class="form-control" id="lastName" required>
+                  <div class="valid-feedback font-13" id="validLastName">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorLastName">
                     <!-- Display error messages here -->
                   </div>
                 </div>
-                <div class="form-floating py-3 pe-5">
-                  <input type="text" name="first_name" class="form-control rounded-3" id="firstName" required>
-                  <label for="firstName" class="form-label text-carbon-grey fw-medium">First Name<span
-                      style="color: red;"> *</span></label>
-                  <div class="valid-feedback font-13">
-                    Looks right!
+
+                <!-- First Name -->
+                <div class="col pe-5">
+                  <label for="firstName" class="form-label text-carbon-grey fw-semibold font-13">First Name<span style="color: red;"> *</span></label>
+                  <input type="text" name="first_name" class="form-control" id="firstName" required>
+                  <div class="valid-feedback font-13" id="validFirstName">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorFirstName">
                     <!-- Display error messages here -->
                   </div>
                 </div>  
-                <div class="form-floating py-3">
-                  <input type="text" name="middle_name" class="form-control rounded-3" id="middleName" required>
-                  <label for="middleName" class="form-label text-carbon-grey fw-medium">Middle Name</label>
-                  <div class="valid-feedback font-13">
-                    Looks right!
+
+                <!-- Middle Name -->
+                <div class="col">
+                  <label for="middleName" class="form-label text-carbon-grey fw-semibold font-13">Middle Name</label>
+                  <input type="text" name="middle_name" class="form-control" id="middleName" required>
+                  <div class="valid-feedback font-13" id="validMiddleName">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorMiddleName">
                     <!-- Display error messages here -->
@@ -195,24 +220,25 @@ if(isset($_SESSION['id'])) {
                 </div>
               </div>
 
-              <div class="input-group">
-                <div class="form-floating py-3 pe-5">
-                  <input type="text" name="username" class="form-control rounded-3" id="username" required>
-                  <label for="userName" class="form-label text-carbon-grey fw-medium">Username<span
-                      style="color: red;"> *</span></label>
-                      <div class="valid-feedback font-13">
-                    Looks right!
+              <!-- Username -->
+              <div class="input-group mb-3">
+                <div class="col pe-5">
+                  <label for="userName" class="form-label text-carbon-grey fw-semibold font-13">Username<span style="color: red;"> *</span></label>
+                  <input type="text" name="username" class="form-control" onkeypress="return avoidSpace(event)" id="username" required>
+                  <div class="valid-feedback font-13" id="validUsername">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorUsername">
                     <!-- Display error messages here -->
                   </div>
                 </div> 
-                <div class="form-floating py-3">
-                  <input type="email" name="email" class="form-control rounded-3" id="email" required>
-                  <label for="email" class="form-label text-carbon-grey fw-medium">Email Address<span
-                      style="color: red;"> *</span></label>
-                      <div class="valid-feedback font-13">
-                    Looks right!
+
+                <!-- Email Address -->
+                <div class="col">
+                  <label for="email" class="form-label text-carbon-grey fw-semibold font-13">Email Address<span style="color: red;"> *</span></label>
+                  <input type="email" name="email" class="form-control" onkeypress="return avoidSpace(event)" id="email" required>
+                  <div class="valid-feedback font-13" id="validEmailAddress">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorEmailAddress">
                     <!-- Display error messages here -->
@@ -220,26 +246,30 @@ if(isset($_SESSION['id'])) {
                 </div>                    
               </div>
 
-              <div class="input-group">
-                <div class="form-floating py-3 pe-4">
-                  <input type="password" name="password" class="form-control rounded-3" id="password" required>
-                  <label for="password" class="form-label text-carbon-grey fw-medium">Password<span
-                      style="color: red;"> *</span></label>
-                  <div class="valid-feedback font-13">
-                    Looks right!
+              <!-- Password -->
+              <div class="input-group mb-2">
+                <div class="col-6 pe-4">
+                  <label for="password" class="form-label text-carbon-grey fw-semibold font-13">Password<span style="color: red;"> *</span></label>
+                  <input type="password" name="password" class="form-control" onkeypress="return avoidSpace(event)" id="password" required>
+                  <div class="valid-feedback font-13" id="validPassword">
+                    <!-- Display valid messages here -->
                   </div>
                   <div class="invalid-feedback font-13" id="errorPassword">
                     <!-- Display error messages here -->
                   </div>
                 </div>
-                <div class="form-check align-self-center ms-2">
-                  <input class="form-check-input fs-3" type="checkbox" id="showPassword" onclick="togglePassword()">
-                  <label class="form-check-label text-carbon-grey fw-medium" for="showPassword">Show</label>
-                </div>              
               </div>
 
-
+              <div class="input-group">
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="showPassword">
+                    <label class="form-check-label text-carbon-grey fw-semibold font-13" for="showPassword">Show Password</label>
+                  </div>                  
+                </div>      
+              </div>
             </div>
+
             <div class="modal-footer">
               <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3"
                 data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()">cancel</button>
@@ -250,6 +280,7 @@ if(isset($_SESSION['id'])) {
         </div>
       </div>
     </div>
+
 
     <!-- Bootstrap JavaScript -->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -265,6 +296,6 @@ if(isset($_SESSION['id'])) {
 </html>
 <?php 
   } else {
-    header("location: login.php");
+    header("Location: login.php");
   } 
 ?>

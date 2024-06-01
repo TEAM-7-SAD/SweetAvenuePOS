@@ -38,47 +38,63 @@ $current_user = $result->fetch_assoc();
 
                 <!--Create Order button-->
                 <li class="nav-item">
-                    <a href="create-order.php" ><button class="btn btn-sm btn-tiger-orange fw-semibold px-3 py-2">Create Order</button></a>
+                    <a class="nav-link text-tiger-orange" href="create-order.php">
+                        <button class="btn btn-sm btn-tiger-orange fw-semibold px-3 py-2 d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill me-2" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                            </svg>
+                            Create Order
+                        </button>
+                    </a>
                 </li>
 
-                <!--Home-->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                <!-- Dashboard -->
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link text-medium-brown d-flex align-bottom" href="index.php">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="#88531E" class="bi bi-bar-chart-fill me-1" viewBox="0 0 16 16">
+                            <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z"/>
+                        </svg>
+                        Dashboard
+                    </a>
                 </li>
 
-                <!--Sale-->
-                <li class="nav-item">
-                    <a class="nav-link" href="sales.php">Sales</a>
+                <!-- Sale -->
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link text-medium-brown d-flex align-bottom" href="sales.php">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="#88531E" class="bi bi-currency-exchange me-1" viewBox="0 0 16 16">
+                            <path d="M0 5a5 5 0 0 0 4.027 4.905 6.5 6.5 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05q-.001-.07.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.5 3.5 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98q-.004.07-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5m16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0m-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674z"/>
+                        </svg>
+                        Sales
+                    </a>
                 </li>
 
-                <!--Products-->
-                <li class="nav-item">
-                    <a class="nav-link" href="product.php">Products</a>
-                </li>
-
-                <!--Reports-->
-                <li class="nav-item">
-                    <a class="nav-link" href="report.php">Reports</a>
+                <!-- Products -->
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link text-medium-brown d-flex align-bottom" href="product.php">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="25" fill="#88531E" class="bi bi-cup-fill me-1" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M.11 3.187A.5.5 0 0 1 .5 3h13a.5.5 0 0 1 .488.608l-.22.991a3.001 3.001 0 0 1-1.3 5.854l-.132.59A2.5 2.5 0 0 1 9.896 13H4.104a2.5 2.5 0 0 1-2.44-1.958L.012 3.608a.5.5 0 0 1 .098-.42Zm12.574 6.288a2 2 0 0 0 .866-3.899z"/>
+                        </svg>
+                        Products
+                    </a>
                 </li>
             </ul>
 
-            <!--Logged in User-->
+            <!-- Logged in User -->
             <ul class="nav pe-3">
                 <li class="nav-item dropdown">
-                    <a class="fw-bolder text-tiger-orange nav-link dropdown-toggle text-capitalize" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?php echo $current_user['first_name']; ?>
+                    <a class="fw-bolder text-medium-brown nav-link dropdown-toggle text-capitalize" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php echo htmlspecialchars($current_user['first_name']); ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg-end">
-                        <li><a class="dropdown-item" href="accounts.php">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
-                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                        <li><a class="dropdown-item text-medium-brown" href="accounts.php">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#88531E" class="bi bi-people-fill pe-1" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
                             </svg>
                             Accounts</a>
                         </li>
-                        <li><a class="dropdown-item" href="includes/logout.php">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0z"/>
-                            <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+                        <li><a class="dropdown-item text-medium-brown" href="includes/logout.php">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#88531E" class="bi bi-arrow-left-square-fill pe-1" viewBox="0 0 16 16">
+                                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
                             </svg>
                             Logout</a>
                         </li>
