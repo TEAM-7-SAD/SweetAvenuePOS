@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TEAM-7-SAD/SweetAvenuePOS.git"
+    "url": "git+https://github.com/TEAM-7-SAD/SweetAvenuePOS.git"
   },
   "files": [
     "index.js"
