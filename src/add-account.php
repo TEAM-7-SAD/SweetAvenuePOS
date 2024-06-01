@@ -11,7 +11,7 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-if(empty($last_name) || empty($first_name) || empty($username) || empty($password)) {
+if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($email) || empty($username) || empty($password)) {
     header("Location: accounts.php");
     exit();
 }
@@ -28,10 +28,19 @@ $result = $db->query($newRowSql);
 $row = $result->fetch_assoc();
 
 // Prepare the HTML content of the new row
+// $html = '
+//     <tr>
+//     <tr data-id="'.$row['id'].'" class="selectable">
+//     <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+//         <td>'.$row['last_name'].'</td>
+//         <td>'.$row["first_name"].'</td>
+//         <td>'.$row['middle_name'].'</td>
+//         <td>'.$row['email'].'</td>
+//     </tr>
+// ';
+
 $html = '
     <tr>
-    <tr data-id="'.$row['id'].'" class="selectable">
-    <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
         <td>'.$row['last_name'].'</td>
         <td>'.$row["first_name"].'</td>
         <td>'.$row['middle_name'].'</td>

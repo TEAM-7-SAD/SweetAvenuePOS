@@ -1,7 +1,6 @@
 (() => {
   "use strict";
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll(".needs-validation");
 
   // Loop over them and prevent submission
@@ -21,100 +20,162 @@
   });
 })();
 
-// Toggle show password
-function togglePassword() {
-  const passwordInput = document.getElementById("password");
-  const isPassword = passwordInput.type === "password";
-  passwordInput.type = isPassword ? "text" : "password";
+// Disallow whitespaces from input fields
+function avoidSpace(event) {
+  if (event.key === " ") {
+    event.preventDefault();
+  }
 }
 
 $(document).ready(function () {
   var table = $("#example").DataTable();
 
-  $("#addAccountsModal").on("hidden.bs.modal", function () {
-    // Reset the form fields
-    $("#addAccountForm").trigger("reset");
-    // Clear any previous error messages
-    $("#errorContainer").hide().empty();
-    // Remove validation classes
-    $("#addAccountForm").removeClass("was-validated");
-    // Disable the save changes button
-    $("#saveChangesBtn").prop("disabled", true);
+  const addAccountButton = document.querySelector("#saveChangesBtn");
+  addAccountButton.disabled = true;
+
+  // Function to check if all input fields are valid
+  function areAllInputsValid() {
+    const inputs = [
+      $("#lastName")[0],
+      $("#firstName")[0],
+      $("#middleName")[0],
+      $("#username")[0],
+      $("#email")[0],
+      $("#password")[0],
+    ];
+
+    // Check if any input field is invalid
+    for (const input of inputs) {
+      if (!input.classList.contains("is-valid")) {
+        return false;
+      }
+    }
+
+    // All input fields are valid
+    return true;
+  }
+
+  // Function to validate input fields
+  function validateInput(
+    input,
+    regex,
+    errorMessage,
+    errorContainer,
+    validMessage,
+    validContainer
+  ) {
+
+    let isValid = regex.test(input.value);
+
+    // Check for first character not being whitespace
+    if (input === $("#lastName")[0] || input === $("#firstName")[0] || input === $("#middleName")[0]) {
+      isValid = isValid && !input.value.startsWith(' ');
+    }
+
+    if (!isValid) {
+      input.classList.add("is-invalid");
+      input.classList.remove("was-validated");
+      input.classList.remove("is-valid");
+      errorContainer.textContent = errorMessage;
+      validContainer.textContent = "";
+    } else {
+      input.classList.remove("is-invalid");
+      input.classList.add("is-valid");
+      input.classList.remove("was-validated");
+      errorContainer.textContent = "";
+      validContainer.textContent = validMessage;
+    }
+
+    // Check if all inputs are valid and enable/disable button accordingly
+    if (areAllInputsValid()) {
+      addAccountButton.disabled = false;
+    } else {
+      addAccountButton.disabled = true;
+    }
+    return isValid;
+  }
+
+  // Input validation events
+  $("#lastName").on("input change", function () {
+    validateInput(
+      this,
+      /^(?!\s)[^\d]+$/,
+      "Please use a valid last name.",
+      document.getElementById("errorLastName"),
+      "Last name looks good!",
+      document.getElementById("validLastName")
+    );
   });
 
-  // Validation functions
-  const isValidName = (name) => /^[A-Za-z]{1,50}$/.test(name);
-  const isValidUsername = (username) => /^[^\s]{1,50}$/.test(username);
-  const isValidEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email.length <= 50;
-  const isValidPassword = (password) => /^[^\s]{8,20}$/.test(password);
+  $("#firstName").on("input change", function () {
+    validateInput(
+      this,
+      /^(?!\s)[^\d]+$/,
+      "Please use a valid first name.",
+      document.getElementById("errorFirstName"),
+      "First name looks good!",
+      document.getElementById("validFirstName")
+    );
+  });
 
-  // Enable/Disable Save Changes button based on form validity
-  const toggleSaveChangesBtn = () => {
-    const formValid =
-      isValidName($("#lastName").val()) &&
-      isValidName($("#firstName").val()) &&
-      isValidName($("#middleName").val()) &&
-      isValidUsername($("#username").val()) &&
-      isValidEmail($("#email").val()) &&
-      isValidPassword($("#password").val());
-    $("#saveChangesBtn").prop("disabled", !formValid);
-  };
+  $("#middleName").on("input change", function () {
+    validateInput(
+      this,
+      /^(?!\s)[^\d]+$/,
+      "Please use a valid middle name.",
+      document.getElementById("errorMiddleName"),
+      "Middle name looks good!",
+      document.getElementById("validMiddleName")
+    );
+  });
 
-  // Attach input event listeners for validation
-  $("#lastName, #firstName, #middleName, #username, #email, #password").on(
-    "input",
-    function () {
-      const input = $(this);
-      let isValid = false;
-      let errorMessage = "";
+  $("#username").on("input change", function () {
+    validateInput(
+      this,
+      /^[^\s]{1,50}$/,
+      "Please provide a valid username.",
+      document.getElementById("errorUsername"),
+      "Username looks good!",
+      document.getElementById("validUsername")
+    );
+  });
 
-      switch (input.attr("id")) {
-        case "lastName":
-        case "firstName":
-        case "middleName":
-          isValid = isValidName(input.val());
-          if (!isValid)
-            errorMessage = "Invalid name. Only letters, max 50 chars.";
-          break;
-        case "username":
-          isValid = isValidUsername(input.val());
-          if (!isValid)
-            errorMessage = "Invalid username. No spaces, max 50 chars.";
-          break;
-        case "email":
-          isValid = isValidEmail(input.val());
-          if (!isValid)
-            errorMessage =
-              "Invalid email. Basic format, no spaces, max 50 chars.";
-          break;
-        case "password":
-          isValid = isValidPassword(input.val());
-          if (!isValid)
-            errorMessage = "Invalid password. No spaces, 8-20 chars.";
-          break;
-      }
+  $("#email").on("input change", function () {
+    validateInput(
+      this,
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+      "Please provide a valid email address.",
+      document.getElementById("errorEmailAddress"),
+      "Email address looks good!",
+      document.getElementById("validEmailAddress")
+    );
+  });
 
-      if (isValid) {
-        input.removeClass("is-invalid").addClass("is-valid");
-        input.next(".invalid-feedback").text("");
-      } else {
-        input.removeClass("is-valid").addClass("is-invalid");
-        input.next(".invalid-feedback").text(errorMessage);
-      }
+  $("#password").on("input change", function () {
+    validateInput(
+      this,
+      /^[^\s]{8,20}$/,
+      "Please provide a valid password.",
+      document.getElementById("errorPassword"),
+      "Password looks good!",
+      document.getElementById("validPassword")
+    );
+  });
 
-      toggleSaveChangesBtn();
-    }
-  );
+  // Toggle show password
+  $("#showPassword").on("click", function () {
+    const passwordInput = $("#password");
+    const isPassword = passwordInput.attr("type") === "password";
+    passwordInput.attr("type", isPassword ? "text" : "password");
+  });
 
+  // Submit button click handler
   $("#saveChangesBtn").click(function (event) {
-    // Prevent the default form submission
     event.preventDefault();
-
-    var form = $("#addAccountForm")[0];
-    if (form.checkValidity() === false) {
+    let form = $("#addAccountForm")[0];
+    let isValid = form.checkValidity();
+    if (!isValid) {
       event.stopPropagation();
-      $("#errorContainer").show().html("<div>Please fill in all fields.</div>");
     } else {
       // Serialize the form data
       var formData = $("#addAccountForm").serialize();
@@ -202,7 +263,7 @@ $(document).ready(function () {
 
   // Function to handle batch deletion
   $(".delete-selected-accounts").click(function () {
-    var selectedAccounts = [];
+    let selectedAccounts = [];
     // Iterate over each checked checkbox
     $(".account-checkbox:checked").each(function () {
       selectedAccounts.push($(this).data("account-id"));
@@ -220,14 +281,9 @@ $(document).ready(function () {
           // Show the success modal
           $("#successModal").modal("show");
           // Remove the deleted rows from the table
-          selectedAccounts.forEach(function (accountId) {
-            table
-              .row($('tr[data-id="' + accountId + '"]'))
-              .remove()
-              .draw();
+          $(".account-checkbox:checked").each(function () {
+            table.row($(this).closest("tr")).remove().draw();
           });
-        } else {
-          alert("Failed to delete the selected accounts.");
         }
       },
       error: function () {
