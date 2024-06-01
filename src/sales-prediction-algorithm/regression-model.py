@@ -32,7 +32,7 @@ def preprocess_data(data):
         data['date'] = pd.to_datetime(data['timestamp']).dt.date
         
         # Filter data for the previous week
-        previous_week_start = datetime.now().date() - timedelta(days=7)
+        previous_week_start = datetime.now().date() - timedelta(days=6)
         previous_week_end = datetime.now().date() - timedelta(days=1)
         data = data[(data['date'] >= previous_week_start) & (data['date'] <= previous_week_end)]
         
@@ -63,7 +63,7 @@ def predict_sales(regressor):
         today = datetime.now().date()
         
         # Generate timestamps for each day of the next week starting from today
-        next_week_timestamps = pd.date_range(start=today, periods=7, freq='D')
+        next_week_timestamps = pd.date_range(start=today, periods=6, freq='D')
         
         # Convert timestamps to Unix timestamp format
         next_week_unix_timestamps = (next_week_timestamps.astype('int64') // 10**9).astype('int32')

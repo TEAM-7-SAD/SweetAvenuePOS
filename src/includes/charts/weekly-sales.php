@@ -1,39 +1,48 @@
 <?php
 
-// Calculate the timestamp for the beginning of May 7th, 2024
-$prev_week_start = date('Y-m-d', strtotime('2024-05-12'));
-
-// Calculate the timestamp for the end of May 12th, 2024
-$prev_week_end = date('Y-m-d', strtotime('2024-05-19'));
-
-// Fetching sales data from the database
-$sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales 
-        FROM transaction 
-        WHERE timestamp >= '$prev_week_start' AND timestamp <= '$prev_week_end'
-        GROUP BY DATE(timestamp)";
-$result = $db->query($sql);
+include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../file-utilities.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-timezone.php');
 
 $sales_data = array();
 $weekly_sales = 0;
 
-// Process the query result
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        // Extract date and total sales from the row
-        $date = $row['date'];
-        $total_sales = $row['total_sales'];
-        
-        // Update sales data for the corresponding day
-        $sales_data[] = [
-            'date' => $date,
-            'total_sales' => floatval($total_sales)
-        ];
-        $weekly_sales += $total_sales;
-    }
+if(date('N') == 1) {
+
+  $prev_week_start = date('Y-m-d', strtotime('last Monday'));
+  $prev_week_end = date('Y-m-d', strtotime('last Saturday'));
+
+  // Fetching sales data from the database
+  $sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales 
+          FROM transaction 
+          WHERE timestamp >= '$prev_week_start' AND timestamp <= '$prev_week_end'
+          GROUP BY DATE(timestamp)";
+  $result = $db->query($sql);
+
+  $sales_data = array();
+  $weekly_sales = 0;
+
+  // Process the query result
+  if ($result->num_rows > 0) {
+      while($row = $result->fetch_assoc()) {
+          // Extract date and total sales from the row
+          $date = $row['date'];
+          $total_sales = $row['total_sales'];
+          
+          // Update sales data for the corresponding day
+          $sales_data[] = [
+              'date' => $date,
+              'total_sales' => floatval($total_sales)
+          ];
+          $weekly_sales += $total_sales;
+      }
+  }
+
 }
 
 // Encode the data as JSON
-$json_sales_data = json_encode($sales_data);
+$json_sales_data = json_encode($sales_data); 
+
 ?>
 
 <!-- Styles -->
