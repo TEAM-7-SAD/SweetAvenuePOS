@@ -15,7 +15,7 @@ session_set_cookie_params([
 ]);
 
 session_start();
-
+ 
 // Regenerate session ID every 30 minutes
 $interval = 1800;
 
@@ -25,6 +25,7 @@ if (isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] >= 
     // Update last activity time
     $_SESSION['last_activity'] = time();
 }
-
-// Update last activity time on every page load
-$_SESSION['last_activity'] = time();
+else {
+    // Update last activity time on every page load
+    $_SESSION['last_activity'] = time();    
+}
