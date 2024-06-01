@@ -131,6 +131,89 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     --bs-btn-active-border-color: #C57C47;
 }
 
+.table-container {
+    width: 100%;
+    overflow-x: hidden;
+    background-color: #FFF0E9;
+    /* Set to match the table background */
+    padding: 0;
+    /* Remove any padding */
+    margin: 0;
+    /* Remove any margin */
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #FFF0E9;
+    /* Changed background color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.599);
+    text-align: center;
+    margin: 0;
+    /* Ensure no extra margin */
+}
+
+.styled-table thead tr {
+    background-color: #FFF0E9;
+    /* Changed background color */
+    color: #343a40;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 5px 5px;
+    text-align: center;
+    background-color: #FFF0E9;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #FFF0E9;
+    background-color: #FFF0E9;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #FFF0E9;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: none;
+    background-color: #FFF0E9;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.plus-sign {
+    font-weight: bold;
+    font-size: 5em;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-info img {
+    width: 200px;
+    /* Set a fixed width to make the image square */
+    height: 200px;
+    /* Set a fixed height to make the image square */
+    border-radius: 15px;
+    /* Adjust as needed for rounded corners */
+    object-fit: cover;
+    /* Ensure the image covers the square area without distortion */
+}
+
+.spaced-text {
+    margin-top: 20px;
+    /* Adjust this value as needed for more or less space */
+    display: block;
+}
 .font-13 {
     font-size: 13px;
 }
