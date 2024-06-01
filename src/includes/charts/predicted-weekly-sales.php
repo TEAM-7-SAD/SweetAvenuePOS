@@ -1,6 +1,10 @@
 <?php 
 
-// Read the JSON file
+include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../file-utilities.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
+include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-timezone.php');
+
+// Read the existing JSON file
 $json_file = 'sales-prediction-algorithm/sales_prediction.json';
 $json_data = file_get_contents($json_file);
 
@@ -14,6 +18,34 @@ if($predictions != NULL) {
     // Extract predictions
     $prediction_data = $predictions['predictions'];
     $sales_sum = $predictions['sales_sum'];
+}
+
+// Check if today is Monday
+if (date('N') == 1) {
+  // Execute the Python script
+  $output = shell_exec('python sales-prediction-algorithm/regression-model.py');
+
+  // Check if the Python script executed successfully
+  if ($output === false) {
+      echo "Error executing the Python script";
+      // Handle the error as needed
+  } else {
+      echo "Python script executed successfully";
+      // Read the updated prediction file
+      $json_data = file_get_contents($json_file);
+      
+      // Decode JSON into array
+      $predictions = json_decode($json_data, true);
+
+      $sales_sum = 0;
+
+      // Check if decoding is successful
+      if ($predictions != NULL) {
+          // Extract predictions
+          $prediction_data = $predictions['predictions'];
+          $sales_sum = $predictions['sales_sum'];
+      }
+  }
 }
 
 ?>
