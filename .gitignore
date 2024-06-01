@@ -1,4 +1,5 @@
 # Ignore
 src/includes/error-logs.txt
+src/sales-prediction-algorithm/sales_prediction.json
 
 .phpunit.result.cache
