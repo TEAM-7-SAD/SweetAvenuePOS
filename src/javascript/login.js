@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             title: "Success!",
             text: response.message,
             icon: "success",
-            confirmButtonColor: "#C57C47",
+            confirmButtonColor: "#88531E",
             confirmButtonText: "Got it!",
           }).then(() => {
             location.reload();
