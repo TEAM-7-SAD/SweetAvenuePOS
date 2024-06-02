@@ -1,8 +1,9 @@
 @import "../../vendor/node_modules/bootstrap/scss/functions";
 @import "../../vendor/node_modules/bootstrap/scss/variables";
 
-// Override the font-family-base to montserrat
-$font-family-base: 'Montserrat', sans-serif;
+// Override the font-family-base to poppins
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+$font-family-base: 'Poppins', sans-serif;
 
 // Customizes navbar text color
 $nav-link-color: #5B5B5B;
@@ -14,7 +15,7 @@ $nav-link-hover-color: #C57C47;
 $dropdown-link-active-color: #ffffff;
 
 // Customize dropdown item background color when clicked
-$dropdown-link-active-bg: #C57C47;
+$dropdown-link-active-bg: #ebebeb;
 
 
 // Add custom colors for UI
@@ -43,20 +44,20 @@ $custom-table-variants: (
     font-size: 16px;
     padding: 27px;
     color: #88531E;
-    background: linear-gradient(to top right, #88531E, #88531E, #bd8359);
+    background: linear-gradient(to top right, #88531E, #88531E);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     font-weight: 500;
 }
 .login-form-gradient {
-    background: linear-gradient(to bottom left, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
-    // background-color: #FFF0E9;
+    // background: linear-gradient(to bottom left, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+        background-color: #fcfcfc;
     padding: 40px;
     border-radius: 10px;
 }
 
 .password-reset-form-gradient {
-    background: linear-gradient(to top right, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
-    // background-color: #FFF0E9;
+    // background: linear-gradient(to top right, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+        background-color: #fcfcfc;
     padding: 40px;
     border-radius: 10px;
 }
@@ -134,7 +135,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .table-container {
     width: 100%;
     overflow-x: hidden;
-    background-color: #FFF0E9;
+    background-color: #FFFFFF;
     /* Set to match the table background */
     padding: 0;
     /* Remove any padding */
@@ -146,8 +147,8 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
-    font-family: 'Montserrat', sans-serif;
-    background-color: #FFF0E9;
+    font-family: 'Poppins', sans-serif;
+        background-color: #FFFFFF;
     /* Changed background color */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.599);
     text-align: center;
@@ -156,7 +157,7 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 }
 
 .styled-table thead tr {
-    background-color: #FFF0E9;
+    background-color: #FFFFFF;
     /* Changed background color */
     color: #343a40;
 }
@@ -165,21 +166,21 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 .styled-table td {
     padding: 5px 5px;
     text-align: center;
-    background-color: #FFF0E9;
+    background-color: #FFFFFF;
 }
 
 .styled-table tbody tr {
-    border-bottom: 1px solid #FFF0E9;
-    background-color: #FFF0E9;
+    border-bottom: 1px solid #ffffff;
+        background-color: #FFFFFF;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-    background-color: #FFF0E9;
+    background-color: #FFFFFF;
 }
 
 .styled-table tbody tr:last-of-type {
     border-bottom: none;
-    background-color: #FFF0E9;
+    background-color: #FFFFFF;
 }
 
 .styled-table tbody tr.active-row {

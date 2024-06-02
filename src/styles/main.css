@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 .zoom-on-hover:hover {
   transform: scale(1.1);
   transition: transform 0.5s ease;
@@ -8,19 +9,19 @@
   font-size: 16px;
   padding: 27px;
   color: #88531E;
-  background: linear-gradient(to top right, #88531E, #88531E, #bd8359);
+  background: linear-gradient(to top right, #88531E, #88531E);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   font-weight: 500;
 }
 
 .login-form-gradient {
-  background: linear-gradient(to bottom left, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+  background-color: #fcfcfc;
   padding: 40px;
   border-radius: 10px;
 }
 
 .password-reset-form-gradient {
-  background: linear-gradient(to top right, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
+  background-color: #fcfcfc;
   padding: 40px;
   border-radius: 10px;
 }
@@ -128,7 +129,7 @@
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-  --bs-body-font-family: "Montserrat", sans-serif;
+  --bs-body-font-family: "Poppins", sans-serif;
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
@@ -3720,7 +3721,7 @@ textarea.form-control-lg {
   --bs-dropdown-link-hover-color: var(--bs-body-color);
   --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
   --bs-dropdown-link-active-color: #ffffff;
-  --bs-dropdown-link-active-bg: #C57C47;
+  --bs-dropdown-link-active-bg: #ebebeb;
   --bs-dropdown-link-disabled-color: var(--bs-tertiary-color);
   --bs-dropdown-item-padding-x: 1rem;
   --bs-dropdown-item-padding-y: 0.25rem;
@@ -6191,7 +6192,7 @@ textarea.form-control-lg {
   z-index: var(--bs-tooltip-zindex);
   display: block;
   margin: var(--bs-tooltip-margin);
-  font-family: "Montserrat", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -6301,7 +6302,7 @@ textarea.form-control-lg {
   z-index: var(--bs-popover-zindex);
   display: block;
   max-width: var(--bs-popover-max-width);
-  font-family: "Montserrat", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -12741,7 +12742,7 @@ textarea.form-control-lg {
 .table-container {
   width: 100%;
   overflow-x: hidden;
-  background-color: #FFF0E9;
+  background-color: #FFFFFF;
   /* Set to match the table background */
   padding: 0;
   /* Remove any padding */
@@ -12753,8 +12754,8 @@ textarea.form-control-lg {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9em;
-  font-family: "Montserrat", sans-serif;
-  background-color: #FFF0E9;
+  font-family: "Poppins", sans-serif;
+  background-color: #FFFFFF;
   /* Changed background color */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.599);
   text-align: center;
@@ -12763,7 +12764,7 @@ textarea.form-control-lg {
 }
 
 .styled-table thead tr {
-  background-color: #FFF0E9;
+  background-color: #FFFFFF;
   /* Changed background color */
   color: #343a40;
 }
@@ -12772,21 +12773,21 @@ textarea.form-control-lg {
 .styled-table td {
   padding: 5px 5px;
   text-align: center;
-  background-color: #FFF0E9;
+  background-color: #FFFFFF;
 }
 
 .styled-table tbody tr {
-  border-bottom: 1px solid #FFF0E9;
-  background-color: #FFF0E9;
+  border-bottom: 1px solid #ffffff;
+  background-color: #FFFFFF;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-  background-color: #FFF0E9;
+  background-color: #FFFFFF;
 }
 
 .styled-table tbody tr:last-of-type {
   border-bottom: none;
-  background-color: #FFF0E9;
+  background-color: #FFFFFF;
 }
 
 .styled-table tbody tr.active-row {
