@@ -92,7 +92,6 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
       <!--Mobile Specific Metas-->
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
       <!--CSS-->
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="styles/main.css" />   
       <!--Site Icon-->
       <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
@@ -105,7 +104,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
       </style>
   </head>
 
-  <body class="bg-timberwolf">
+  <body class="bg-gainsboro">
 
     <?php
     // Navbar
@@ -120,20 +119,20 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     ?>
 
     <!-- Main Content -->
-    <div class="col px-5 mb-5">
-      <div class="col">
+    <div class="container mb-5">
+      <div class="col-lg-12">
         <div class="row">
           <!-- First Quarter: Mini Containers -->
           <div class="col-md-6 mt-5">
-            <div class="col-md-12 bg-rose-white rounded-3 mb-4 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 150px;"> <!-- Added box-shadow style for drop shadow -->
+            <div class="col-md-12 bg-white rounded-3 mb-4 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 150px;"> <!-- Added box-shadow style for drop shadow -->
                 <!-- Larger Container 1 -->
                 <div class="row">
                   <div class="col-md-auto">
                     <div class="mx-3">
-                      <div class="fw-semibold text-muted fs-3 pb-1 pt-2">
-                        Hello there, <span class="text-tiger-orange fw-bold"><?php echo $user . '!'; ?></span>
+                      <div class="fw-semibold text-carbon-grey fs-3 pb-1 pt-2">
+                        Hello there, <span class="text-medium-brown fw-bold"><?php echo $user . '!'; ?></span>
                       </div>
-                      <div class="text-muted fw-semibold">Here's what's happening with the store.</div>
+                      <div class="text-carbon-grey fw-medium">Here's what's happening with the store.</div>
                     </div>                    
                   </div>
                   <div class="col-auto">
@@ -160,10 +159,10 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
           <div class="col-md-6 mt-5 mb-4">
             <div class="row">
               <div class="col-md-6">
-                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 bg-medium-brown rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 1 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold fs-5">Sales Today</span>
+                    <span class="fw-semibold fs-5">Sales Today</span>
                     <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
@@ -179,10 +178,10 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="col-md-12 bg-tiger-orange card-gradient rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 bg-medium-brown  rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 2 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold fs-5">Orders Today</span>
+                    <span class="fw-semibold fs-5">Orders Today</span>
                     <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php 
@@ -200,10 +199,10 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
             </div>
             <div class="row">
               <div class="col-md-6">
-                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 mt-4 bg-medium-brown rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 3 -->
                   <div class="text-center fw-medium py-2 text-white">
-                    <span class="fw-bold fs-5">Weekly Sales</span>
+                    <span class="fw-semibold fs-5">Weekly Sales</span>
                     <div class="font-12"><?php echo htmlspecialchars($week_duration); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
@@ -219,10 +218,10 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
               </div>
               </div>
               <div class="col-md-6">
-                <div class="col-md-12 card-gradient mt-4 bg-tiger-orange rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
+                <div class="col-md-12 mt-4 bg-medium-brown rounded-3 px-4 py-2" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); height: 150px;">
                   <!-- Mini Container 4 -->
                   <div class="text-center fw-medium text-white py-2">
-                    <span class="fw-bold fs-5">Monthly Sales</span>
+                    <span class="fw-semibold fs-5">Monthly Sales</span>
                     <div class="font-12"><?php echo htmlspecialchars($date_range); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
                       <?php
@@ -242,19 +241,19 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
         </div>
         <div class="row">         
           <div class="col-md-6"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
+              <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 3 -->
-                  <div class="p-2 fw-bold text-uppercase text-muted">
-                    weekly sales
+                  <div class="p-2 fw-semibold text-carbon-grey">
+                    WEEKLY SALE
                   </div>
                   <div id="weeklySales"></div>
               </div>
           </div>
           <div class="col-md-6"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
+              <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 3 -->
-                  <div class="p-2 fw-bold text-uppercase text-muted">
-                    predicted weekly sales
+                  <div class="p-2 fw-semibold text-carbon-grey">
+                    PREDICTED WEEKLY SALE
                   </div>
                   <div id="predictedWeeklySales"></div>
               </div>
@@ -262,10 +261,10 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
 
           <!-- Third Quarter: Larger Container -->
           <div class="col-md-12 mt-2"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-rose-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); height: 390px;"> <!-- Added box-shadow style for drop shadow -->
+              <div class="col-md-12 mb-3 bg-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 390px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 2 -->
-                  <div class="p-2 mb-2 fw-bold text-uppercase text-muted">
-                    weekly top sold products
+                  <div class="p-2 mb-2 fw-semibold text-carbon-grey">
+                    WEEKLY TOP SOLD PRODUCTS
                   </div>                              
                   <div class="table-container">
                   <table id="example" class="styled-table">

@@ -18,13 +18,12 @@ if(isset($_SESSION['id'])) {
     <!--Mobile Specific Metas-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <!--CSS-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
 </head>
 
-  <body class="bg-timberwolf">
+  <body class="bg-gainsboro">
 
     <!--Navbar-->
     <?php
@@ -35,7 +34,7 @@ if(isset($_SESSION['id'])) {
   <body>
 
     <!-- Main Container -->
-    <div class="container-fluid px-5">
+    <div class="container mb-5">
 
       <div class="overflow-hidden flex-column">
         <div class="row">
@@ -44,9 +43,9 @@ if(isset($_SESSION['id'])) {
           <div class="col-md-12">
             <div class="container mt-5">
               <h3 class="text-medium-brown fw-bolder mb-4 text-capitalize">products</h3> 
-              <div class="table container-lg bg-white table-borderless">      
+              <div class="container px-5 py-1 bg-white shadow rounded-3"> 
                   <div class="text-carbon-grey pt-4 fs-5 fw-bold text-uppercase">foods</div><hr>
-                      <div class="table-container table-transparent">
+                      <div class="table-transparent">
                           <table id="food" class="table table-transparent">
                               <thead>
                                   <tr>
@@ -95,9 +94,9 @@ if(isset($_SESSION['id'])) {
           <!-- Drink Table -->
           <div class="col-md-12">
             <div class="container mt-5">
-              <div class="table container-lg bg-white table-borderless">      
+              <div class="container px-5 py-1 bg-white shadow rounded-3">      
                   <div class="text-carbon-grey pt-4 fs-5 fw-bold text-uppercase">drinks</div><hr>
-                      <div class="table-container table-transparent">
+                      <div class=" table-transparent">
                           <table id="drink" class="table table-transparent">
                               <thead>
                                   <tr>

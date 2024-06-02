@@ -22,15 +22,13 @@ if(isset($_SESSION['id'])) {
   <!--Mobile Specific Metas-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--CSS-->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
   <!--Site Icon-->
   <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
 </head>
 
-<body class="bg-timberwolf">
+<body class="bg-gainsboro">
 
   <!--Navbar-->
   <?php
@@ -39,90 +37,83 @@ if(isset($_SESSION['id'])) {
     ?>
 
     <!--Main Container-->
-    <div class="container-fluid px-0 bg-timberwolf">
+    <div class="container">
 
-      <div class="container-fluid px-0">
-        <div class="overflow-hidden flex-column">
-          <div class="row overflow-y-auto" style="height: calc(100vh - 94px);">
+      <!--Main Content-->
+      <div class="col-lg-12">
+        <div class="main-content">
+          <div class="input-group mt-5 mb-4 d-flex justify-content-between align-items-center">
+            <h3 class="text-medium-brown fw-bolder text-capitalize">accounts</h3>
+          </div>
+        </div>
 
-            <!--Main Content-->
-            <div class="col">
-              <div class="container main-content">
-                <div class="input-group mt-5 mb-4 d-flex justify-content-between align-items-center">
-                  <h3 class="text-medium-brown fw-bolder text-capitalize">accounts</h3>
-                </div>
-              </div>
-
-              <div class="container px-5 py-1 bg-rose-white rounded-3">                 
-                <div class="row mb-5">
-                  <div class="col mt-4 align-items-end">
-                    <div class="d-flex justify-content-end">
-                      <button class="btn btn-tiger-orange fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addAccountsModal">              
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FFFF" class="bi bi-person-fill-add" viewBox="0 0 16 16">
-                          <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                          <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
-                        </svg>
-                        <span>Add Account</span>
-                      </button>
-                      <!-- <div class="mx-2"></div>
-                      <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                          <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                        </svg>
-                        <span>Delete</span>
-                      </button> -->
-                    </div>
-                  </div>
-                </div>
-        
-                <div id="successMessage" class="alert alert-success" style="display: none;" role="alert"></div>
-
-                <div class="table-container">
-                  <table id="example" class="table">
-                    <thead>
-                      <tr>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Email Address</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php 
-                      $sql = "SELECT * FROM user";
-                      $result = $db->query($sql);
-                      while($row = $result->fetch_assoc()) {
-                          // echo '
-                          // <tr data-id="'.$row['id'].'" class="selectable">
-                          //     <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
-                          //     <td>'.$row['last_name'].'</td>
-                          //     <td>'.$row["first_name"].'</td>
-                          //     <td>'.$row['middle_name'].'</td>
-                          //     <td>'.$row['email'].'</td>
-                          // </tr>
-                          // ';
-                          echo '
-                          <tr>
-                              <td>'.$row['last_name'].'</td>
-                              <td>'.$row["first_name"].'</td>
-                              <td>'.$row['middle_name'].'</td>
-                              <td>'.$row['email'].'</td>
-                          </tr>
-                          ';
-                      }
-                      $db->close();
-                      ?>
-                    </tbody>
-
-                    <tfoot>
-                    </tfoot>
-                  </table>
-                </div><br>
+        <div class="container bg-white shadow px-5 py-1 rounded-3">                 
+          <div class="row mb-5">
+            <div class="col mt-4 align-items-end">
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-medium-brown fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addAccountsModal">              
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#FFFF" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+                  </svg>
+                  <span>Add Account</span>
+                </button>
+                <!-- <div class="mx-2"></div>
+                <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                  </svg>
+                  <span>Delete</span>
+                </button> -->
               </div>
             </div>
           </div>
+  
+          <div id="successMessage" class="alert alert-success" style="display: none;" role="alert"></div>
+
+          <table id="example" class="table">
+            <thead>
+              <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Email Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+              $sql = "SELECT * FROM user";
+              $result = $db->query($sql);
+              while($row = $result->fetch_assoc()) {
+                  // echo '
+                  // <tr data-id="'.$row['id'].'" class="selectable">
+                  //     <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
+                  //     <td>'.$row['last_name'].'</td>
+                  //     <td>'.$row["first_name"].'</td>
+                  //     <td>'.$row['middle_name'].'</td>
+                  //     <td>'.$row['email'].'</td>
+                  // </tr>
+                  // ';
+                  echo '
+                  <tr>
+                      <td>'.$row['last_name'].'</td>
+                      <td>'.$row["first_name"].'</td>
+                      <td>'.$row['middle_name'].'</td>
+                      <td>'.$row['email'].'</td>
+                  </tr>
+                  ';
+              }
+              $db->close();
+              ?>
+            </tbody>
+
+            <tfoot>
+            </tfoot>
+          </table>
+          <br>
         </div>
       </div>
+      
     </div>
     
     <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
@@ -185,8 +176,8 @@ if(isset($_SESSION['id'])) {
               <div class="input-group mb-3">
                 <!-- Last Name -->
                 <div class="col pe-5">
-                  <label for="lastName" class="form-label text-carbon-grey fw-semibold font-13">Last Name<span style="color: red;"> *</span></label>
-                  <input type="text" name="last_name" class="form-control" id="lastName" required>
+                  <label for="lastName" class="form-label text-carbon-grey fw-medium font-13">Last Name<span style="color: red;"> *</span></label>
+                  <input type="text" name="last_name" class="form-control shadow-sm" id="lastName" required>
                   <div class="valid-feedback font-13" id="validLastName">
                     <!-- Display valid messages here -->
                   </div>
@@ -197,8 +188,8 @@ if(isset($_SESSION['id'])) {
 
                 <!-- First Name -->
                 <div class="col pe-5">
-                  <label for="firstName" class="form-label text-carbon-grey fw-semibold font-13">First Name<span style="color: red;"> *</span></label>
-                  <input type="text" name="first_name" class="form-control" id="firstName" required>
+                  <label for="firstName" class="form-label text-carbon-grey fw-medium font-13">First Name<span style="color: red;"> *</span></label>
+                  <input type="text" name="first_name" class="form-control shadow-sm" id="firstName" required>
                   <div class="valid-feedback font-13" id="validFirstName">
                     <!-- Display valid messages here -->
                   </div>
@@ -209,8 +200,8 @@ if(isset($_SESSION['id'])) {
 
                 <!-- Middle Name -->
                 <div class="col">
-                  <label for="middleName" class="form-label text-carbon-grey fw-semibold font-13">Middle Name</label>
-                  <input type="text" name="middle_name" class="form-control" id="middleName" required>
+                  <label for="middleName" class="form-label text-carbon-grey fw-medium font-13">Middle Name</label>
+                  <input type="text" name="middle_name" class="form-control shadow-sm" id="middleName" required>
                   <div class="valid-feedback font-13" id="validMiddleName">
                     <!-- Display valid messages here -->
                   </div>
@@ -223,8 +214,8 @@ if(isset($_SESSION['id'])) {
               <!-- Username -->
               <div class="input-group mb-3">
                 <div class="col pe-5">
-                  <label for="userName" class="form-label text-carbon-grey fw-semibold font-13">Username<span style="color: red;"> *</span></label>
-                  <input type="text" name="username" class="form-control" onkeypress="return avoidSpace(event)" id="username" required>
+                  <label for="userName" class="form-label text-carbon-grey fw-medium font-13">Username<span style="color: red;"> *</span></label>
+                  <input type="text" name="username" class="form-control shadow-sm" onkeypress="return avoidSpace(event)" id="username" required>
                   <div class="valid-feedback font-13" id="validUsername">
                     <!-- Display valid messages here -->
                   </div>
@@ -235,8 +226,8 @@ if(isset($_SESSION['id'])) {
 
                 <!-- Email Address -->
                 <div class="col">
-                  <label for="email" class="form-label text-carbon-grey fw-semibold font-13">Email Address<span style="color: red;"> *</span></label>
-                  <input type="email" name="email" class="form-control" onkeypress="return avoidSpace(event)" id="email" required>
+                  <label for="email" class="form-label text-carbon-grey fw-medium font-13">Email Address<span style="color: red;"> *</span></label>
+                  <input type="email" name="email" class="form-control shadow-sm" onkeypress="return avoidSpace(event)" id="email" required>
                   <div class="valid-feedback font-13" id="validEmailAddress">
                     <!-- Display valid messages here -->
                   </div>
@@ -249,8 +240,8 @@ if(isset($_SESSION['id'])) {
               <!-- Password -->
               <div class="input-group mb-2">
                 <div class="col-6 pe-4">
-                  <label for="password" class="form-label text-carbon-grey fw-semibold font-13">Password<span style="color: red;"> *</span></label>
-                  <input type="password" name="password" class="form-control" onkeypress="return avoidSpace(event)" id="password" required>
+                  <label for="password" class="form-label text-carbon-grey fw-medium font-13">Password<span style="color: red;"> *</span></label>
+                  <input type="password" name="password" class="form-control shadow-sm" onkeypress="return avoidSpace(event)" id="password" required>
                   <div class="valid-feedback font-13" id="validPassword">
                     <!-- Display valid messages here -->
                   </div>
@@ -264,7 +255,7 @@ if(isset($_SESSION['id'])) {
                 <div class="col">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="showPassword">
-                    <label class="form-check-label text-carbon-grey fw-semibold font-13" for="showPassword">Show Password</label>
+                    <label class="form-check-label text-carbon-grey fw-medium font-13" for="showPassword">Show Password</label>
                   </div>                  
                 </div>      
               </div>

@@ -18,7 +18,6 @@ if(isset($_SESSION['id'])) {
     <!--Mobile Specific Metas-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <!--CSS-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css" />   
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
     <!--Site Icon-->
@@ -26,7 +25,7 @@ if(isset($_SESSION['id'])) {
 
 </head>
   
-  <body class="bg-timberwolf">
+  <body class="bg-gainsboro">
 
     <!--Navbar-->
     <?php
@@ -35,18 +34,16 @@ if(isset($_SESSION['id'])) {
     ?>
 
     <!--Main Container-->
-    <div class="container-fluid px-0 bg-timberwolf">
-
-      <div class="container-fluid px-0">
+      <div class="container-fluid px-0 mb-5">
         <div class="overflow-hidden flex-column">
-          <div class="row overflow-y-auto" style="height: calc(100vh - 94px);">
+          <div class="row overflow-y-auto">
 
                   <!--Main Content-->
               <div class="col">
                     <div class="container main-content mt-5 mb-4">
                     <h3 class="text-medium-brown fw-bolder text-capitalize">Sales</h3>  
                     </div>
-                    <div class="table container-lg bg-white">
+                    <div class="container px-5 py-1 bg-white shadow rounded-3">
                       <div class="container">
                         <div class="row justify-content-end">
                           <div class="col-md-4 mt-4 text-center">
@@ -59,7 +56,6 @@ if(isset($_SESSION['id'])) {
                           </div>
                         </div>
                       </div>
-                      <div class="table-container">
                       <table id="example" class="table">
                           <thead>
                               <tr>
@@ -104,7 +100,6 @@ if(isset($_SESSION['id'])) {
                             </tr>
                         </tfoot>
                       </table>
-                      </div>
                       <br>
                     </div>    
                 </div>
@@ -174,7 +169,6 @@ if(isset($_SESSION['id'])) {
             </div>
         </div>
     </div>
-</div>
 
 
 
