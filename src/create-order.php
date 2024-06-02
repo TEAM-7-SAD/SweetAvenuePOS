@@ -17,14 +17,13 @@ if(isset($_SESSION['id'])) {
     <!--Mobile Specific Metas-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <!--CSS-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
 </head>
 
   
-  <body class="bg-timberwolf">
+  <body class="bg-gainsboro">
 
     <!--Navbar-->
     <?php
@@ -33,7 +32,7 @@ if(isset($_SESSION['id'])) {
     ?>
  
     <!--Main Content-->
-    <div class="container-fluid ps-5 mt-4 mb-4">          
+    <div class="container mt-4 mb-4">          
       <div class="row"> 
        
         <!--Products Section-->
@@ -74,7 +73,7 @@ if(isset($_SESSION['id'])) {
                 
                     // Output the radio button for each category
                     echo '<input type="radio" class="btn-check" name="category" id="category' . $category['id'] . '" autocomplete="off" value="' . $category['id'] . '" ' . $isChecked . '>';
-                    echo '<label class="btn btn-outline-tiger-orange fw-semibold shadow-sm py-3" for="category' . $category['id'] . '">' . $category['name'] . '</label>';
+                    echo '<label class="btn btn-outline-medium-brown fw-semibold shadow-sm py-3 font-14" for="category' . $category['id'] . '">' . $category['name'] . '</label>';
                 }
                 
                 echo '</div>';

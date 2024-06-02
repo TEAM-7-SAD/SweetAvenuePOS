@@ -32,8 +32,8 @@ if (isset($_SESSION['order_cart'])) {
 </style>
 
 <!-- Billing Section -->
-<div class="col-lg-5 ps-5 pe-5 mb-4">
-        <div class="row bg-rose-white shadow-sm rounded-3">
+<div class="col-lg-5 ps-5 mb-4">
+        <div class="row bg-white shadow-sm rounded-3">
             <div class="col m-4">
                 <div class="text-medium-brown d-flex justify-content-center mb-4">
                     <span class="pe-2">
@@ -107,7 +107,7 @@ if (isset($_SESSION['order_cart'])) {
                     </table>      
                     <!--Cancel and Place Order Buttons-->
                     <div class="vstack gap-2 col-md-12 mx-auto pt-2 mb-3">
-                        <button id="placeOrderButton" type="button" class="btn btn-tiger-orange fs-6 fw-semibold py-2" data-bs-toggle="modal" data-bs-target="#orderConfirmationModal"disabled>Place Order</button>
+                        <button id="placeOrderButton" type="button" class="btn btn-medium-brown fs-6 fw-semibold py-2" data-bs-toggle="modal" data-bs-target="#orderConfirmationModal"disabled>Place Order</button>
                         <button type="button" class="btn btn-outline-carbon-grey fs-6 fw-semibold py-2" id="cancelOrder">Cancel Order</button>
                     </div>
                 </form>

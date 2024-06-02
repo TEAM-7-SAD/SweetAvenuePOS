@@ -44,7 +44,6 @@ if (isset($_SESSION['error_message'])) {
     <!--Mobile Specific Metas-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <!--CSS-->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
@@ -72,16 +71,16 @@ if (isset($_SESSION['error_message'])) {
                     <div class="d-flex align-items-center">
                         <!-- Shop Logo and Name -->
                         <span class="navbar-brand pe-3">
-                            <img src="images/logo-removebg-preview.png" alt="Sweet Avenue Logo" width="70" height="70">
+                            <img src="images/sweet-avenue-logo.png" alt="Sweet Avenue Logo" width="70" height="70">
                         </span>
-                        <div class="text-tiger-orange text-uppercase text-start">
-                            <h4 class="mb-0 fw-semibold"><strong>sweet avenue</strong></h4>
-                            <h6 class="fw-medium"><strong>coffee • bakeshop</strong></h6>
+                        <div class="text-medium-brown text-start">
+                            <h3 class="mb-0 fw-bold"><strong>SWEET AVENUE</strong></h3>
+                            <h5 class="fw-medium"><strong>COFFEE • BAKESHOP</strong></h5>
                         </div>                        
                     </div><hr>
-                    <div class="text-carbon-grey text-start">
-                        <div class="fs-5 mb-0"><dt>Recover your account!</dt></div>
-                        <div class="mb-3 fw-medium font-13">Create a new and strong password.</div>
+                    <div class="text-carbon-grey justify-content-center">
+                        <div class="fs-5 mb-0 fw-semibold">Recover your account!</div>
+                        <div class="mb-4 font-13">Create a new and strong password.</div>
                     </div>
                     <form id="passwordResetForm" class="needs-validation" novalidate>
                         <input type="hidden" name="token" id="token" value="<?= htmlspecialchars($token) ?>">
@@ -95,8 +94,8 @@ if (isset($_SESSION['error_message'])) {
                         <?php endif; ?>
 
                         <div class="form-floating mb-3"> 
-                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="new_password" id="newPassword" placeholder="New Password" required>
-                            <label for="new_password" class="fw-semibold text-muted font-13">New password<span style="color: red;"> *</span></label>
+                            <input type="password" class="form-control shadow-sm text-carbon-grey" onkeypress="return avoidSpace(event)" name="new_password" id="newPassword" placeholder="New Password" required>
+                            <label for="new_password" class="fw-medium text-carbon-grey font-13">New password<span style="color: red;"> *</span></label>
                             <div class="password-requirements">
                                 <ul id="password-requirements-list">
                                     <h6 class="reset-pass-title text-uppercase">Password must contain:</h6>
@@ -113,8 +112,8 @@ if (isset($_SESSION['error_message'])) {
                         </div>
                    
                         <div class="form-floating">
-                            <input type="password" class="form-control" onkeypress="return avoidSpace(event)" name="confirm_password" id="confirmPassword" placeholder="Confirm new password" required>
-                            <label for="password" class="fw-semibold text-muted font-13">Confirm new password<span style="color: red;"> *</span></label>
+                            <input type="password" class="form-control shadow-sm text-carbon-grey" onkeypress="return avoidSpace(event)" name="confirm_password" id="confirmPassword" placeholder="Confirm new password" required>
+                            <label for="password" class="fw-medium text-carbon-grey font-13">Confirm new password<span style="color: red;"> *</span></label>
                             <!-- Input validation -->
                             <div class="valid-feedback"></div>
                             <div class="invalid-feedback text-start fw-medium font-13" id="passwordMismatched">
@@ -126,13 +125,13 @@ if (isset($_SESSION['error_message'])) {
                         <div class="input-group mt-2 align-items-center">
                             <div class="form-check ms-2">
                                 <input class="form-check-input fs-5" type="checkbox" id="showPassword" onclick="togglePassword()">
-                                <label class="form-check-label text-carbon-grey fw-semibold pt-1 font-13" for="showPassword">Show Password</label>
+                                <label class="form-check-label text-carbon-grey fw-medium pt-1 font-13" for="showPassword">Show Password</label>
                             </div>
                         </div>     
 
                         <!-- Change Password Button -->
                         <div for="submitResetPassword" class="justify-content-center d-md-flex mt-4 mb-2">
-                            <button type="submit" name="change_password_btn" id="submitResetPassword" class="btn col-12 fw-medium btn-tiger-orange text-capitalize py-3 font-14">Change Password</button>
+                            <button type="submit" name="change_password_btn" id="submitResetPassword" class="btn col-12 fw-medium btn-medium-brown py-3 font-14">Change Password</button>
                         </div>
                     </form>
                 </div>

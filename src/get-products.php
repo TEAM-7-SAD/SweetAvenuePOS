@@ -52,7 +52,7 @@ if(isset($_POST['category'])) {
             // Output each food product within a column
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="food" data-product-name="' . $row['item_name'] . '" data-product-serving="' . $row['serving'] . '" data-product-flavor="' . $row['flavor'] . '" data-product-price="' . $row['price'] . '">';
-            echo '<div class="card h-100 bg-rose-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
+            echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
             // Displaying food variations and price
@@ -93,7 +93,7 @@ if(isset($_POST['category'])) {
             // Output each drink product within a column
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="drink" data-product-name="' . $row['item_name'] . '" data-product-type-var="' . $row['type'] . '" data-product-size="' . $row['size'] . '" data-product-price="' . $row['price'] . '">';
-            echo '<div class="card h-100 bg-rose-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
+            echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
             
