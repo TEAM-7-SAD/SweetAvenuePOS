@@ -1,8 +1,13 @@
 import warnings
-import mysql.connector
 import pandas as pd
 from mlxtend.frequent_patterns import apriori, association_rules
 import datetime
+from sqlalchemy import create_engine, text
+import logging
+
+# Enable SQLAlchemy logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # Suppress specific warnings
 warnings.filterwarnings('ignore', category=DeprecationWarning)
@@ -15,9 +20,9 @@ db_config = {
     'database': 'sweet_avenue_db'
 }
 
-# Connect to the database
-cnx = mysql.connector.connect(**db_config)
-cursor = cnx.cursor()
+# Connect to the database using SQLAlchemy
+engine = create_engine(f"mysql+mysqlconnector://{db_config['user']}:{db_config['password']}@{db_config['host']}/{db_config['database']}")
+connection = engine.connect()
 
 # Create the table if it doesn't exist
 create_table_query = """
@@ -31,25 +36,25 @@ CREATE TABLE IF NOT EXISTS frequent_items (
     conviction FLOAT
 )
 """
-cursor.execute(create_table_query)
+connection.execute(text(create_table_query))
 
 # Fetch transaction data for today
-today = datetime.datetime.now().strftime('2024-05-01')  # Corrected the date format
+today = datetime.datetime.now().strftime('2024-05-01')
 query = """
 SELECT ip.transaction_id, d.name AS item_name
 FROM items_purchased ip
 JOIN drink_item d ON ip.item_id = d.id
 JOIN transaction t ON ip.transaction_id = t.id
-WHERE DATE(t.timestamp) = %s
+WHERE DATE(t.timestamp) = :today
 UNION
 SELECT ip.transaction_id, f.name AS item_name
 FROM items_purchased ip
 JOIN food_item f ON ip.item_id = f.id
 JOIN transaction t ON ip.transaction_id = t.id
-WHERE DATE(t.timestamp) = %s
+WHERE DATE(t.timestamp) = :today
 """
-cursor.execute(query, (today, today))
-rows = cursor.fetchall()
+result = connection.execute(text(query), {"today": today})
+rows = result.fetchall()
 
 # Convert data to a DataFrame
 df = pd.DataFrame(rows, columns=['transaction_id', 'item_name'])
@@ -84,16 +89,32 @@ else:
     print(rules.head())
 
     # Insert results into the database
-    cursor.execute("TRUNCATE TABLE frequent_items")
-    insert_query = "INSERT INTO frequent_items (antecedent, consequent, support, confidence, lift, conviction) VALUES (%s, %s, %s, %s, %s, %s)"
+    connection.execute(text("TRUNCATE TABLE frequent_items"))
+    insert_query = """
+    INSERT INTO frequent_items (antecedent, consequent, support, confidence, lift, conviction) 
+    VALUES (:antecedent, :consequent, :support, :confidence, :lift, :conviction)
+    """
     for _, row in rules.iterrows():
         antecedents = ', '.join(list(row['antecedents']))
         consequents = ', '.join(list(row['consequents']))
-        cursor.execute(insert_query, (antecedents, consequents, row['support'], row['confidence'], row['lift'], row['conviction']))
-
+        
+        # Debug: Print each row before inserting
+        print(f"Inserting row: {antecedents}, {consequents}, {row['support']}, {row['confidence']}, {row['lift']}, {row['conviction']}")
+        
+        connection.execute(
+            text(insert_query),
+            {
+                "antecedent": antecedents,
+                "consequent": consequents,
+                "support": row['support'],
+                "confidence": row['confidence'],
+                "lift": row['lift'],
+                "conviction": row['conviction']
+            }
+        )
+    
     # Commit the transaction
-    cnx.commit()
+    connection.commit()
 
-# Close the cursor and connection
-cursor.close()
-cnx.close()
+# Close the connection
+connection.close()

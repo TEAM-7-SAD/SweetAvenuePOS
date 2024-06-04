@@ -293,7 +293,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                                   <span class='spaced-text'>" . htmlspecialchars($row["antecedent"]) . "</span>
                                               </div>
                                           </td>
-                                          <td class='plus-sign'>+</td>
+                                          <td class='plus-sign' style='color: #C57C47;';>+</td>
                                           <td>
                                               <div class='product-info'>
                                                   
