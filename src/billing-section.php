@@ -29,10 +29,19 @@ if (isset($_SESSION['order_cart'])) {
     .roboto-mono {
             font-family: 'Roboto Mono', monospace;
     }
+    button.text-medium-brown {
+    border: none; /* Remove the border */
+    background: none; /* Remove the background color */
+    padding: 0; /* Remove padding */
+    }
+
+    button.text-medium-brown svg {
+        vertical-align: middle; /* Align the SVG icon vertically */
+    }
 </style>
 
 <!-- Billing Section -->
-<div class="col-lg-5 ps-5 mb-4">
+<div class="col-lg-5 ps-5 pe-5 mb-4">
         <div class="row bg-white shadow-sm rounded-3">
             <div class="col m-4">
                 <div class="text-medium-brown d-flex justify-content-center mb-4">
@@ -82,11 +91,12 @@ if (isset($_SESSION['order_cart'])) {
                                         }
                                         echo '</td>';
                                         echo '<td class="align-middle pe-0 ps-2">';
-                                        echo '<a class="text-medium-brown remove-order" href="#">';
+                                        echo '<button class="text-medium-brown remove-order" data-index="' . $key . '">';
                                         echo '<svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">';
                                         echo '<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>';
                                         echo '</svg>';
-                                        echo '</a>';
+                                        echo '</button>';
+                                        
                                         echo '</td>';                                                                             
                                         echo '</tr>';
                                     }
@@ -114,79 +124,6 @@ if (isset($_SESSION['order_cart'])) {
             </div>
         </div>
     </div>
-    <!-- End of Billing Section -->
-
-            <!--Modal for Editing Clicked Contents-->
-            <!-- <div class="modal fade" id="cartProduct" tabindex="-1" aria-labelledby="selectedProdModal" aria-hidden="true">
-                <div class="modal-dialog px-3">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-6 fw-semibold text-carbon-grey" id="selectedProdModal">Product Name</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                        <div class="mb-4" id="billingTable">
-                            <label for="recipient-name" class="col-form-label fw-medium text-carbon-grey mb-2">Serving: <span class="text-tiger-orange fw-bold">4 pieces</span></label><br/>
-                            <div class="btn-group gap-2" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" class="btn-check" name="serving-btn" id="serving4" autocomplete="off" checked>
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="serving4">4 pieces</label>
-
-                                <input type="radio" class="btn-check" name="serving-btn" id="serving5" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="serving5">8 pieces</label>
-
-                                <input type="radio" class="btn-check" name="serving-btn" id="serving6" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="serving6">12 pieces</label>
-                            </div>
-                        </div><hr>
-                        <div class="mt-3">
-                            <label for="recipient-name" class="col-form-label fw-medium text-carbon-grey mb-2">Flavor: <span class="text-tiger-orange fw-bold">Classic</span></label><br/>
-                            <div class="btn-group gap-2 mb-2" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" class="btn-check" name="flavor-btn" id="flavor5" autocomplete="off" checked>
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="flavor5">Classic</label>
-
-                                <input type="radio" class="btn-check" name="flavor-btn" id="flavor6" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="flavor6">Garlic Parmesan</label>
-
-                                <input type="radio" class="btn-check" name="flavor-btn" id="flavor7" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="flavor7">Honey Sriracha</label>
-                            
-                                <input type="radio" class="btn-check" name="flavor-btn" id="flavor8" autocomplete="off">
-                                <label class="btn btn-sm btn-outline-product fw-semibold rounded-4" for="flavor8">Buffalo</label>
-                            </div><hr>
-                        </div>
-
-                        <div class="mb-1">
-                            <label for="recipient-name" class="col-form-label fw-medium text-carbon-grey">Quantity</label>        
-                            <div class="input-group mt-2 mb-3">
-                                <span class="btn btn-lg btn-outline-carbon-grey input-group-text fw-bold py-3 px-5" role="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
-                                    </svg>
-                                </span>
-                                <input type="text" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3" placeholder="1" disabled>
-                                <span class="btn btn-lg btn-outline-carbon-grey input-group-text fw-bold py-3 px-5" role="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-md">
-                            <div class="form-floating py-3">
-                            <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey" id="floatingInputGrid" placeholder="100.00" value="100.00">
-                            <label for="floatingInputGrid" class="text-carbon-grey fw-medium fs-5">Price </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3" data-bs-dismiss="modal" aria-label="Close">cancel</button>
-                        <button type="button" class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">save changes</button>
-                    </div>
-                    </form>
-                    </div>
-                </div>
-            </div> -->
 
 <!-- Order Confirmation Modal -->
 <div class="modal fade" id="orderConfirmationModal" tabindex="-1" aria-labelledby="orderConfirmationLabel" aria-hidden="true">
@@ -410,7 +347,7 @@ if (isset($_SESSION['order_cart'])) {
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Initially disable the Proceed button
     var proceedButton = document.getElementById('proceedOrder');
     proceedButton.disabled = true;
@@ -460,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('proceedOrder').addEventListener('click', function() {
         printOrderConfirmation();
         checkCartItems();
@@ -493,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function generatePrintableContent() {
         var orderDetails = {
             items: [],
-            subtotal: parseFloat(document.getElementById('subtotalValue').textContent),
+            subtotal: parseFloat(document.getElementById('subtotalValue').textContent.replace(/,/g, '')),
             discount: parseFloat(document.getElementById('discountInput').value),
             grandTotal: parseFloat(document.getElementById('grandTotalValue').textContent)
         };
@@ -578,29 +515,37 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-    // Function to calculate the grand total
-function calculateGrandTotal() {
-    var subtotal = parseFloat(document.getElementById("subtotalValue").textContent); // Assuming subtotal is already calculated and displayed
-    var discountPercentage = parseFloat(document.getElementById("discountInput").value);
+    function calculateGrandTotal() {
+    // Get the subtotal value
+    let subtotal = parseFloat(document.getElementById('subtotalValue').textContent.replace(/,/g, ''));
     
+    // Get the discount value
+    let discount = parseFloat(document.getElementById('discountInput').value) || 0;
+
     // Validate discount percentage
-    if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
+    if (isNaN(discount) || discount < 0 || discount > 100) {
         alert("Please enter a valid discount percentage (0-100)."); 
         document.getElementById("discountInput").value = 0; // Reset to 0 if invalid input
-        discountPercentage = 0; // Set discount to 0 if invalid input
+        discount = 0; // Set discount to 0 if invalid input
     }
-    
-    var discountAmount = (subtotal * discountPercentage) / 100;
-    var grandTotal = subtotal - discountAmount;
 
-    // Update grand total display
-    document.getElementById("grandTotalValue").textContent = grandTotal.toFixed(2);
+    // Calculate the grand total
+    let grandTotal = subtotal - (subtotal * (discount / 100));
+    
+    // Format the grand total to two decimal places
+    grandTotal = grandTotal.toFixed(2);
+
+    // Display the grand total
+    document.getElementById('grandTotalValue').textContent = grandTotal;
 }
 
-// Call calculateGrandTotal initially to set the grand total
-calculateGrandTotal();
+    // Event listener for discount input changes
+    document.getElementById('discountInput').addEventListener('input', calculateGrandTotal);
 
+    // Initial calculation
+    calculateGrandTotal();
 </script>
+
 
 <script>
     //TENDERED
@@ -637,55 +582,60 @@ calculateGrandTotal();
 
 
 <script>
-// Function to remove an item
-function removeItem(event) {
-    event.preventDefault(); // Prevent the default action of the link
-    
-    const tr = this.closest('tr'); // Get the closest <tr> element
-    tr.remove(); // Remove the <tr> element from the DOM
-
-    // Update local storage to reflect the removed item
-    updateLocalStorage();
-
-    // Check if there are any items left in the billing section
-    const itemsLeft = document.querySelectorAll('#billingTable tr').length > 0;
-
-    // If there are no items left in the cart, update order confirmation modal and disable the Place Order button
-    if (!itemsLeft) {
-        document.getElementById('orderConfirmationModalContent').textContent = "No Items in Cart";
-        document.getElementById('placeOrderButton').disabled = true;
-    }
-}
-
-// Function to update local storage
-function updateLocalStorage() {
-    const items = document.querySelectorAll('#billingTable tr');
-    const cartItems = [];
-    items.forEach(item => {
-        cartItems.push(item.innerHTML);
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to all remove-order buttons
+    var removeOrderButtons = document.querySelectorAll('.remove-order');
+    removeOrderButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            // Prevent default link behavior
+            event.preventDefault();
+            
+            // Get the parent row of the clicked remove-order button
+            var row = event.target.closest('tr');
+            
+            // Extract the price of the removed item from the row
+            var priceCell = row.querySelector('.text-carbon-grey');
+            var itemPrice = parseFloat(priceCell.textContent.replace(/[^0-9.-]+/g, ''));
+            
+            // Remove the corresponding item from the session
+            var productName = row.querySelector('.text-capitalize').textContent.trim();
+            removeItemFromSession(productName);
+            
+            // Update subtotal by subtracting the removed item's price
+            updateSubtotal(itemPrice);
+            
+            // Remove the row from the table
+            row.remove();
+            
+            // Optionally, disable the remove-order button to prevent multiple removals
+            button.disabled = true;
+        });
     });
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+});
+
+// Function to remove an item from the session
+function removeItemFromSession(productName) {
+    // Send an AJAX request to a PHP script to remove the item from the session
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'remove_order.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // Reload the page after successful removal
+            window.location.reload();
+        }
+    };
+    xhr.send('product_name=' + encodeURIComponent(productName));
 }
 
-// Get all remove-order links
-const removeLinks = document.querySelectorAll('.remove-order');
+// Function to update the subtotal
+function updateSubtotal(removedPrice) {
+    var subtotalElement = document.getElementById('subtotalValue');
+    var subtotal = parseFloat(subtotalElement.textContent.replace(/[^0-9.-]+/g, ''));
+    subtotal -= removedPrice;
+    subtotalElement.textContent = subtotal.toFixed(2);
+}
 
-// Loop through each link and add a click event listener
-removeLinks.forEach(link => {
-    link.addEventListener('click', removeItem);
-});
-
-// Check if cart was empty before page reload
-window.addEventListener('load', () => {
-    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const billingTable = document.getElementById('billingTable');
-    billingTable.innerHTML = cartItems.join('');
-
-    const placeOrderButton = document.getElementById('placeOrderButton');
-    if (cartItems.length === 0) {
-        document.getElementById('orderConfirmationModalContent').textContent = "No Items in Cart";
-        placeOrderButton.disabled = true;
-    }
-});
 </script>
+
 
