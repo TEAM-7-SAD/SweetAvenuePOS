@@ -157,7 +157,6 @@ input[type="number"] {
             <form id="orderForm" action="add_to_order_cart.php" method="post">
                 <div class="modal-header">
                     <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName">Product Name</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="productVariation">
                     <input type="hidden" name="product_id" id="product_id">
@@ -217,126 +216,119 @@ input[type="number"] {
 
 <script>
 $(document).ready(function() {
+    var productData;
+
     $('#product').on('show.bs.modal', function(event) {
-        let button = $(event.relatedTarget);
-        let productId = button.data('product-id');
-        let productType = button.data('product-type');
-        let productName = button.data('product-name');
-        let productPrice = parseFloat(button.data('product-price')); // Ensure price is a float
+        var button = $(event.relatedTarget);
+        var productId = button.data('product-id');
+        var productType = button.data('product-type');
 
-        let servingOrType = button.data('product-serving');
-        let flavorOrSize = button.data('product-flavor');
+        $.ajax({
+            url: 'get-product-details.php',
+            type: 'POST',
+            data: { productId: productId, productType: productType },
+            success: function(response) {
+                var data = JSON.parse(response);
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    productData = data;
+                    $('#productName').text(data[0].name);
+                    $('#product_id').val(productId);
+                    $('#product_type').val(productType);
+                    $('#product_name').val(data[0].name);
+                    $('#servingOrTypeGroup').empty();
+                    $('#flavorOrSizeGroup').empty();
+                    $('#priceDisplay').val('');
+                    $('#quantityInput').val(1);
 
-        $('#product_id').val(productId);
-        $('#product_type').val(productType);
-        $('#product_name').val(productName);
-        $('#product_price').val(productPrice.toFixed(2)); // Set the value of the price input field
-        $('#serving_or_type').val(servingOrType);
-        $('#flavor_or_size').val(flavorOrSize);
+                    // Use sets to filter out unique values
+                    var servingOrTypeSet = new Set();
+                    var flavorOrSizeSet = new Set();
 
-        $('#productName').text(productName);
+                    // Populate unique serving/type buttons
+                    data.forEach(function(variation) {
+                        servingOrTypeSet.add(variation.servingOrType);
+                        flavorOrSizeSet.add(variation.flavorOrSize);
+                    });
 
-        // Clear existing variation buttons
-        $('#servingOrTypeGroup').empty();
-        $('#flavorOrSizeGroup').empty();
+                    servingOrTypeSet.forEach(function(servingOrType) {
+                        $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + servingOrType + '</button>');
+                    });
 
-        // Populate serving/type variation buttons
-        if (servingOrType) {
-            let servingOrTypeArray = servingOrType.split(',');
-            servingOrTypeArray.forEach(function(serving) {
-                $('#servingOrTypeGroup').append('<label class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + serving.trim() + '</label>');
-            });
-        }
+                    flavorOrSizeSet.forEach(function(flavorOrSize) {
+                        $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + flavorOrSize + '</button>');
+                    });
 
-        // Populate flavor/size variation buttons
-        if (flavorOrSize) {
-            let flavorOrSizeArray = flavorOrSize.split(',');
-            flavorOrSizeArray.forEach(function(flavor) {
-                $('#flavorOrSizeGroup').append('<label class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + flavor.trim() + '</label>');
-            });
-        }
+                    $('#servingOrTypeGroup, #flavorOrSizeGroup').on('click', 'button', function() {
+                        $(this).siblings().removeClass('active');
+                        $(this).addClass('active');
+                        updatePrice();
+                    });
 
-        // Add click event to dynamically created buttons
-        $('#servingOrTypeGroup .btn').on('click', function() {
-            $('#servingOrTypeGroup .btn').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        $('#flavorOrSizeGroup .btn').on('click', function() {
-            $('#flavorOrSizeGroup .btn').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        $('#quantityInput').val(1);
-        updateTotalPrice();
-
-        function updateTotalPrice() {
-            let quantity = parseInt($('#quantityInput').val(), 10);
-            if (isNaN(quantity) || quantity < 1) {
-                quantity = 1;
-                $('#quantityInput').val(1);
+                    updatePrice();
+                }
             }
-            let totalPrice = (productPrice * quantity).toFixed(2);
-            $('#priceDisplay').val(totalPrice); // Set the value of the input element
+        });
+    });
+
+    $('#quantityInput').on('input', function() {
+        updatePrice();
+    });
+
+    $('#quantityMinus').on('click', function() {
+        let input = $('#quantityInput');
+        let currentValue = parseInt(input.val(), 10);
+        if (isNaN(currentValue) || currentValue <= 1) {
+            currentValue = 1;
+        } else {
+            input.val(currentValue - 1);
         }
+        updatePrice();
+    });
 
-        // Update the price when quantity changes
-        $('#quantityInput').on('input', function() {
-            updateTotalPrice();
+    $('#quantityPlus').on('click', function() {
+        let input = $('#quantityInput');
+        let currentValue = parseInt(input.val(), 10);
+        if (isNaN(currentValue)) {
+            currentValue = 1;
+        } else {
+            input.val(currentValue + 1);
+        }
+        updatePrice();
+    });
+
+    function updatePrice() {
+        var selectedServing = $('#servingOrTypeGroup .active').text();
+        var selectedFlavor = $('#flavorOrSizeGroup .active').text();
+        var quantity = parseInt($('#quantityInput').val(), 10);
+
+        var selectedVariation = productData.find(function(variation) {
+            return variation.servingOrType === selectedServing && variation.flavorOrSize === selectedFlavor;
         });
 
-        // Initialize the plus and minus buttons
-        $('#quantityMinus').off('click').on('click', function() {
-            let input = $('#quantityInput');
-            let currentValue = parseInt(input.val(), 10);
-            if (isNaN(currentValue) || currentValue <= 1) {
-                currentValue = 1;
-            } else {
-                input.val(currentValue - 1);
-            }
-            updateTotalPrice();
-        });
+        if (selectedVariation) {
+            var price = selectedVariation.price * quantity;
+            $('#priceDisplay').val(price.toFixed(2));
+            $('#product_price').val(price.toFixed(2));
+            $('#serving_or_type').val(selectedServing);
+            $('#flavor_or_size').val(selectedFlavor);
+        } else {
+            var defaultPrice = productData[0].price;
+            var totalPrice = defaultPrice * quantity;
+            $('#priceDisplay').val(totalPrice.toFixed(2));
+            $('#product_price').val(totalPrice.toFixed(2));
+        }
+    }
 
-        $('#quantityPlus').off('click').on('click', function() {
-            let input = $('#quantityInput');
-            let currentValue = parseInt(input.val(), 10);
-            if (isNaN(currentValue)) {
-                currentValue = 1;
-            } else {
-                input.val(currentValue + 1);
-            }
-            updateTotalPrice();
-        });
-    });
-
-    $('#product').on('hide.bs.modal', function() {
-        $('#productName').text('Product Name');
-        $('#quantityInput').val(1);
-        $('#servingOrTypeGroup').empty();
-        $('#flavorOrSizeGroup').empty();
-        $('#priceDisplay').val('');
-    });
-});
-</script>
-
-<script>
-    $(document).ready(function() {
-    $('#product').on('show.bs.modal', function(event) {
-        // Existing modal setup code...
-    });
-
-    $('#product').on('hide.bs.modal', function() {
-        // Existing modal cleanup code...
-    });
-
-    $('.addToOrderCartBtn').on('click', function() {
+    function addToCart() {
         let productId = $('#product').data('product-id');
         let productType = $('#product').data('product-type');
         let productName = $('#productName').text();
         let servingOrType = $('#servingOrTypeGroup .active').text() || '';
         let flavorOrSize = $('#flavorOrSizeGroup .active').text() || '';
         let quantity = $('#quantityInput').val();
-        let price = $('#priceDisplay').val(); // Update to get the price from the correct input
+        let price = $('#priceDisplay').val();
 
         $.ajax({
             url: 'add_to_order_cart.php',
@@ -354,7 +346,6 @@ $(document).ready(function() {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
                     alert('Item added to order cart');
-                    // Optionally update the billing section dynamically
                 } else {
                     alert('Failed to add item to order cart');
                 }
@@ -364,7 +355,11 @@ $(document).ready(function() {
                 alert('An error occurred. Please try again.');
             }
         });
-    });
+    }
 });
 
+
 </script>
+
+
+
