@@ -12,7 +12,8 @@ if(isset($_POST['category'])) {
                     fv.serving AS serving, 
                     fv.flavor AS flavor, 
                     fi.id AS item_id, 
-                    MIN(fv.price) AS price 
+                    MIN(fv.price) AS price,
+                    fi.image AS image  
                 FROM 
                     food_item fi 
                 LEFT JOIN 
@@ -30,7 +31,8 @@ if(isset($_POST['category'])) {
                     dv.type AS type, 
                     dv.size AS size, 
                     di.id AS item_id, 
-                    MIN(dv.price) AS price 
+                    MIN(dv.price) AS price,
+                    di.image AS image  
                 FROM 
                     drink_item di 
                 LEFT JOIN 
@@ -64,9 +66,9 @@ if(isset($_POST['category'])) {
                 echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['flavor'] . '</span><br> ';
             }
             echo '</div>';
-        
+                    // Inside the while loop for food products
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="images/coffee-img-placeholder.png" class="pt-2 card-img-top rounded-circle" alt="product-img">';
+            echo '<img src="' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
@@ -106,9 +108,9 @@ if(isset($_POST['category'])) {
                     echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['size'] . 'oz' . '</span><br> ';
                 }
             echo '</div>';
-
+            // Inside the while loop for drink products
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="images/coffee-img-placeholder.png" class="pt-2 card-img-top rounded-circle" alt="product-img">';
+            echo '<img src="' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
