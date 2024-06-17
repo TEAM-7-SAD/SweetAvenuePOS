@@ -5,6 +5,23 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_SESSION['id'])) {
+  // Calculate total sales amount
+  $totalSales = 0;
+
+  $sql = "SELECT 
+              transaction.*,
+              CONCAT(user.first_name, ' ', user.middle_name, ' ', user.last_name) AS full_name,
+              DATE(transaction.timestamp) AS transaction_date,
+              TIME_FORMAT(transaction.timestamp, '%h:%i %p') AS transaction_time
+          FROM 
+              transaction
+          JOIN 
+              user ON transaction.user_id = user.id;";
+  $result = $db->query($sql);
+
+  while($row = $result->fetch_assoc()) {
+      $totalSales += $row['total_amount'];
+  }
 
 ?>
 
@@ -94,10 +111,11 @@ if(isset($_SESSION['id'])) {
 
                           </tbody>
                           <tfoot>
-                            <tr>
-                                <td colspan="3"><strong>Total Sales:</strong></td>
-                                <td colspan="5"><strong>0.00</strong></td> 
-                            </tr>
+                          <tr>
+                              <td colspan="3" style="text-align: left;"><strong>Total Sales:</strong></td>
+                              <td colspan="1"></td>
+                              <td colspan="3" style="text-align: right;"><strong id="totalSalesAmount"><?php echo number_format($totalSales, 2); ?></strong></td>
+                          </tr>
                         </tfoot>
                       </table>
                       <br>
