@@ -15,6 +15,4 @@ if (should_execute_script()) {
     // Execute the Python script
     $output = shell_exec('../sales-prediction-algorithm/regression-model.py');
     echo $output;
-} else {
-    echo "Script execution is not allowed today.";
 }

@@ -80,6 +80,7 @@ if(isset($_SESSION['id'])) {
                                   <th>Date</th>
                                   <th>Time</th>
                                   <th>Processed by</th>
+                                  <th>Receipt</th>
                                   <th>Total</th>
                               </tr>
                           </thead>
@@ -103,10 +104,11 @@ if(isset($_SESSION['id'])) {
                                   <td>'.$row['transaction_date'].'</td>
                                   <td>'.$row['transaction_time'].'</td>
                                   <td>'.$row['full_name'].'</td>
+                                  <td>'.$row['receipt'].'</td>
                                   <td>'.$row['total_amount'].'</td>
                               </tr>
                               ';
-                          }                  
+                          }       
                           ?>
 
                           </tbody>

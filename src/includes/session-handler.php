@@ -7,7 +7,7 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.use_strict_mode', 1);
 
 session_set_cookie_params([
-    'lifetime' => 1800,
+    'lifetime' => 0,
     'domain' => 'localhost',
     'path' => '/',
     'secure' => true,
@@ -25,7 +25,6 @@ if (isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] >= 
     // Update last activity time
     $_SESSION['last_activity'] = time();
 }
-else {
-    // Update last activity time on every page load
-    $_SESSION['last_activity'] = time();    
-}
+
+// Update last activity time on every page load
+$_SESSION['last_activity'] = time();

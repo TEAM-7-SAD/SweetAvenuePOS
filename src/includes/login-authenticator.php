@@ -41,7 +41,7 @@ if(isset($_POST['sign_in_btn'])) {
     }
     // If there is no user with the username, display this
     else {
-        $_SESSION['error_message'] = 'User is not found.';
+        $_SESSION['error_message'] = 'User with this username does not exist.';
         header("Location: ../login.php");
         exit();
     }

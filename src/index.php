@@ -95,7 +95,6 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
       <link rel="stylesheet" href="styles/main.css" />   
       <!--Site Icon-->
       <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
-      <link rel="stylesheet" href="styles/main.scss" />
 
       <style>
         .card-gradient {
@@ -114,8 +113,6 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     // Charts
     include FileUtils::normalizeFilePath('includes/charts/weekly-sales.php');
     include FileUtils::normalizeFilePath('includes/charts/predicted-weekly-sales.php');
-    include FileUtils::normalizeFilePath('includes/charts/weekly-top-sold-products.php');
-    include FileUtils::normalizeFilePath('includes/charts/weekly-top-sold-category.php');
     ?>
 
     <!-- Main Content -->
@@ -130,7 +127,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                   <div class="col-md-auto">
                     <div class="mx-3">
                       <div class="fw-semibold text-carbon-grey fs-3 pb-1 pt-2">
-                        Hello there, <span class="text-medium-brown fw-bold"><?php echo $user . '!'; ?></span>
+                        Hello there, <span class="text-medium-brown fw-bold text-capitalize"><?php echo htmlspecialchars($user) . '!'; ?></span>
                       </div>
                       <div class="text-carbon-grey fw-medium">Here's what's happening with the store.</div>
                     </div>                    
@@ -322,7 +319,6 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
-    <script src="script_save_product.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

@@ -1,9 +1,9 @@
 <?php
-session_start();
+include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $productId = $_POST['product_id'];
-    $productType = $_POST['product_type'];
     $productName = $_POST['product_name'];
     $servingOrType = $_POST['serving_or_type'];
     $flavorOrSize = $_POST['flavor_or_size'];
@@ -11,8 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = $_POST['price'];
 
     $orderItem = [
-        'product_id' => $productId,
-        'product_type' => $productType,
         'product_name' => $productName,
         'serving_or_type' => $servingOrType,
         'flavor_or_size' => $flavorOrSize,

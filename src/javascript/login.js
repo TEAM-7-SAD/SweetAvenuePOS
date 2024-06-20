@@ -1,10 +1,10 @@
 (() => {
-  "use strict";
+  ("use strict");
 
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll(".needs-validation");
 
-  // Loop over them and prevent submission
+  // Loop over the forms and prevent submission if not valid
   Array.from(forms).forEach((form) => {
     form.addEventListener(
       "submit",
@@ -38,6 +38,16 @@ function togglePassword() {
 document.addEventListener("DOMContentLoaded", function () {
   const sendButton = document.querySelector("#sendEmailBtn");
   const emailInput = document.querySelector("#email");
+
+  // Clear server-side error message
+  $("#submitForm").on("click", function () {
+    const serverSideErrorMessage = document.querySelector(
+      "#serverSideErrorMessage"
+    );
+    if (serverSideErrorMessage) {
+      serverSideErrorMessage.textContent = "";
+    }
+  });
 
   // Initially disable the Send button
   sendButton.disabled = true;
