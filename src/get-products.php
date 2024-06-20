@@ -1,6 +1,7 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
-require_once 'includes/db-connector.php';
+require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+require_once FileUtils::normalizeFilePath('includes/db-connector.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_POST['category'])) {
@@ -51,13 +52,11 @@ if(isset($_POST['category'])) {
     if($foodResult->num_rows > 0) {
         // Output food products
         while($row = $foodResult->fetch_assoc()) {
-            // Output each food product within a column
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="food" data-product-name="' . $row['item_name'] . '" data-product-serving="' . $row['serving'] . '" data-product-flavor="' . $row['flavor'] . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
-            // Displaying food variations and price
             echo '<div class="text-capitalize pt-2">';
             if (!empty($row['serving'])) {
                 echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $row['serving'] . '</span> ';
@@ -66,9 +65,8 @@ if(isset($_POST['category'])) {
                 echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['flavor'] . '</span><br> ';
             }
             echo '</div>';
-                    // Inside the while loop for food products
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
+            echo '<img src="uploads/' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
@@ -92,14 +90,12 @@ if(isset($_POST['category'])) {
     if($drinkResult->num_rows > 0) {
         // Output drink products
         while($row = $drinkResult->fetch_assoc()) {
-            // Output each drink product within a column
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="drink" data-product-name="' . $row['item_name'] . '" data-product-type-var="' . $row['type'] . '" data-product-size="' . $row['size'] . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
-            
-            // Displaying drink variations and price
+
             echo '<div class="text-capitalize pt-2">';
                 if (!empty($row['type'])) {
                     echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $row['type'] . '</span> ';
@@ -108,9 +104,8 @@ if(isset($_POST['category'])) {
                     echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['size'] . 'oz' . '</span><br> ';
                 }
             echo '</div>';
-            // Inside the while loop for drink products
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
+            echo '<img src="uploads/' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
@@ -130,7 +125,6 @@ if(isset($_POST['category'])) {
         }
     }
 
-    // End the container
     echo '</div>';
     echo '</div>';
 } else {
@@ -154,9 +148,9 @@ input[type="number"] {
 
 <!-- Modal for Product Variations -->
 <div class="modal fade" id="product" tabindex="-1" aria-labelledby="productName" aria-hidden="true">
-    <div class="modal-dialog px-3">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="orderForm" action="add_to_order_cart.php" method="post">
+            <form id="orderForm" method="post">
                 <div class="modal-header">
                     <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName">Product Name</h1>
                 </div>
@@ -207,7 +201,7 @@ input[type="number"] {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn fw-medium btn-outline-carbon-grey text-capitalize py-2 px-4 my-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                    <button type="submit" class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">Add to Order Cart</button>
+                    <button type="submit" id="addToOrderCart" class="btn fw-medium btn-medium-brown text-capitalize py-2 px-4">Add to Order Cart</button>
                 </div>
             </form>
         </div>
@@ -255,11 +249,11 @@ $(document).ready(function() {
                     });
 
                     servingOrTypeSet.forEach(function(servingOrType) {
-                        $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + servingOrType + '</button>');
+                        $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
                     });
 
                     flavorOrSizeSet.forEach(function(flavorOrSize) {
-                        $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product fw-semibold rounded-4">' + flavorOrSize + '</button>');
+                        $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
                     });
 
                     $('#servingOrTypeGroup, #flavorOrSizeGroup').on('click', 'button', function() {
@@ -347,7 +341,9 @@ $(document).ready(function() {
             success: function(response) {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
-                    alert('Item added to order cart');
+                    // alert('Item added to order cart');
+                    fetchCartItems();
+                    calculateSubtotal();
                 } else {
                     alert('Failed to add item to order cart');
                 }
@@ -358,10 +354,38 @@ $(document).ready(function() {
             }
         });
     }
+
+    $("#addToOrderCart").on("click", function() {
+        event.preventDefault();
+        addToCart();
+    });
+
+    function fetchCartItems() {
+        $.ajax({
+            url: 'display-clicked-items.php',
+            type: 'POST',
+            success: function(response) {
+                $('#orderCart').html(response);
+                checkCart();
+            },
+            error: function() {
+                alert('Failed to fetch cart items. Please try again.');
+            }
+        });
+    }
+
+    function calculateSubtotal() {
+        $.ajax({
+            url: 'calculate-subtotal.php',
+            type: 'POST',
+            success: function(response) {
+                $("#subtotalValue").html(response);
+                checkCart();
+            },
+            error: function() {
+                alert('Failed to calculate subtotal. Please try again.');
+            }
+        });
+    }
 });
-
-
 </script>
-
-
-

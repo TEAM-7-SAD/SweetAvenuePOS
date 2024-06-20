@@ -80,7 +80,7 @@ if (isset($_SESSION['error_message'])) {
         <div class="row justify-content-center align-items-center">
             <div class="col-md-6 col-lg-4">
                 <div class="text-center login-form-gradient shadow-lg">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center justify-content-center">
                         <!-- Shop Logo and Name -->
                         <span class="navbar-brand pe-3">
                             <img src="images/sweet-avenue-logo.png" alt="Sweet Avenue Logo" width="70" height="70">
@@ -102,9 +102,8 @@ if (isset($_SESSION['error_message'])) {
                     <form action="includes/login-authenticator.php" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <span class="text-danger font-13"><?php echo $errorMessage; ?></span>
-                                <button type="button" class="btn btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div id="serverSideErrorMessage" class="text-danger mb-3 text-center fw-medium font-13">
+                                <?php echo $errorMessage; ?>
                             </div>
                         <?php endif; ?>
 
@@ -133,7 +132,14 @@ if (isset($_SESSION['error_message'])) {
                         </div>
 
                         <div for="submitForm" class="justify-content-center d-md-flex mt-4 mb-2">
-                            <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 btn-medium-brown py-3 font-14">Sign In</button>
+                            <div class="input-group">
+                                <button type="submit" name="sign_in_btn" id="submitForm" class="btn col-12 btn-medium-brown py-3 font-14">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" class="bi bi-arrow-right-circle-fill pe-1" viewBox="0 0 16 16">
+                                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+                                    </svg>
+                                    Sign In
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>

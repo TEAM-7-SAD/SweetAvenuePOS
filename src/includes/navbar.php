@@ -4,12 +4,18 @@ require_once  FileUtils::normalizeFilePath('includes/db-connector.php');
 include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 // Query user table to display the current user
-$sql = $db->prepare("SELECT id, first_name FROM user WHERE id = ?");
+$sql = $db->prepare("SELECT id, last_name, middle_name, first_name FROM user WHERE id = ?");
 $sql->bind_param('i', $_SESSION['id']);
 $sql->execute();
 $result = $sql->get_result();
 
 $current_user = $result->fetch_assoc();
+
+$full_name = $current_user['last_name'] . ', ' . $current_user['first_name'] . ' ' . $current_user['middle_name'];
+
+$_SESSION['full_name'] = $full_name;
+
+$current_page = basename($_SERVER['PHP_SELF']);
 
 ?>
 
@@ -36,6 +42,9 @@ $current_user = $result->fetch_assoc();
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto column-gap-2 pe-5">
 
+                <!-- Check if user is on create order page -->
+                <?php if($current_page != 'create-order.php') : ?>
+
                 <!--Create Order button-->
                 <li class="nav-item">
                     <a class="nav-link" href="create-order.php">
@@ -47,6 +56,7 @@ $current_user = $result->fetch_assoc();
                         </button>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- Dashboard -->
                 <li class="nav-item d-flex align-items-center">
@@ -93,8 +103,8 @@ $current_user = $result->fetch_assoc();
                             Accounts</a>
                         </li>
                         <li><a class="dropdown-item text-carbon-grey" href="includes/logout.php">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#88531E" class="bi bi-arrow-left-square-fill pe-1" viewBox="0 0 16 16">
-                                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#88531E" class="bi bi-arrow-left-circle-fill pe-1" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                             </svg>
                             Logout</a>
                         </li>

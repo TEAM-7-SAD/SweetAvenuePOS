@@ -27,10 +27,9 @@ if (date('N') == 1) {
 
   // Check if the Python script executed successfully
   if ($output === false) {
-      echo "Error executing the Python script";
+      echo "<script>console.log('Error executing the Python script')</script>";
       // Handle the error as needed
   } else {
-      echo "Python script executed successfully";
       // Read the updated prediction file
       $json_data = file_get_contents($json_file);
       
