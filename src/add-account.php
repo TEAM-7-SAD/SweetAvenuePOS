@@ -3,12 +3,12 @@ include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php'
 require_once FileUtils::normalizeFilePath('includes/db-connector.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
-$last_name = $_POST['last_name'];
-$first_name = $_POST['first_name'];
-$middle_name = $_POST['middle_name'];
-$email = $_POST['email'];
-$username = $_POST['username'];
-$password = $_POST['password'];
+$last_name = trim($_POST['last_name']);
+$first_name = trim($_POST['first_name']);
+$middle_name = trim($_POST['middle_name']);
+$email = trim($_POST['email']);
+$username = trim($_POST['username']);
+$password = trim($_POST['password']);
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($email) || empty($username) || empty($password)) {
@@ -51,4 +51,3 @@ $html = '
 // Return the HTML content
 echo $html;
 exit();
-
