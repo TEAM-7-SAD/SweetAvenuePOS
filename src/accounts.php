@@ -6,9 +6,22 @@ include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_SESSION['id'])) {
 
-  $sql = "SELECT * FROM user";
+  // $sql = "SELECT * FROM user";
+  // $result = $db->query($sql);
+  // $row = $result->fetch_assoc();
+
+  $sql = "SELECT email, username FROM user";
   $result = $db->query($sql);
-  $row = $result->fetch_assoc();
+
+  $emails = array();
+  $usernames = array();
+
+  if($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+      $emails[] = $row['email'];
+      $usernames[] = $row['username'];
+    }
+  }
 
 ?>
 
@@ -26,6 +39,13 @@ if(isset($_SESSION['id'])) {
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
   <!--Site Icon-->
   <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
+
+  <script>
+    // This will be used to check if an email or username is already taken
+    const takenEmails = <?php echo json_encode($emails); ?>;
+    const takenUsernames = <?php echo json_encode($usernames); ?>;  
+  </script>
+
 </head>
 
 <body class="bg-gainsboro">
@@ -43,7 +63,7 @@ if(isset($_SESSION['id'])) {
       <div class="col-lg-12">
         <div class="main-content">
           <div class="input-group mt-5 mb-4 d-flex justify-content-between align-items-center">
-            <h3 class="text-medium-brown fw-bolder text-capitalize">accounts</h3>
+            <h3 class="text-medium-brown fw-bolder">ACCOUNTS</h3>
           </div>
         </div>
 
@@ -59,7 +79,7 @@ if(isset($_SESSION['id'])) {
                   <span>Add Account</span>
                 </button>
                 <!-- <div class="mx-2"></div>
-                <button class="btn btn-danger fw-semibold delete-account" data-account-id="<?php echo $row['id']; ?>">
+                <button class="btn btn-danger fw-semibold delete-account" data-account-id=">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                   </svg>
