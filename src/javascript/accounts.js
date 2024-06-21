@@ -62,14 +62,20 @@ $(document).ready(function () {
     errorMessage,
     errorContainer,
     validMessage,
-    validContainer
+    validContainer,
+    isTaken = false,
+    takenMessage = "",
+    takenErrorContainer = null
   ) {
-
     let isValid = regex.test(input.value);
 
     // Check for first character not being whitespace
-    if (input === $("#lastName")[0] || input === $("#firstName")[0] || input === $("#middleName")[0]) {
-      isValid = isValid && !input.value.startsWith(' ');
+    if (
+      input === $("#lastName")[0] ||
+      input === $("#firstName")[0] ||
+      input === $("#middleName")[0]
+    ) {
+      isValid = isValid && !input.value.startsWith(" ");
     }
 
     if (!isValid) {
@@ -77,6 +83,12 @@ $(document).ready(function () {
       input.classList.remove("was-validated");
       input.classList.remove("is-valid");
       errorContainer.textContent = errorMessage;
+      validContainer.textContent = "";
+    } else if (isTaken) {
+      input.classList.add("is-invalid");
+      input.classList.remove("was-validated");
+      input.classList.remove("is-valid");
+      takenErrorContainer.textContent = takenMessage;
       validContainer.textContent = "";
     } else {
       input.classList.remove("is-invalid");
@@ -130,24 +142,34 @@ $(document).ready(function () {
   });
 
   $("#username").on("input change", function () {
+    let username = $("#username").val().trim();
+    const isUsernameTaken = takenUsernames.includes(username);
     validateInput(
       this,
       /^[^\s]{1,50}$/,
       "Please provide a valid username.",
       document.getElementById("errorUsername"),
       "Username looks good!",
-      document.getElementById("validUsername")
+      document.getElementById("validUsername"),
+      isUsernameTaken,
+      "This username is already taken.",
+      document.getElementById("errorUsername")
     );
   });
 
   $("#email").on("input change", function () {
+    let email = $("#email").val().trim();
+    const isEmailTaken = takenEmails.includes(email);
     validateInput(
       this,
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "Please provide a valid email address.",
       document.getElementById("errorEmailAddress"),
       "Email address looks good!",
-      document.getElementById("validEmailAddress")
+      document.getElementById("validEmailAddress"),
+      isEmailTaken,
+      "This email address is already taken.",
+      document.getElementById("errorEmailAddress")
     );
   });
 
