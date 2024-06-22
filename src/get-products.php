@@ -269,6 +269,7 @@ $(document).ready(function() {
     });
 
     $('#quantityInput').on('input', function() {
+        validateQuantity();
         updatePrice();
     });
 
@@ -293,6 +294,29 @@ $(document).ready(function() {
         }
         updatePrice();
     });
+
+        $('#quantityInput').on('keypress', function(event) {
+        // Prevent non-numeric input
+        if (!/[0-9]/.test(String.fromCharCode(event.which))) {
+            event.preventDefault();
+        }
+    });
+
+    $('#quantityInput').on('paste', function(event) {
+        // Prevent pasting non-numeric values
+        var clipboardData = event.originalEvent.clipboardData.getData('text');
+        if (!/^\d+$/.test(clipboardData)) {
+            event.preventDefault();
+        }
+    });
+
+    function validateQuantity() {
+        let input = $('#quantityInput');
+        let currentValue = parseInt(input.val(), 10);
+        if (isNaN(currentValue) || currentValue < 1) {
+            input.val(1);
+        }
+    }
 
     function updatePrice() {
         var selectedServing = $('#servingOrTypeGroup .active').text();
@@ -388,4 +412,5 @@ $(document).ready(function() {
         });
     }
 });
+
 </script>
