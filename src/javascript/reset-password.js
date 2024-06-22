@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
               confirmButtonColor: "#88531E",
               confirmButtonText: "Continue",
             }).then(() => {
-              window.location.href = "login.php";
+              window.location.href = "login";
             });
           } else {
             Swal.fire({
