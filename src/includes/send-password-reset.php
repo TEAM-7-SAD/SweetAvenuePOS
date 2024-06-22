@@ -42,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($stmt->affected_rows > 0) {
         $subject = "Password Reset";
         $body = <<<END
-        Click <a href="http://localhost/SweetAvenuePOS/src/reset-password.php?token=$token">here</a> 
+        Click <a href="https://papayawhip-barracuda-494038.hostingersite.com/reset-password?token=$token">here</a> 
         to reset your password.
         END;
 

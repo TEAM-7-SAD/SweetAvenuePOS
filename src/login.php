@@ -6,7 +6,7 @@ include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 // If session is set, disallow returning to login page
 if(isset($_SESSION['id'])) {
-    header("Location: index.php");
+    header("Location: index");
     exit();
 }
 
@@ -117,7 +117,7 @@ if (isset($_SESSION['error_message'])) {
                     </div>
 
 
-                    <form action="includes/login-authenticator.php" method="post" id="login-form" class="needs-validation" novalidate>
+                    <form action="includes/login-authenticator" method="post" id="login-form" class="needs-validation" novalidate>
                         
                         <?php if (isset($errorMessage)) : ?>
                             <div id="serverSideErrorMessage" class="text-danger mb-3 text-center fw-medium font-13">

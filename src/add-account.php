@@ -12,7 +12,7 @@ $password = trim($_POST['password']);
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 if(empty($last_name) || empty($first_name) || empty($middle_name) || empty($email) || empty($username) || empty($password)) {
-    header("Location: accounts.php");
+    header("Location: accounts");
     exit();
 }
 

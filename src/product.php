@@ -743,6 +743,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </html>
 <?php 
   } else {
-    header("location: login.php");
+    header("location: login");
   } 
 ?>

@@ -4,6 +4,6 @@ require_once FileUtils::normalizeFilePath('session-handler.php');
 include_once FileUtils::normalizeFilePath('error-reporting.php');
 
 session_destroy();
-header("location: ../login.php");
+header("location: ../login");
 exit();
 ?>

@@ -365,6 +365,6 @@ if(isset($_SESSION['id'])) {
 </html>
 <?php 
   } else {
-    header("location: login.php");
+    header("location: login");
   } 
 ?>

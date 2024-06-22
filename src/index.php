@@ -7,7 +7,7 @@ include_once FileUtils::normalizeFilePath('includes/default-timezone.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(!isset($_SESSION['id'])) {
-  header("Location: login.php");
+  header("Location: login");
   exit();
 }
 

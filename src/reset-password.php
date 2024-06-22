@@ -18,13 +18,13 @@ $row = $result->fetch_assoc();
 
 if ($row === NULL) {
     $_SESSION['error_message'] = 'Reset link was not found.';
-    header("Location: login.php");
+    header("Location: login");
     exit();
 }
 
 if (strtotime($row["reset_token_expires_at"]) <= time()) {
     $_SESSION['error_message'] = 'Reset link has expired.';
-    header("Location: login.php");
+    header("Location: login");
     exit();
 }
 

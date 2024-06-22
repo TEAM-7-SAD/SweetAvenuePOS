@@ -44,7 +44,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     
     if (!$row) {
         $_SESSION['error_message'] = 'Your password reset link was not found.';
-        header("Location: ../login.php");
+        header("Location: ../login");
         exit();
     }
     
@@ -53,7 +53,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($expiry_time <= $current_time) {
         $_SESSION['error_message'] = 'Your password reset link has expired.';
-        header("Location: ../login.php");
+        header("Location: ../login");
         exit();
     }
     

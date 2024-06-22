@@ -11,7 +11,7 @@ if(isset($_POST['sign_in_btn'])) {
 
     if(empty($username) || empty($password)) {
         $_SESSION['error_message'] = 'Please do not leave the input fields empty.';
-        header("Location: ../login.php");
+        header("Location: ../login");
         exit();
     }
 
@@ -29,20 +29,20 @@ if(isset($_POST['sign_in_btn'])) {
         if (password_verify($password, $row['password'])) {
             $_SESSION['id'] = $row['id'];
             session_regenerate_id(true);
-            header("location: ../index.php");
+            header("location: ../index");
             exit();
         }
         // If username and password mismatched, display this      
         else {
             $_SESSION['error_message'] = 'Username and password mismatched.';
-            header("Location: ../login.php");
+            header("Location: ../login");
             exit();
             }
     }
     // If there is no user with the username, display this
     else {
         $_SESSION['error_message'] = 'User with this username does not exist.';
-        header("Location: ../login.php");
+        header("Location: ../login");
         exit();
     }
 }

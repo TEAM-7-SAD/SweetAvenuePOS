@@ -35,8 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Return the updated subtotal as JSON for AJAX requests
         echo json_encode(['status' => 'success', 'subtotal' => $subtotal]);
     } else {
-        // Redirect back to create-order.php for non-AJAX requests
-        header("Location: create-order.php");
+        header("Location: create-order");
         exit();
     }
 } else {
