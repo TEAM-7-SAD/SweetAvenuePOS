@@ -1,3 +1,4 @@
+// Bootstrap form validation
 (() => {
   "use strict";
 
@@ -20,18 +21,74 @@
   });
 })();
 
-// Disallow whitespaces from input fields
-function avoidSpace(event) {
-  if (event.key === " ") {
-    event.preventDefault();
-  }
-}
-
 $(document).ready(function () {
-  var table = $("#example").DataTable();
+  const table = $("#example").DataTable();
 
   const addAccountButton = document.querySelector("#saveChangesBtn");
   addAccountButton.disabled = true;
+
+  const resetAddAccountForm = () => {
+    // Last Name
+    $("#errorLastName").text("");
+    $("#lastName").removeClass("is-invalid is-valid was-validated");
+    $("#validLastName").text("");
+
+    // First Name
+    $("#errorFirstName").text("");
+    $("#firstName").removeClass("is-invalid is-valid was-validated");
+    $("#validFirstName").text("");
+
+    // Middle Name
+    $("#errorMiddleName").text("");
+    $("#middleName").removeClass("is-invalid is-valid was-validated");
+    $("#validMiddleName").text("");
+
+    // Username
+    $("#errorUsername").text("");
+    $("#username").removeClass("is-invalid is-valid was-validated");
+    $("#validUsername").text("");
+
+    // Email
+    $("#errorEmailAddress").text("");
+    $("#email").removeClass("is-invalid is-valid was-validated");
+    $("#validEmailAddress").text("");
+
+    // Password
+    $("#errorPassword").text("");
+    $("#password").removeClass("is-invalid is-valid was-validated");
+    $("#validPassword").text("");
+
+    // Button and form state
+    $("#saveChangesBtn").prop("disabled", true);
+    $("#addAccountForm")[0].reset();
+  };
+
+  $("#cancelAddAccountBtn, #closeAddAccountBtn").on("click", function () {
+    resetAddAccountForm();
+  });
+
+  function preventLeadingSpace(event) {
+    const input = event.target;
+    if (input.value.startsWith(" ")) {
+      input.value = input.value.trim();
+    }
+    input.value = input.value.replace(/\s{2,}/g, " ");
+  }
+
+  const preventSpace = (event) => {
+    let input = event.target;
+    let value = $(input).val();
+    value = value.replace(/\s/g, "");
+    $(input).val(value);
+  };
+
+  $("#lastName, #firstName, #middleName").on("input", function (event) {
+    preventLeadingSpace(event);
+  });
+
+  $("#username, #email, #password").on("input", function (event) {
+    preventSpace(event);
+  });
 
   // Function to check if all input fields are valid
   function areAllInputsValid() {
@@ -177,7 +234,7 @@ $(document).ready(function () {
     validateInput(
       this,
       /^[^\s]{8,20}$/,
-      "Please provide a valid password.",
+      "Password must range 8-20 characters.",
       document.getElementById("errorPassword"),
       "Password looks good!",
       document.getElementById("validPassword")
@@ -194,39 +251,33 @@ $(document).ready(function () {
   // Submit button click handler
   $("#saveChangesBtn").click(function (event) {
     event.preventDefault();
-    let form = $("#addAccountForm")[0];
-    let isValid = form.checkValidity();
-    if (!isValid) {
-      event.stopPropagation();
-    } else {
-      // Serialize the form data
-      var formData = $("#addAccountForm").serialize();
+    // Serialize the form data
+    var formData = $("#addAccountForm").serialize();
 
-      // Send an AJAX request
-      $.ajax({
-        url: "add-account.php",
-        type: "POST",
-        data: formData,
-        success: function (response) {
-          // Insert the new row into the table
-          table.row.add($(response)).draw();
+    $.ajax({
+      url: "add-account.php",
+      type: "POST",
+      data: formData,
+      success: function (response) {
+        // Insert the new row into the table
+        table.row.add($(response)).draw();
 
-          // Close the modal
-          $("#addAccountsModal").modal("hide");
+        // Close the modal
+        $("#addAccountsModal").modal("hide");
+        resetAddAccountForm();
 
-          // Show success message
-          $("#successMessage")
-            .text("Account added successfully")
-            .fadeIn()
-            .delay(2000)
-            .fadeOut();
-        },
-        error: function (xhr, status, error) {
-          // Handle errors if any
-          console.error(xhr.responseText);
-        },
-      });
-    }
+        // Show success message
+        $("#successMessage")
+          .text("Account added successfully")
+          .fadeIn()
+          .delay(2000)
+          .fadeOut();
+      },
+      error: function (xhr, status, error) {
+        // Handle errors if any
+        console.error(xhr.responseText);
+      },
+    });
 
     // Add Bootstrap validation class
     form.classList.add("was-validated");

@@ -22,10 +22,11 @@
 })();
 
 // Disallow whitespaces from input fields
-function avoidSpace(event) {
-  if (event.key === " ") {
-    event.preventDefault();
-  }
+function preventSpaces(event) {
+  let input = event.target;
+  let value = $(input).val();
+  value = value.replace(/\s/g, "");
+  $(input).val(value);
 }
 
 // Toggle show password
@@ -39,14 +40,30 @@ document.addEventListener("DOMContentLoaded", function () {
   const sendButton = document.querySelector("#sendEmailBtn");
   const emailInput = document.querySelector("#email");
 
+  $("#username, #password, #email").on("input", function (event) {
+    preventSpaces(event);
+  });
+
   // Clear server-side error message
   $("#submitForm").on("click", function () {
     const serverSideErrorMessage = document.querySelector(
       "#serverSideErrorMessage"
     );
     if (serverSideErrorMessage) {
-      serverSideErrorMessage.textContent = "";
+      serverSideErrorMessage.remove();
     }
+  });
+
+  const resetForgotPasswordForm = () => {
+    $("#email-error").text("");
+    $("#email").removeClass("is-invalid is-valid was-validated");
+    $("#email-valid").text("");
+    $("#sendEmailBtn").prop("disabled", true);
+    $("#forgotPasswordForm")[0].reset();
+  };
+
+  $("#cancelSendEmailBtn, #closeSendEmailBtn").on("click", function () {
+    resetForgotPasswordForm();
   });
 
   // Initially disable the Send button
@@ -54,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const validateEmail = () => {
     const email = emailInput.value;
+    const isExistingEmail = existingEmails.includes(email);
     // Email format validation
     const isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(
       email
@@ -66,6 +84,13 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector("#email-error").textContent =
         "Please provide a valid email address.";
       document.querySelector("#email-valid").textContent = "";
+    } else if (!isExistingEmail) {
+      emailInput.classList.add("is-invalid");
+      emailInput.classList.remove("was-validated");
+      emailInput.classList.remove("is-valid");
+      document.querySelector("#email-error").textContent =
+        "User with this email cannot be found.";
+      document.querySelector("#email-valid").textContent = "";
     } else {
       emailInput.classList.remove("is-invalid");
       emailInput.classList.add("is-valid");
@@ -74,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector("#email-valid").textContent = "Looks right!";
     }
 
-    sendButton.disabled = !isValid;
+    sendButton.disabled = !isValid || !isExistingEmail;
   };
 
   // Validate the email input on input and change events

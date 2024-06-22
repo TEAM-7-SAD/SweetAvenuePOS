@@ -80,6 +80,7 @@ $table-variants: map-merge($table-variants , $custom-table-variants);
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
+$input-focus-border-color: var(--bs-medium-brown);
 @import "../../vendor/node_modules/bootstrap/scss/bootstrap";
 
 .btn-outline-tiger-orange {
