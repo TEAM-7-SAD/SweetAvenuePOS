@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Redirect to src directory (excluding tests and vendor)
+RewriteCond %{REQUEST_URI} !^/(src|tests|vendor)/
+RewriteRule ^(.*)$ /src/$1 [L]
+
+# Set landing-page.php as the default index file
+DirectoryIndex login.php

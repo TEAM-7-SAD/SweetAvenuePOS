@@ -8,7 +8,7 @@ ini_set('session.use_strict_mode', 1);
 
 session_set_cookie_params([
     'lifetime' => 0,
-    'domain' => 'localhost',
+    'domain' => 'papayawhip-barracuda-494038.hostingersite.com',
     'path' => '/',
     'secure' => true,
     'httponly' => true
