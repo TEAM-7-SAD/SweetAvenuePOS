@@ -1,9 +1,11 @@
 <?php
 // Creates connection to the database
+const PREFIX = 'u155023598_';
+
 $server = "localhost";
-$username = "root";
-$password = "";
-$database = "sweet_avenue_db";
+$username = PREFIX . "root";
+$password = "P0SniReggie";
+$database = "sweet_avenue";
 
 $db = mysqli_connect($server, $username, $password, $database);
 
