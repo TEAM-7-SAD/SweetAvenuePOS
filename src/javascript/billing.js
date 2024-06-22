@@ -120,7 +120,7 @@ $(document).ready(function () {
     //     // code here
     //   },
     // });
-    printOrderConfirmation();
+    printOrderConfirmation(tenderedAmount);
     checkCart();
     $.ajax({
       type: "POST",
@@ -148,8 +148,8 @@ $(document).ready(function () {
     });
   });
 
-  function printOrderConfirmation() {
-    const printableContent = generatePrintableContent();
+  function printOrderConfirmation(tenderedAmount) {
+    const printableContent = generatePrintableContent(tenderedAmount);
     clearOrdersAndSubtotal();
 
     const printWindow = window.open("", "_blank");
@@ -162,14 +162,17 @@ $(document).ready(function () {
     $("#subtotalValue").text("0.00");
   }
 
-  function generatePrintableContent() {
+  function generatePrintableContent(tenderedAmount) {
     const processedBy = currentUser;
     const orderDetails = {
       items: [],
       subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
       discount: parseFloat($("#discountInput").val()),
       grandTotal: parseFloat($("#grandTotalValue").text()),
+      tenderedAmount: tenderedAmount
     };
+
+    const change = tenderedAmount - orderDetails.grandTotal;
 
     $("#orderCart tr").each(function () {
       const cells = $(this).find("td");
@@ -238,12 +241,14 @@ $(document).ready(function () {
                         <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(
                           2
                         )}</p>
-                        <p><strong>Discount:</strong> -${orderDetails.discount.toFixed(
+                        <p><strong>Discount:</strong> ${orderDetails.discount.toFixed(
                           2
                         )} %</p>
                         <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(
                           2
                         )}</p>
+                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(2)}</p>
+                        <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
                     </div>
                     <hr>
                     <p class="roboto-mono"><strong>Processed by: ${processedBy}</strong></p><br><br>'
@@ -260,13 +265,34 @@ $(document).ready(function () {
     return string.replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
+  function validateDiscountInput(event) {
+    const input = event.target.value;
+
+    // Remove non-digit characters
+    const cleanedInput = input.replace(/[^\d]/g, '');
+
+    // Reset input value
+    event.target.value = cleanedInput;
+
+    // Calculate grand total with the validated input
+    calculateGrandTotal();
+  }
+
+  // Set discount to 0 if the input is blank on blur
+  function resetDiscountIfBlank(event) {
+    if (event.target.value === '') {
+      event.target.value = 0;
+      calculateGrandTotal();
+    }
+  }
+
   // Calculate grand total
   function calculateGrandTotal() {
     const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
     let discount = parseFloat($("#discountInput").val()) || 0;
 
-    if (isNaN(discount) || discount < 0 || discount > 100) {
-      alert("Please enter a valid discount percentage (0-100).");
+    if (isNaN(discount) || discount < 0 || discount > 20) {
+      alert("Please enter a valid discount percentage (0-20).");
       $("#discountInput").val(0);
       discount = 0;
     }
@@ -275,7 +301,13 @@ $(document).ready(function () {
     $("#grandTotalValue").text(grandTotal);
   }
 
-  $("#discountInput").on("input", calculateGrandTotal);
+  // Attach the validation function to the input event
+  $("#discountInput").on("input", validateDiscountInput);
+
+  // Attach the reset function to the blur event
+  $("#discountInput").on("blur", resetDiscountIfBlank);
+
+  // Initial calculation of the grand total
   calculateGrandTotal();
 
   // Tendered amount validation and change calculation
@@ -325,3 +357,4 @@ $(document).ready(function () {
     });
   });
 });
+
