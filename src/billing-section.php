@@ -29,7 +29,7 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 
 <!-- Billing Section -->
 <div class="col-lg-5 ps-5 mb-4">
-    <div class="row bg-medium-brown rounded-3 mb-3">
+    <div class="row bg-medium-brown rounded-top">
         <div class="col-lg-12">
             <div class="text-light d-flex justify-content-center py-3">
                 <div class="pe-2 d-flex align-content-start flex-wrap">
@@ -42,8 +42,8 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
         </div>
     </div>
 
-    <div class="row bg-white shadow-sm border border-secondary-subtle rounded-3">
-        <div class="col m-4">
+    <div class="row bg-white shadow-sm border border-top-0 border-secondary-subtle rounded-bottom">
+        <div class="col mx-4 mt-3 mb-4">
             <form id="billingForm" method="post">         
                 <table class="table table-sm table-borderless">
                     <thead>
@@ -55,7 +55,7 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
                     </thead>
                 </table>
 
-                <div style="max-height: 336px; overflow-y: auto;">
+                <div style="max-height: 360px; overflow-y: auto;">
                     <table class="table table-hover table-striped table-transparent table-borderless table-sm">
                         <tbody id="orderCart">
                             <!--Lists of Clicked Products-->
