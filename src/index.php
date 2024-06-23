@@ -102,6 +102,11 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
           background: linear-gradient(to top left, #88531E, #88531E, #C57C47);
         }
       </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
+
+
   </head>
 
   <body class="bg-gainsboro">
@@ -259,60 +264,80 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
               </div>
           </div>
 
-          <!-- Third Quarter: Larger Container -->
-          <div class="col-md-12 mt-2"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 390px;"> <!-- Added box-shadow style for drop shadow -->
-                  <!-- Larger Container 2 -->
-                  <div class="p-2 mb-2 fw-semibold text-carbon-grey">
-                    WEEKLY TOP SOLD PRODUCTS
-                  </div>                              
-                  <div class="table-container">
-                  <table id="example" class="styled-table">
-                      <thead>
-                          <tr>
-                              <th>Top Pick</th>
-                              <th></th>
-                              <th>Popular Combo</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <?php
-                              // Run the apriori_algo.py script
-                              $output = shell_exec('python apriori/apriori_algo.py 2>&1');
+          <div class="row p-2">         
+            <div class="col-md-9"> <!-- Increased py-4 for more padding -->
+                <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
+                    <!-- Larger Container 3 -->
+                    <div class="p-2 mb-2 fw-semibold text-carbon-grey">
+                        WEEKLY TOP SOLD PRODUCTS
+                      </div>                              
+                      <div class="table-container">
+                        <table id="example" class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>Top Pick</th>
+                                    <th></th>
+                                    <th>Popular Combo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    // Run the apriori_algo.py script
+                                    $output = shell_exec('python apriori/apriori_algo.py 2>&1');
 
-                              // Fetch the specific item with ID 1 from the database
-                              $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
-                              $result = $db->query($sql);
+                                    // Fetch the specific item with ID 1 from the database
+                                    $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
+                                    $result = $db->query($sql);
 
-                              if ($row = $result->fetch_assoc()) {
-                                  echo "<tr>
-                                          <td>
-                                              <div class='product-info'>
-                                                  
-                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                  <span class='spaced-text'>" . htmlspecialchars($row["antecedent"]) . "</span>
-                                              </div>
-                                          </td>
-                                          <td class='plus-sign' style='color: #C57C47;';>+</td>
-                                          <td>
-                                              <div class='product-info'>
-                                                  
-                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                  <span class='spaced-text'>" . htmlspecialchars($row["consequent"]) . "</span>
-                                              </div>
-                                          </td>
-                                      </tr>";
-                              }
-
-                              $db->close();
-                          ?>
-                      </tbody>
-                  </table>
-              </div>
-
-              </div>
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>
+                                                    <td>
+                                                        <div class='product-info'>
+                                                            <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                            <span class='spaced-text'>" . htmlspecialchars($row["antecedent"]) . "</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class='plus-sign' style='color: #C57C47;'>+</td>
+                                                    <td>
+                                                        <div class='product-info'>
+                                                            <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                            <span class='spaced-text'>" . htmlspecialchars($row["consequent"]) . "</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>";
+                                        }
+                                    } else {
+                                        echo "<tr>
+                                                <td colspan='3' style='text-align: center;'>
+                                                    <img class='pt-2 card-img-top' src='images/empty.png' style='max-width: 250px; max-height: 250px;'>
+                                                    <br>
+                                                    Oops! It looks like there's no data available.
+                                                </td>
+                                              </tr>";
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-12 bg-white mb-3 rounded-3 p-4 mx-3" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;">
+                    <div class="p-2 mb-2 fw-semibold text-carbon-grey fs-4 text-center">
+                        Generate Report Here
+                    </div>
+                    <div class="col-auto text-center mb-3"> <!-- Centering the image -->
+                        <img src="images/arrow.png" height="175px" width="175px" alt="arrow">
+                    </div>
+                    <div class="text-center"> <!-- Centering the button -->
+                        <button onclick="downloadPDF()" style="background-color: #88531E; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                            Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -331,6 +356,210 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
     <script src="javascript/preloader.js"></script>
+
+
+    <script>
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const logo = "images/sweet-avenue-logo.png"; // Adjust the logo path as necessary
+
+    // Create a new PDF document
+    const doc = new jsPDF();
+
+    // Add logo
+    const img = new Image();
+    img.src = logo;
+    await new Promise(resolve => img.onload = resolve);
+    doc.addImage(img, 'PNG', 15, 10, 18, 18); // Adjust the size and position as needed
+
+    // Set font and colors
+    doc.setFont('Helvetica', 'ExtraBold');
+    doc.setFontSize(20);
+    doc.setTextColor('#88531E');
+    doc.text("SWEET AVENUE", 35, 20);
+    doc.setFontSize(16);
+    doc.text("COFFEE • BAKESHOP", 35, 25);
+
+    // User information
+    doc.setFontSize(18);
+    doc.setFont('Helvetica', 'bold');
+    const today = new Date();
+    const reportDateTime = `Reports For (${today.toLocaleString()})`;
+    const textWidth = doc.getStringUnitWidth(reportDateTime) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+    const center = (doc.internal.pageSize.width - textWidth) / 2;
+    doc.text(reportDateTime, center, 40);
+
+    // Sales and order details
+    doc.setFontSize(12);
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor('#000000');
+
+    doc.text("Generated by: ", 15, 50);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor('#88531E');
+    doc.text(`<?php echo $user; ?>`, 80, 50);
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor('#000000');
+    doc.text("Sales Today:", 15, 60);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor('#88531E');
+    doc.text(`₱<?php echo number_format($today_sale, 2); ?>`, 80, 60);
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor('#000000');
+    doc.text("Orders Today:", 15, 70);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor('#88531E');
+    doc.text(`<?php echo $order_today; ?>`, 80, 70);  // Remove formatting for order count
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor('#000000');
+    doc.text("Weekly Sales:", 15, 80);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor('#88531E');
+    doc.text(`₱<?php echo number_format($weekly_sale, 2); ?>`, 80, 80);
+    doc.setFont('Helvetica', 'semibold');
+    doc.text(`(<?php echo htmlspecialchars($week_duration); ?>)`, 15, 85);
+
+    doc.setFont('Helvetica', 'normal');
+    doc.setTextColor('#000000');
+    doc.text("Monthly Sales:", 15, 90);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor('#88531E');
+    doc.text(`₱<?php echo number_format($monthly_sale, 2); ?>`, 80, 90);
+    doc.setFont('Helvetica', 'semibold');
+    doc.text(`(<?php echo htmlspecialchars($date_range); ?>)`, 15, 95);
+
+
+    // Weekly Sales Table (fetched dynamically)
+    doc.setFontSize(14);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Weekly Sales", 15, 105);
+
+    // Parse the JSON data fetched from PHP
+    const weeklySalesData = <?php echo $json_sales_data; ?>;
+    const weeklySalesHeaders = ["Date", "Sales"];
+    const weeklySalesDataFormatted = weeklySalesData.map(entry => [
+        entry.date,
+        `₱${entry.total_sales.toFixed(2)}`
+    ]);
+
+    // Weekly Sales Table Styling
+    doc.autoTable({
+        startY: 110,
+        head: [weeklySalesHeaders],
+        body: weeklySalesDataFormatted,
+        theme: 'grid',
+        styles: {
+            textColor: '#88531E',
+            fillColor: '#88531E',
+            halign: 'center'
+        },
+        headStyles: {
+            fillColor: '#88531E',
+            textColor: '#ffffff'
+        },
+        bodyStyles: {
+            fillColor: '#ffffff',
+            textColor: '#88531E'
+        }
+    });
+
+    // Predicted Weekly Sales Table
+    doc.setFontSize(14);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Predicted Weekly Sales", 15, doc.previousAutoTable.finalY + 10);
+
+    // Fetching and using predicted sales data
+    const predictedSalesData = {
+        predictions: [
+            {"date": "2024-06-01", "sales_prediction": 4051.77},
+            {"date": "2024-06-02", "sales_prediction": 4299.14},
+            {"date": "2024-06-03", "sales_prediction": 4546.51},
+            {"date": "2024-06-04", "sales_prediction": 4793.89},
+            {"date": "2024-06-05", "sales_prediction": 5041.26},
+            {"date": "2024-06-06", "sales_prediction": 5288.63}
+        ],
+        sales_sum: 28021.2
+    };
+
+    const predictedWeeklySalesHeaders = ["Date", "Sales"];
+    const predictedWeeklySalesData = predictedSalesData.predictions.map(prediction => [
+        prediction.date,
+        `₱${prediction.sales_prediction.toFixed(2)}`
+    ]);
+
+    // Predicted Weekly Sales Table Styling
+    doc.autoTable({
+        startY: doc.previousAutoTable.finalY + 15,
+        head: [predictedWeeklySalesHeaders],
+        body: predictedWeeklySalesData,
+        theme: 'grid',
+        styles: {
+            textColor: '#88531E',
+            fillColor: '#88531E',
+            halign: 'center'
+        },
+        headStyles: {
+            fillColor: '#88531E',
+            textColor: '#ffffff'
+        },
+        bodyStyles: {
+            fillColor: '#ffffff',
+            textColor: '#88531E'
+        }
+    });
+
+    // Top Pick and Popular Combo Table
+    doc.setFontSize(14);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Weekly Top Sold Products", 15, doc.previousAutoTable.finalY + 10);
+
+    const topPickHeaders = ["Top Pick", "", "Popular Combo"];
+    const topPickData = [
+      <?php
+        // Fetch data for Top Pick and Popular Combo from the database
+        $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
+        $result = $db->query($sql);
+        if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+            echo "['" . addslashes($row["antecedent"]) . "', '+', '" . addslashes($row["consequent"]) . "'],";
+          }
+        } else {
+          echo "['No data available'],";
+        }
+      ?>
+    ];
+
+    // Top Pick and Popular Combo Table Styling
+    doc.autoTable({
+        startY: doc.previousAutoTable.finalY + 15,
+        head: [topPickHeaders],
+        body: topPickData,
+        theme: 'grid',
+        styles: {
+            textColor: '#88531E',
+            fillColor: '#ffffff',
+            halign: 'center'
+        },
+        headStyles: {
+            fillColor: '#ffffff',
+            textColor: '#88531E'
+        },
+        bodyStyles: {
+            fillColor: '#ffffff',
+            textColor: '#88531E'
+        }
+    });
+
+    // Save the PDF
+    doc.save('report.pdf');
+}
+</script>
+
+
+
 
   </body>
 </html>
