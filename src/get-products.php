@@ -52,6 +52,7 @@ if(isset($_POST['category'])) {
     if($foodResult->num_rows > 0) {
         // Output food products
         while($row = $foodResult->fetch_assoc()) {
+            $image = !empty($row['image']) ? $row['image'] : 'uploads/coffee-img-placeholder.png';
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="food" data-product-name="' . $row['item_name'] . '" data-product-serving="' . $row['serving'] . '" data-product-flavor="' . $row['flavor'] . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
@@ -66,7 +67,7 @@ if(isset($_POST['category'])) {
             }
             echo '</div>';
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="uploads/' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
+            echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
@@ -90,6 +91,7 @@ if(isset($_POST['category'])) {
     if($drinkResult->num_rows > 0) {
         // Output drink products
         while($row = $drinkResult->fetch_assoc()) {
+            $image = !empty($row['image']) ? $row['image'] : 'uploads/coffee-img-placeholder.png';
             echo '<div class="col">';
             echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="drink" data-product-name="' . $row['item_name'] . '" data-product-type-var="' . $row['type'] . '" data-product-size="' . $row['size'] . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
@@ -105,7 +107,7 @@ if(isset($_POST['category'])) {
                 }
             echo '</div>';
             echo '<div class="col pt-1 ps-4 pe-4">';
-            echo '<img src="uploads/' . $row['image'] . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
+            echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
@@ -207,8 +209,6 @@ input[type="number"] {
         </div>
     </div>
 </div>
-
-
 
 <script>
 $(document).ready(function() {
@@ -368,10 +368,11 @@ $(document).ready(function() {
                     // alert('Item added to order cart');
                     fetchCartItems();
                     calculateSubtotal();
+                    $('#product').modal('hide');
+                    console.log(data);
                 } else {
                     alert('Failed to add item to order cart');
                 }
-                $('#product').modal('hide');
             },
             error: function() {
                 alert('An error occurred. Please try again.');

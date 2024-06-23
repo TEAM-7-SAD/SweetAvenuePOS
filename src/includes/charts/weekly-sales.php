@@ -7,7 +7,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-timezone.php');
 $sales_data = array();
 $weekly_sales = 0;
 
-if(date('N') == 1) {
+if(date('N') == 7) {
 
   $prev_week_start = date('Y-m-d', strtotime('last Monday'));
   $prev_week_end = date('Y-m-d', strtotime('last Saturday'));

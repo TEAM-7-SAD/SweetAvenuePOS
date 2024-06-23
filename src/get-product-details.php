@@ -40,6 +40,7 @@ if (isset($_POST['productId']) && isset($_POST['productType'])) {
                     $uniqueKeys[] = $key; // Add the key to the list of seen keys
 
                     $productDetails[] = array(
+                        // 'id' => $row['item_id'],
                         'name' => $row['item_name'],
                         'servingOrType' => $row['serving'],
                         'flavorOrSize' => $row['flavor'],
@@ -76,6 +77,7 @@ if (isset($_POST['productId']) && isset($_POST['productType'])) {
                     $uniqueKeys[] = $key; // Add the key to the list of seen keys
 
                     $productDetails[] = array(
+                        // 'id' => $row['item_id'],
                         'name' => $row['item_name'],
                         'servingOrType' => $row['type'],
                         'flavorOrSize' => $row['size'],

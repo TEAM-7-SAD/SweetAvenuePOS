@@ -131,6 +131,21 @@ $input-focus-border-color: var(--bs-medium-brown);
     --bs-btn-active-border-color: #C57C47;
 }
 
+.pagination {
+    --bs-pagination-focus-box-shadow: var(--bs-medium-brown);
+    --bs-pagination-active-bg: var(--bs-medium-brown);
+    --bs-pagination-active-border-color: var(--bs-medium-brown);
+}
+
+:root,
+[data-bs-theme=light] {
+    --bs-link-color: : var(--bs-medium-brown);
+}
+
+.form-select:focus {
+    border-color: var(--bs-tiger-orange);
+    box-shadow: 0 0 0 0.0.5rem rgba(var(--bs-gainsboro-rgb));
+}
 .navbar {
     z-index: 10000;
 }
