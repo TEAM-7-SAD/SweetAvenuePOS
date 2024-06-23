@@ -103,6 +103,16 @@ $(document).ready(function () {
     const tenderedAmount = parseFloat($("#tenderedAmount").val());
     const change = tenderedAmount - parseFloat($("#grandTotalValue").text());
 
+    const items = [];
+    $("#orderCart tr").each(function () {
+        const itemData = $(this).find("td");
+        items.push({
+            id: itemData.data("item-id"),
+            quantity: parseInt(itemData.eq(0).find("p").text().trim().slice(1)),
+            price: parseFloat(itemData.eq(2).find(".text-carbon-grey").text().trim().replace(/[^\d.]/g, ""))
+        });
+    });
+
     $("#orderConfirmationModal").modal("hide");
     $("#receiptModal").modal("show");
 
@@ -112,39 +122,65 @@ $(document).ready(function () {
     $("#tenderedAmount").val("");
     $("#changeDisplay").html("");
 
-    // $.ajax({
-    //   url: "finish-order.php",
-    //   type: "POST",
-    //   dataType: "json",
-    //   success: function (response) {
-    //     // code here
-    //   },
-    // });
     printOrderConfirmation(tenderedAmount);
+
     checkCart();
+
     $.ajax({
-      type: "POST",
-      url: "clear_cart.php",
-      success: function (response) {
-        let data = JSON.parse(response);
-        if (data.status === "success") {
-          // Clear the subtotal
-          $("#subtotalValue").text("0.00");
-          // Clear the order cart display and maintain table striping
-          $("#orderCart")
-            .empty()
-            .append(
-              '<tr><td colspan="4" class="text-center text-muted table-striped">No items in cart</td></tr>'
-            );
-          $("#cancelOrder").on("click", clearCart);
-          $("#proceedOrder").prop("disabled", true);
-        } else {
-          alert(data.message); // Display error message
+        type: "POST",
+        url: "clear_cart.php",
+        success: function (response) {
+            let data = JSON.parse(response);
+            if (data.status === "success") {
+                $("#subtotalValue").text("0.00");
+                $("#orderCart")
+                    .empty()
+                    .append(
+                        '<tr><td colspan="4" class="text-center text-muted table-striped">No items in cart</td></tr>'
+                    );
+                $("#cancelOrder").on("click", clearCart);
+                $("#proceedOrder").prop("disabled", true);
+            } else {
+                alert(data.message); 
+            }
+        },
+        error: function () {
+            alert("An error occurred. Please try again.");
+        },
+    });
+
+    const subtotal = items.reduce((acc, item) => acc + (item.quantity * item.price), 0);
+
+    console.log("Sending data to server:", {
+      subtotal: subtotal,
+      discount: parseFloat($("#discountInput").val()) || 0,
+      grand_total: parseFloat($("#grandTotalValue").text()),
+      tendered_amount: tenderedAmount,
+      change: change,
+      items: JSON.stringify(items)
+    });
+
+    $.ajax({
+        url: "finish-order.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            subtotal: subtotal,
+            discount: parseFloat($("#discountInput").val()) || 0,
+            grand_total: parseFloat($("#grandTotalValue").text()),
+            tendered_amount: tenderedAmount,
+            change: change,
+            items: JSON.stringify(items)
+        },
+        success: function (response) {
+            if (response.success) {
+                console.log("Order processed successfully");
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
         }
-      },
-      error: function () {
-        alert("An error occurred. Please try again.");
-      },
     });
   });
 
