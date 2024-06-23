@@ -223,20 +223,20 @@ if(isset($_SESSION['id'])) {
                 <div class="modal-body">
                     <div id="errorContainer" class="alert alert-danger" style="display: none;" role="alert">
                         <div>
-                            <img src="images/x-circle.svg"> An error occurred.
+                            <img src="images/x-circle.svg"><span id="errorMessage">An error occurred.</span>
                         </div>
                     </div>
                     <form id="addProductForm" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png, .svg" required>
+                            <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png, .svg">
                         </div>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">Name<span style="color: red;"> *</span></label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="category" class="form-label">Category</label>
+                            <label for="category" class="form-label">Category<span style="color: red;"> *</span></label>
                             <select class="form-select" id="category" name="category" required>
                                 <option value="">Select Category</option>
                                 <?php
@@ -255,7 +255,7 @@ if(isset($_SESSION['id'])) {
                             <input type="text" class="form-control" id="flavorSize" name="flavorSize">
                         </div>
                         <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
+                            <label for="price" class="form-label">Price<span style="color: red;"> *</span></label>
                             <input type="number" class="form-control" id="price" name="price" min="0.01" step="0.01" required>
                             <div class="invalid-feedback">
                                 Price must be greater than zero.
@@ -285,13 +285,13 @@ if(isset($_SESSION['id'])) {
                     An error occurred.
                     </div>
                 </div>                  
-                    <form>
+                    <form id="addCategoryForm"> 
                         <div class="mb-3">
-                            <label for="categoryName" class="form-label">Category Name</label>
+                            <label for="categoryName" class="form-label">Category Name<span style="color: red;"> *</span></label>
                             <input type="text" class="form-control" id="categoryName" required>
                         </div>
                         <div class="mb-3">
-                            <label for="categoryType" class="form-label">Category Type</label>
+                            <label for="categoryType" class="form-label">Category Type<span style="color: red;"> *</span></label>
                             <select class="form-select" id="categoryType" required>
                                 <option value="food">Food</option>
                                 <option value="drink">Drink</option>
@@ -415,6 +415,13 @@ if(isset($_SESSION['id'])) {
       });
   </script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Reset the form and error message when the modal is closed
+    $('#addCategoryModal').on('hidden.bs.modal', function () {
+        resetCategoryForm();
+    });
+});
+
 function addNewCategory() {
     var categoryName = document.getElementById('categoryName').value;
     var categoryType = document.getElementById('categoryType').value;
@@ -449,18 +456,38 @@ function addNewCategory() {
         $('#errorContainerCategory').show().text('Please fill out all fields');
     }
 }
+function resetCategoryForm() {
+    document.getElementById('addCategoryForm').reset();
+    $('#errorContainerCategory').hide().text('');
+}
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('price').addEventListener('input', function () {
+    var priceInput = document.getElementById('price');
+
+    priceInput.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9.]/g, '');
         validatePrice();
+    });
+
+    priceInput.addEventListener('keypress', function (event) {
+        if (event.key === 'e' || event.key === 'E' || event.key === '-') {
+            event.preventDefault();
+        }
+    });
+
+    document.getElementById('saveChangesBtn').addEventListener('click', addNewProduct);
+    $('#addProductModal').on('hidden.bs.modal', function () {
+        resetForm();
     });
 });
 
 function validatePrice() {
     var priceInput = document.getElementById('price');
-    var price = parseFloat(priceInput.value);
-    if (price <= 0 || isNaN(price)) {
+    var price = priceInput.value.trim();
+    var priceNum = parseFloat(price);
+
+    if (!price || isNaN(priceNum) || priceNum <= 0) {
         priceInput.classList.add('is-invalid');
         return false;
     } else {
@@ -470,7 +497,31 @@ function validatePrice() {
 }
 
 function addNewProduct() {
+    // Clear previous error messages
+    document.getElementById('errorContainer').style.display = 'none';
+    document.getElementById('errorMessage').innerText = '';
+
+    // Get form elements
+    var name = document.getElementById('name').value.trim();
+    var category = document.getElementById('category').value.trim();
+    var priceInput = document.getElementById('price');
+    var price = priceInput.value.trim();
+
+    // Validate form fields
+    if (!name) {
+        showError('Name is required.');
+        return;
+    }
+    if (!category) {
+        showError('Category is required.');
+        return;
+    }
+    if (!price) {
+        showError('Price is required.');
+        return;
+    }
     if (!validatePrice()) {
+        showError('Price must be a valid number greater than zero.');
         return;
     }
 
@@ -482,22 +533,31 @@ function addNewProduct() {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
+        success: function (response) {
             var res = JSON.parse(response);
             if (res.success) {
                 $('#addProductModal').modal('hide');
                 alert('Product added successfully');
                 location.reload(); // Reload the page to see the new product
             } else {
-                document.getElementById('errorMessage').innerText = res.message;
-                document.getElementById('errorContainer').style.display = 'block';
+                showError(res.message);
             }
         },
-        error: function() {
-            document.getElementById('errorMessage').innerText = 'An error occurred while adding the product';
-            document.getElementById('errorContainer').style.display = 'block';
+        error: function () {
+            showError('An error occurred while adding the product');
         }
     });
+}
+
+function showError(message) {
+    document.getElementById('errorMessage').innerText = message;
+    document.getElementById('errorContainer').style.display = 'block';
+}
+function resetForm() {
+    document.getElementById('addProductForm').reset();
+    document.getElementById('errorContainer').style.display = 'none';
+    document.getElementById('errorMessage').innerText = '';
+    document.getElementById('price').classList.remove('is-invalid');
 }
 </script>
 <script>
