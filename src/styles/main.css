@@ -27,7 +27,7 @@
 }
 
 .spinner-wrapper {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #EBEBEB;
   position: fixed;
   top: 0;
   left: 0;
@@ -2221,7 +2221,7 @@ progress {
 .form-control:focus {
   color: var(--bs-body-color);
   background-color: var(--bs-body-bg);
-  border-color: #86b7fe;
+  border-color: var(--bs-medium-brown);
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
@@ -12737,6 +12737,10 @@ textarea.form-control-lg {
   --bs-btn-active-color: #ffffff;
   --bs-btn-active-bg: #C57C47;
   --bs-btn-active-border-color: #C57C47;
+}
+
+.navbar {
+  z-index: 10000;
 }
 
 .table-container {

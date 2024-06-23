@@ -49,20 +49,18 @@ $custom-table-variants: (
     font-weight: 500;
 }
 .login-form-gradient {
-    // background: linear-gradient(to bottom left, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
-        background-color: #fcfcfc;
+    background-color: #fcfcfc;
     padding: 40px;
     border-radius: 10px;
 }
 
 .password-reset-form-gradient {
-    // background: linear-gradient(to top right, #e7d5c9, #FFF0E9, #FFF0E9, #f4e6dc);
-        background-color: #fcfcfc;
+    background-color: #fcfcfc;
     padding: 40px;
     border-radius: 10px;
 }
 .spinner-wrapper {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: #EBEBEB;
     position: fixed;
     top: 0;
     left: 0;
@@ -82,6 +80,7 @@ $table-variants: map-merge($table-variants , $custom-table-variants);
 
 $theme-colors: map-merge($theme-colors, $custom-colors);
 
+$input-focus-border-color: var(--bs-medium-brown);
 @import "../../vendor/node_modules/bootstrap/scss/bootstrap";
 
 .btn-outline-tiger-orange {
@@ -132,6 +131,9 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
     --bs-btn-active-border-color: #C57C47;
 }
 
+.navbar {
+    z-index: 10000;
+}
 .table-container {
     width: 100%;
     overflow-x: hidden;

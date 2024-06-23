@@ -1,3 +1,4 @@
+// Bootstrap form validation
 (() => {
   "use strict";
 
@@ -20,18 +21,74 @@
   });
 })();
 
-// Disallow whitespaces from input fields
-function avoidSpace(event) {
-  if (event.key === " ") {
-    event.preventDefault();
-  }
-}
-
 $(document).ready(function () {
-  var table = $("#example").DataTable();
+  const table = $("#example").DataTable();
 
   const addAccountButton = document.querySelector("#saveChangesBtn");
   addAccountButton.disabled = true;
+
+  const resetAddAccountForm = () => {
+    // Last Name
+    $("#errorLastName").text("");
+    $("#lastName").removeClass("is-invalid is-valid was-validated");
+    $("#validLastName").text("");
+
+    // First Name
+    $("#errorFirstName").text("");
+    $("#firstName").removeClass("is-invalid is-valid was-validated");
+    $("#validFirstName").text("");
+
+    // Middle Name
+    $("#errorMiddleName").text("");
+    $("#middleName").removeClass("is-invalid is-valid was-validated");
+    $("#validMiddleName").text("");
+
+    // Username
+    $("#errorUsername").text("");
+    $("#username").removeClass("is-invalid is-valid was-validated");
+    $("#validUsername").text("");
+
+    // Email
+    $("#errorEmailAddress").text("");
+    $("#email").removeClass("is-invalid is-valid was-validated");
+    $("#validEmailAddress").text("");
+
+    // Password
+    $("#errorPassword").text("");
+    $("#password").removeClass("is-invalid is-valid was-validated");
+    $("#validPassword").text("");
+
+    // Button and form state
+    $("#saveChangesBtn").prop("disabled", true);
+    $("#addAccountForm")[0].reset();
+  };
+
+  $("#cancelAddAccountBtn, #closeAddAccountBtn").on("click", function () {
+    resetAddAccountForm();
+  });
+
+  function preventLeadingSpace(event) {
+    const input = event.target;
+    if (input.value.startsWith(" ")) {
+      input.value = input.value.trim();
+    }
+    input.value = input.value.replace(/\s{2,}/g, " ");
+  }
+
+  const preventSpace = (event) => {
+    let input = event.target;
+    let value = $(input).val();
+    value = value.replace(/\s/g, "");
+    $(input).val(value);
+  };
+
+  $("#lastName, #firstName, #middleName").on("input", function (event) {
+    preventLeadingSpace(event);
+  });
+
+  $("#username, #email, #password").on("input", function (event) {
+    preventSpace(event);
+  });
 
   // Function to check if all input fields are valid
   function areAllInputsValid() {
@@ -62,14 +119,20 @@ $(document).ready(function () {
     errorMessage,
     errorContainer,
     validMessage,
-    validContainer
+    validContainer,
+    isTaken = false,
+    takenMessage = "",
+    takenErrorContainer = null
   ) {
-
     let isValid = regex.test(input.value);
 
     // Check for first character not being whitespace
-    if (input === $("#lastName")[0] || input === $("#firstName")[0] || input === $("#middleName")[0]) {
-      isValid = isValid && !input.value.startsWith(' ');
+    if (
+      input === $("#lastName")[0] ||
+      input === $("#firstName")[0] ||
+      input === $("#middleName")[0]
+    ) {
+      isValid = isValid && !input.value.startsWith(" ");
     }
 
     if (!isValid) {
@@ -77,6 +140,12 @@ $(document).ready(function () {
       input.classList.remove("was-validated");
       input.classList.remove("is-valid");
       errorContainer.textContent = errorMessage;
+      validContainer.textContent = "";
+    } else if (isTaken) {
+      input.classList.add("is-invalid");
+      input.classList.remove("was-validated");
+      input.classList.remove("is-valid");
+      takenErrorContainer.textContent = takenMessage;
       validContainer.textContent = "";
     } else {
       input.classList.remove("is-invalid");
@@ -130,24 +199,34 @@ $(document).ready(function () {
   });
 
   $("#username").on("input change", function () {
+    let username = $("#username").val().trim();
+    const isUsernameTaken = takenUsernames.includes(username);
     validateInput(
       this,
       /^[^\s]{1,50}$/,
       "Please provide a valid username.",
       document.getElementById("errorUsername"),
       "Username looks good!",
-      document.getElementById("validUsername")
+      document.getElementById("validUsername"),
+      isUsernameTaken,
+      "This username is already taken.",
+      document.getElementById("errorUsername")
     );
   });
 
   $("#email").on("input change", function () {
+    let email = $("#email").val().trim();
+    const isEmailTaken = takenEmails.includes(email);
     validateInput(
       this,
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "Please provide a valid email address.",
       document.getElementById("errorEmailAddress"),
       "Email address looks good!",
-      document.getElementById("validEmailAddress")
+      document.getElementById("validEmailAddress"),
+      isEmailTaken,
+      "This email address is already taken.",
+      document.getElementById("errorEmailAddress")
     );
   });
 
@@ -155,7 +234,7 @@ $(document).ready(function () {
     validateInput(
       this,
       /^[^\s]{8,20}$/,
-      "Please provide a valid password.",
+      "Password must range 8-20 characters.",
       document.getElementById("errorPassword"),
       "Password looks good!",
       document.getElementById("validPassword")
@@ -172,39 +251,33 @@ $(document).ready(function () {
   // Submit button click handler
   $("#saveChangesBtn").click(function (event) {
     event.preventDefault();
-    let form = $("#addAccountForm")[0];
-    let isValid = form.checkValidity();
-    if (!isValid) {
-      event.stopPropagation();
-    } else {
-      // Serialize the form data
-      var formData = $("#addAccountForm").serialize();
+    // Serialize the form data
+    var formData = $("#addAccountForm").serialize();
 
-      // Send an AJAX request
-      $.ajax({
-        url: "add-account.php",
-        type: "POST",
-        data: formData,
-        success: function (response) {
-          // Insert the new row into the table
-          table.row.add($(response)).draw();
+    $.ajax({
+      url: "add-account.php",
+      type: "POST",
+      data: formData,
+      success: function (response) {
+        // Insert the new row into the table
+        table.row.add($(response)).draw();
 
-          // Close the modal
-          $("#addAccountsModal").modal("hide");
+        // Close the modal
+        $("#addAccountsModal").modal("hide");
+        resetAddAccountForm();
 
-          // Show success message
-          $("#successMessage")
-            .text("Account added successfully")
-            .fadeIn()
-            .delay(2000)
-            .fadeOut();
-        },
-        error: function (xhr, status, error) {
-          // Handle errors if any
-          console.error(xhr.responseText);
-        },
-      });
-    }
+        // Show success message
+        $("#successMessage")
+          .text("Account added successfully")
+          .fadeIn()
+          .delay(2000)
+          .fadeOut();
+      },
+      error: function (xhr, status, error) {
+        // Handle errors if any
+        console.error(xhr.responseText);
+      },
+    });
 
     // Add Bootstrap validation class
     form.classList.add("was-validated");

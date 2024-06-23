@@ -5,6 +5,23 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if(isset($_SESSION['id'])) {
+  // Calculate total sales amount
+  $totalSales = 0;
+
+  $sql = "SELECT 
+              transaction.*,
+              CONCAT(user.first_name, ' ', user.middle_name, ' ', user.last_name) AS full_name,
+              DATE(transaction.timestamp) AS transaction_date,
+              TIME_FORMAT(transaction.timestamp, '%h:%i %p') AS transaction_time
+          FROM 
+              transaction
+          JOIN 
+              user ON transaction.user_id = user.id;";
+  $result = $db->query($sql);
+
+  while($row = $result->fetch_assoc()) {
+      $totalSales += $row['total_amount'];
+  }
 
 ?>
 
@@ -34,84 +51,83 @@ if(isset($_SESSION['id'])) {
     ?>
 
     <!--Main Container-->
-      <div class="container-fluid px-0 mb-5">
-        <div class="overflow-hidden flex-column">
-          <div class="row overflow-y-auto">
+      <div class="container mb-5">
 
-                  <!--Main Content-->
-              <div class="col">
-                    <div class="container main-content mt-5 mb-4">
-                    <h3 class="text-medium-brown fw-bolder text-capitalize">Sales</h3>  
-                    </div>
-                    <div class="container px-5 py-1 bg-white shadow rounded-3">
-                      <div class="container">
-                        <div class="row justify-content-end">
-                          <div class="col-md-4 mt-4 text-center">
-                            <div class="container p-2 d-flex justify-content-end">
-                              <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-tiger-orange text-white">Deselect All</button>
-                              <button type="button" class="btn btn-carbon-grey fw-semibold px-3 py-2 view-sale">View</button>
-                              <div class="mx-2"></div>
-                              <button class="btn btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <table id="example" class="table">
-                          <thead>
-                              <tr>
-                                  <th></th>
-                                  <th>Date</th>
-                                  <th>Time</th>
-                                  <th>Processed by</th>
-                                  <th>Total</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                          <?php 
-                          $sql = "SELECT 
-                                      transaction.*,
-                                      CONCAT(user.first_name, ' ', user.middle_name, ' ', user.last_name) AS full_name,
-                                      DATE(transaction.timestamp) AS transaction_date,
-                                      TIME_FORMAT(transaction.timestamp, '%h:%i %p') AS transaction_time
-                                  FROM 
-                                      transaction
-                                  JOIN 
-                                      user ON transaction.user_id = user.id;";
-                          $result = $db->query($sql);
-
-                          while($row = $result->fetch_assoc()) {
-                              echo '
-                              <tr data-id="'.$row['id'].'" class="selectable">
-                                  <td><input type="checkbox" class="sale-checkbox" data-sale-id="'.$row['id'].'"></td>
-                                  <td>'.$row['transaction_date'].'</td>
-                                  <td>'.$row['transaction_time'].'</td>
-                                  <td>'.$row['full_name'].'</td>
-                                  <td>'.$row['total_amount'].'</td>
-                              </tr>
-                              ';
-                          }                  
-                          ?>
-
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                                <td colspan="3"><strong>Total Sales:</strong></td>
-                                <td colspan="5"><strong>0.00</strong></td> 
-                            </tr>
-                        </tfoot>
-                      </table>
-                      <br>
-                    </div>    
+        <!--Main Content-->
+        <div class="col-lg-12">
+          <div class="main-content">
+            <div class="input-group bg-medium-brown py-3 mt-5 d-flex justify-content-between align-items-center rounded-top">
+              <div class="text-light fs-4 fw-bold ps-5">SALES</div>
+              <div class="row">
+                <div class="col me-5 align-items-end">
+                  <div class="container d-flex justify-content-end">
+                    <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-sm btn-tiger-orange text-white">Deselect All</button>
+                    <button type="button" class="btn btn-sm py-2 px-3 text-carbon-grey btn-light fw-semibold view-sale">View</button>
+                    <div class="mx-2"></div>
+                    <button class="btn btn-sm btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button>
+                  </div>
                 </div>
-              </div> 
+              </div>  
+            </div>
           </div>
-        </div>   
+          <div class="container px-5 py-4 bg-white shadow rounded-bottom">
+
+            <table id="example" class="table table-hover table-striped table-borderless mt-4">
+                <thead>
+                    <tr>
+                        <th class="text-medium-brown fw-semibold font-15"></th>
+                        <th class="text-start text-medium-brown fw-semibold font-15">Date</th>
+                        <th class="text-medium-brown fw-semibold font-15">Time</th>
+                        <th class="text-medium-brown fw-semibold font-15">Processed by</th>
+                        <th class="text-medium-brown fw-semibold font-15">Receipt</th>
+                        <th class="text-start text-medium-brown fw-semibold font-15">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php 
+                $sql = "SELECT 
+                            transaction.*,
+                            CONCAT(user.first_name, ' ', user.middle_name, ' ', user.last_name) AS full_name,
+                            DATE(transaction.timestamp) AS transaction_date,
+                            TIME_FORMAT(transaction.timestamp, '%h:%i %p') AS transaction_time
+                        FROM 
+                            transaction
+                        JOIN 
+                            user ON transaction.user_id = user.id;";
+                $result = $db->query($sql);
+
+                while($row = $result->fetch_assoc()) {
+                    echo '
+                    <tr data-id="'.$row['id'].'" class="selectable">
+                        <td><input type="checkbox" class="sale-checkbox" data-sale-id="'.$row['id'].'"></td>
+                        <td class="text-start text-carbon-grey fw-medium font-14">'.$row['transaction_date'].'</td>
+                        <td class="text-carbon-grey fw-medium font-14">'.$row['transaction_time'].'</td>
+                        <td class="text-carbon-grey fw-medium font-14">'.$row['full_name'].'</td>
+                        <td class="text-carbon-grey fw-medium font-14">'.$row['receipt'].'</td>
+                        <td class="text-start text-carbon-grey fw-medium font-14">'.$row['total_amount'].'</td>
+                    </tr>
+                    ';
+                }       
+                ?>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" class="text-medium-brown"><strong>Total Sales:</strong></td>
+                    <td colspan="3" class="text-medium-brown text-end pe-5"><strong id="totalSalesAmount"><?php echo number_format($totalSales, 2); ?></strong></td>
+                </tr>
+              </tfoot>
+            </table>
+            <br>
+          </div>    
+        </div> 
+  
       </div>
     </div> 
 
     <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
       aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation</h5>
@@ -131,7 +147,7 @@ if(isset($_SESSION['id'])) {
 
 <!-- Success Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="successModalLabel">Success</h5>
@@ -148,7 +164,7 @@ if(isset($_SESSION['id'])) {
 
 <!-- Sale Details Modal -->
 <div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-labelledby="saleDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="saleDetailsModalLabel">Sale Details</h5>
