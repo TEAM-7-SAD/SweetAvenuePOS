@@ -20,6 +20,17 @@ if(isset($_SESSION['id'])) {
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+
+    <!--jQuery via CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!--Bootstrap JavaScript-->
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!--Custom JavaScript/jQuery-->
+    <script src="javascript/get-products.js" defer></script>
+    <script src="javascript/billing.js" defer></script>
+    <script src="javascript/preloader.js" defer></script>
 </head>
 
   
@@ -101,16 +112,6 @@ if(isset($_SESSION['id'])) {
       </div>
     </div>
     <!--End of Main Content-->
-    
-
-    <!--jQuery via CDN-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!--Bootstrap JavaScript-->
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!--Custom JavaScript/jQuery-->
-    <script src="javascript/get-products.js"></script>
-    <script src="javascript/billing.js"></script>
-    <script src="javascript/preloader.js"></script>
 
     <script>
       $(document).ready(function() {
@@ -134,28 +135,6 @@ if(isset($_SESSION['id'])) {
                 }
             });
         });
-
-        // $('#proceedOrder').on('click', function() {
-        // $.ajax({
-        //         type: 'POST',
-        //         url: 'clear_cart.php',
-        //         success: function(response) {
-        //             let data = JSON.parse(response);
-        //             if (data.status === 'success') {
-        //                 // Clear the subtotal
-        //                 $('#subtotalValue').text('0.00');
-        //                 // Clear the order cart display and maintain table striping
-        //                 $('#orderCart').empty().append('<tr><td colspan="4" class="text-center text-muted table-striped">No items in cart</td></tr>');
-        //                 $('#orderConfirmationModal').empty().append('');
-        //             } else {
-        //                 alert(data.message); // Display error message
-        //             }
-        //         },
-        //         error: function() {
-        //             alert('An error occurred. Please try again.');
-        //         }
-        //     });
-        // });
       });
     </script>
 

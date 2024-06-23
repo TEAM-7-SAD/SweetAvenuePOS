@@ -4,6 +4,7 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 include_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // $productId = $_GET['product_id'];
     $productName = $_POST['product_name'];
     $servingOrType = $_POST['serving_or_type'];
     $flavorOrSize = $_POST['flavor_or_size'];
@@ -11,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = $_POST['price'];
 
     $orderItem = [
+        // 'product_id' => $productId,
         'product_name' => $productName,
         'serving_or_type' => $servingOrType,
         'flavor_or_size' => $flavorOrSize,
@@ -32,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if the request is an AJAX request
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-        // Return the updated subtotal as JSON for AJAX requests
+        
+        // , 'productId' => $productId, 'data' => $_SESSION['order_cart']
         echo json_encode(['status' => 'success', 'subtotal' => $subtotal]);
     } else {
         // Redirect back to create-order.php for non-AJAX requests

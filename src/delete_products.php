@@ -5,11 +5,6 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
 
 header('Content-Type: application/json');
 
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $response = ['success' => false];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
