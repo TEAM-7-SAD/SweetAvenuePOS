@@ -92,7 +92,9 @@ if(isset($_SESSION['id'])) {
                         FROM 
                             transaction
                         JOIN 
-                            user ON transaction.user_id = user.id;";
+                            user ON transaction.user_id = user.id
+                        ORDER BY
+                            transaction.timestamp DESC;";
                 $result = $db->query($sql);
 
                 while($row = $result->fetch_assoc()) {

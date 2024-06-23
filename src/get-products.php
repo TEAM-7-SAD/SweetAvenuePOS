@@ -210,8 +210,6 @@ input[type="number"] {
     </div>
 </div>
 
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
     var productData;
@@ -370,10 +368,11 @@ $(document).ready(function() {
                     // alert('Item added to order cart');
                     fetchCartItems();
                     calculateSubtotal();
+                    $('#product').modal('hide');
+                    console.log(data);
                 } else {
                     alert('Failed to add item to order cart');
                 }
-                $('#product').modal('hide');
             },
             error: function() {
                 alert('An error occurred. Please try again.');

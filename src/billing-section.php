@@ -1,6 +1,7 @@
 <?php
 include_once str_replace('/', DIRECTORY_SEPARATOR, 'includes/file-utilities.php');
 require_once FileUtils::normalizeFilePath('includes/session-handler.php');
+require_once FileUtils::normalizeFilePath('includes/error-reporting.php');
 ?>
 
 <style>
@@ -91,44 +92,56 @@ require_once FileUtils::normalizeFilePath('includes/session-handler.php');
                 <p>Review the order:</p>
                 <!-- Order details go here -->
                 <div style="max-height: 200px; overflow-y: auto;">
-                    <table class="table table-hover table-striped table-borderless table-transparent table-sm" role="button">
-                        <tbody data-bs-toggle="modal" data-bs-target="#cartProduct" id="orderReview">
-                            <!-- Populate the item -->
-                        </tbody> 
-                    </table>  
-                </div>
-                <hr>
-                <table class="table table-sm table-transparent table-borderless mt-5">
-                    <!-- Subtotal -->
-                    <tr>
-                        <td>Subtotal:</td>
-                        <td class="text-carbon-grey fw-bold text-end pe-2" id="orderSubtotalReview"></td>
-                    </tr>
-                    <!--Discount-->
-                    <tr>
-                        <td>Discount (%):</td>
-                        <td><input class="text-end text-carbon-grey" type="number" id="discountInput" min="0" max="100" step="0.01" value="0" oninput="calculateGrandTotal()"></td>
-                    </tr>
-                    <!--Grand Total-->
-                    <tr class="fw-bolder h5 text-capitalize">
-                        <td class="text-carbon-grey">Grand Total:</td>
-                        <td class="text-carbon-grey" id="grandTotalValue"></td>
-                    </tr>
-                </table>
-                <!-- Tendered amount input -->
-                <div class="mb-3" style="display: flex; align-items: center; gap: 10px;">
-                    <label for="tenderedAmount" class="form-label" style="margin: 0;"><strong>Tendered:<span
-                            style="color: red;"> *</span></strong></label>
-                    <input type="number" class="form-control" id="tenderedAmount" placeholder="Enter amount tendered" style="max-width: 280px;">
-                </div>
-                <!-- Change calculation -->
-                <div id="changeDisplay">
-                    <!-- Change amount will be displayed here -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                <button type="button" class="btn btn-tiger-orange fs-6 fw-semibold py-2" id="proceedOrder">Proceed</button>
+                    <form method="post">
+                        <table class="table table-hover table-striped table-borderless table-transparent table-sm" role="button">
+                                <tbody data-bs-toggle="modal" data-bs-target="#cartProduct" id="orderReview">
+                                    <!-- Populate the item -->
+                                </tbody> 
+                            </table>  
+                        </div>
+                        <hr>
+                        <table class="table table-sm table-transparent table-borderless mt-5">
+                            <!-- Subtotal -->
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td class="text-carbon-grey fw-bold text-end pe-2" id="orderSubtotalReview"></td>
+                            </tr>
+                            <!--Discount-->
+                            <tr>
+                                <td>Discount (%):</td>
+                                <td><input class="form-control text-carbon-grey shadow-sm" type="number" id="discountInput" min="0" max="100" step="0.01" placeholder="Enter discount" oninput="calculateGrandTotal()"></td>
+                            </tr>
+                            <!--Grand Total-->
+                            <tr class="fw-bolder h5 text-capitalize">
+                                <td class="text-carbon-grey">Grand Total:</td>
+                                <td class="text-carbon-grey text-end" id="grandTotalValue"></td>
+                            </tr>
+                            <tr>
+                                <div class="mb-3" style="display: flex; align-items: center; gap: 10px;">
+                                    <td>
+                                    <label for="tenderedAmount" class="form-label pe-5"><strong>Tendered:<span style="color: red;"> *</span></strong></label>
+                                    </td>
+                                    <td>
+                                    <input type="number" class="form-control shadow-sm" id="tenderedAmount" placeholder="Enter amount tendered" style="max-width: 280px;">
+                                    </td>
+                                </div>
+                            </tr>
+                        </table>
+                        <!-- Tendered amount input -->
+
+                        <!-- Change calculation -->
+                         <td>
+                         <div id="changeDisplay">
+                            <!-- Change amount will be displayed here -->
+                        </div>
+                         </td>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                        <button type="button" class="btn btn-tiger-orange fs-6 fw-semibold py-2" id="proceedOrder">Proceed</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

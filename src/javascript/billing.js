@@ -24,7 +24,8 @@ $(document).ready(function () {
           // Populate order review section and subtotal
           var orderItemsHtml = "";
           response.order_cart.forEach(function (item) {
-            orderItemsHtml += "<tr>";
+            orderItemsHtml += '<tr data-item-id="' + item.id + '">';
+            item.price = parseFloat(item.price);
             orderItemsHtml += '<td class="align-middle ps-2 pe-3">';
             orderItemsHtml +=
               '<p class="mb-0 text-muted fw-semibold font-14">x' +
@@ -52,15 +53,16 @@ $(document).ready(function () {
             orderItemsHtml += '<td class="align-middle text-end pe-2">';
             orderItemsHtml +=
               '<div class="mb-0 fw-semibold fs-6 text-carbon-grey font-14">' +
-              item.price +
+              item.price.toFixed(2) +
               "</div>";
             orderItemsHtml += "</td>";
             orderItemsHtml += "</tr>";
+            console.log(item.id);
           });
 
           $("#orderReview").html(orderItemsHtml);
-          $("#orderSubtotalReview").text(response.subtotal);
-          $("#grandTotalValue").text(response.subtotal);
+          $("#orderSubtotalReview").text(response.subtotal.toFixed(2));
+          $("#grandTotalValue").text(response.subtotal.toFixed(2));
 
           // Show the modal
           $("#orderConfirmationModal").modal("show");
@@ -103,6 +105,92 @@ $(document).ready(function () {
     const tenderedAmount = parseFloat($("#tenderedAmount").val());
     const change = tenderedAmount - parseFloat($("#grandTotalValue").text());
 
+    const items = [];
+    $("#orderCart tr").each(function () {
+      const itemId = $(this).data("item-id");
+      const quantity = parseFloat(
+        $(this).find("td:eq(0) p").text().trim().slice(1)
+      );
+      const price = parseFloat(
+        $(this)
+          .find("td:eq(2) .text-carbon-grey")
+          .text()
+          .trim()
+          .replace(/[^\d.]/g, "")
+      );
+
+      items.push({
+        id: itemId,
+        quantity: quantity,
+        price: price,
+      });
+    });
+
+    const subtotal = items.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0
+    );
+
+    // Log items to verify
+    console.log("Items:", items);
+
+    // Log data being sent
+    console.log("Sending data to server:", {
+      subtotal: subtotal,
+      discount: parseFloat($("#discountInput").val()) || 0,
+      grand_total: parseFloat($("#grandTotalValue").text()),
+      tendered_amount: tenderedAmount,
+      change: change,
+      items: JSON.stringify(items),
+    });
+
+    $.ajax({
+      url: "finish-order.php",
+      type: "POST",
+      dataType: "json",
+      data: {
+        subtotal: subtotal,
+        discount: parseFloat($("#discountInput").val()) || 0,
+        grand_total: parseFloat($("#grandTotalValue").text()),
+        tendered_amount: tenderedAmount,
+        change: change,
+        items: JSON.stringify(items),
+      },
+      success: function (response) {
+        if (response.success) {
+          console.log("Order processed successfully");
+          $.ajax({
+            type: "POST",
+            url: "clear_cart.php",
+            success: function (response) {
+              let data = JSON.parse(response);
+              if (data.status === "success") {
+                $("#subtotalValue").text("0.00");
+                $("#orderCart")
+                  .empty()
+                  .append(
+                    '<tr><td colspan="4" class="text-center text-muted table-striped">No items in cart</td></tr>'
+                  );
+                $("#cancelOrder").on("click", clearCart);
+                $("#proceedOrder").prop("disabled", true);
+                checkCart();
+              } else {
+                alert(data.message);
+              }
+            },
+            error: function () {
+              alert("An error occurred. Please try again.");
+            },
+          });
+        } else {
+          alert("Error: " + response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error:", error);
+      },
+    });
+
     $("#orderConfirmationModal").modal("hide");
     $("#receiptModal").modal("show");
 
@@ -112,40 +200,9 @@ $(document).ready(function () {
     $("#tenderedAmount").val("");
     $("#changeDisplay").html("");
 
-    // $.ajax({
-    //   url: "finish-order.php",
-    //   type: "POST",
-    //   dataType: "json",
-    //   success: function (response) {
-    //     // code here
-    //   },
-    // });
     printOrderConfirmation(tenderedAmount);
+
     checkCart();
-    $.ajax({
-      type: "POST",
-      url: "clear_cart.php",
-      success: function (response) {
-        let data = JSON.parse(response);
-        if (data.status === "success") {
-          // Clear the subtotal
-          $("#subtotalValue").text("0.00");
-          // Clear the order cart display and maintain table striping
-          $("#orderCart")
-            .empty()
-            .append(
-              '<tr><td colspan="4" class="text-center text-muted table-striped">No items in cart</td></tr>'
-            );
-          $("#cancelOrder").on("click", clearCart);
-          $("#proceedOrder").prop("disabled", true);
-        } else {
-          alert(data.message); // Display error message
-        }
-      },
-      error: function () {
-        alert("An error occurred. Please try again.");
-      },
-    });
   });
 
   function printOrderConfirmation(tenderedAmount) {
@@ -169,7 +226,7 @@ $(document).ready(function () {
       subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
       discount: parseFloat($("#discountInput").val()),
       grandTotal: parseFloat($("#grandTotalValue").text()),
-      tenderedAmount: tenderedAmount
+      tenderedAmount: tenderedAmount,
     };
 
     const change = tenderedAmount - orderDetails.grandTotal;
@@ -247,7 +304,9 @@ $(document).ready(function () {
                         <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(
                           2
                         )}</p>
-                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(2)}</p>
+                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(
+                          2
+                        )}</p>
                         <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
                     </div>
                     <hr>
@@ -259,31 +318,6 @@ $(document).ready(function () {
                 </body>
             </html>
         `;
-  }
-
-  function capitalizeEachWord(string) {
-    return string.replace(/\b\w/g, (char) => char.toUpperCase());
-  }
-
-  function validateDiscountInput(event) {
-    const input = event.target.value;
-
-    // Remove non-digit characters
-    const cleanedInput = input.replace(/[^\d]/g, '');
-
-    // Reset input value
-    event.target.value = cleanedInput;
-
-    // Calculate grand total with the validated input
-    calculateGrandTotal();
-  }
-
-  // Set discount to 0 if the input is blank on blur
-  function resetDiscountIfBlank(event) {
-    if (event.target.value === '') {
-      event.target.value = 0;
-      calculateGrandTotal();
-    }
   }
 
   // Calculate grand total
@@ -299,6 +333,31 @@ $(document).ready(function () {
 
     const grandTotal = (subtotal - subtotal * (discount / 100)).toFixed(2);
     $("#grandTotalValue").text(grandTotal);
+  }
+
+  function capitalizeEachWord(string) {
+    return string.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  function validateDiscountInput(event) {
+    const input = event.target.value;
+
+    // Remove non-digit characters
+    const cleanedInput = input.replace(/[^\d]/g, "");
+
+    // Reset input value
+    event.target.value = cleanedInput;
+
+    // Calculate grand total with the validated input
+    calculateGrandTotal();
+  }
+
+  // Set discount to 0 if the input is blank on blur
+  function resetDiscountIfBlank(event) {
+    if (event.target.value === "") {
+      event.target.value = 0;
+      calculateGrandTotal();
+    }
   }
 
   // Attach the validation function to the input event
@@ -357,4 +416,3 @@ $(document).ready(function () {
     });
   });
 });
-
