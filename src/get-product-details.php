@@ -17,8 +17,8 @@ if (isset($_POST['productId']) && isset($_POST['productType'])) {
         // Query food product details from the database
         $foodSql = "SELECT 
                         fi.name AS item_name, 
-                        fv.serving AS serving, 
-                        fv.flavor AS flavor, 
+                        IFNULL(fv.serving, 'Default') AS serving, 
+                        IFNULL(fv.flavor, 'Default') AS flavor, 
                         fi.id AS item_id, 
                         MIN(fv.price) AS price 
                     FROM 
@@ -56,7 +56,7 @@ if (isset($_POST['productId']) && isset($_POST['productType'])) {
         $drinkSql = "SELECT 
                         di.name AS item_name, 
                         IFNULL(dv.type, 'Default') AS type, 
-                        dv.size AS size, 
+                        IFNULL(dv.size, 'Default') AS size, 
                         di.id AS item_id, 
                         dv.price AS price 
                     FROM 

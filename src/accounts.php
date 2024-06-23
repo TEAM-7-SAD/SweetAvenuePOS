@@ -53,7 +53,7 @@ if(isset($_SESSION['id'])) {
     ?>
 
     <!--Main Container-->
-    <div class="container">
+    <div class="container mb-5">
 
       <!--Main Content-->
       <div class="col-lg-12">
