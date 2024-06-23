@@ -162,8 +162,8 @@ if(isset($_SESSION['id'])) {
                         echo "<td class='text-carbon-grey fw-medium font-14'><img src='" . $row['Image'] . "' alt='Product Image' style='max-width: 50px; max-height: 50px; border-radius: 50%;'></td>";
                         echo "<td class='text-carbon-grey fw-medium font-14'>".$row['Name']."</td>";
                         echo "<td class='text-carbon-grey fw-medium font-14'>".$row['Category']."</td>";
-                        echo "<td class='text-carbon-grey fw-medium font-14'><span class='badge text-bg-medium-brown rounded-4 text-wrap'>" .$row['Type']."</td></span>";
-                        echo "<td class='text-carbon-grey fw-medium font-14'><span class='badge text-bg-carbon-grey rounded-4 text-wrap'>" .$row['Size']. 'oz' . "</td></span>";
+                        echo "<td class='text-carbon-grey fw-medium font-14'><span class='badge text-bg-medium-brown text-wrap'>" .$row['Type']."</td></span>";
+                        echo "<td class='text-carbon-grey fw-medium font-14'><span class='badge text-bg-carbon-grey text-wrap'>" .$row['Size']. 'oz' . "</td></span>";
                         echo "<td class='text-carbon-grey fw-medium font-14'>".$row['Price']."</td>";
                         echo "</tr>";
                     }
