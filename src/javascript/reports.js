@@ -1,6 +1,6 @@
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const logo = "images/sweet-avenue-logo.png";
+  const logo = "images/logo-removebg-preview.png";
 
   // Create a new PDF document
   const doc = new jsPDF();
@@ -44,7 +44,7 @@ async function downloadPDF() {
   doc.text("Sales Today:", 15, 60);
   doc.setFont("Helvetica", "bold");
   doc.setTextColor("#88531E");
-  doc.text(`₱${todaySale}`, 80, 60);
+  doc.text(`${todaySale}`, 80, 60);
 
   doc.setFont("Helvetica", "normal");
   doc.setTextColor("#000000");
@@ -58,7 +58,7 @@ async function downloadPDF() {
   doc.text("Weekly Sales:", 15, 80);
   doc.setFont("Helvetica", "bold");
   doc.setTextColor("#88531E");
-  doc.text(`₱${weeklySale}`, 80, 80);
+  doc.text(`${weeklySale}`, 80, 80);
   doc.setFont("Helvetica", "semibold");
   doc.text(`(${weekDuration})`, 15, 85);
 
@@ -67,7 +67,7 @@ async function downloadPDF() {
   doc.text("Monthly Sales:", 15, 90);
   doc.setFont("Helvetica", "bold");
   doc.setTextColor("#88531E");
-  doc.text(`₱${monthlySale}`, 80, 90);
+  doc.text(`${monthlySale}`, 80, 90);
   doc.setFont("Helvetica", "semibold");
   doc.text(`(${dateRange})`, 15, 95);
 
@@ -80,7 +80,7 @@ async function downloadPDF() {
   const weeklySalesHeaders = ["Date", "Sales"];
   const weeklySalesDataFormatted = weeklySalesData.map((entry) => [
     entry.date,
-    `₱${parseFloat(entry.total_sales).toFixed(2)}`,
+    `${parseFloat(entry.total_sales).toFixed(2)}`,
   ]);
 
   // Weekly Sales Table Styling
@@ -126,7 +126,7 @@ async function downloadPDF() {
   const predictedWeeklySalesData = predictedSalesData.predictions.map(
     (prediction) => [
       prediction.date,
-      `₱${prediction.sales_prediction.toFixed(2)}`,
+      `${prediction.sales_prediction.toFixed(2)}`,
     ]
   );
 
