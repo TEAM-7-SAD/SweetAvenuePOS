@@ -101,6 +101,11 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
           background: linear-gradient(to top left, #88531E, #88531E, #C57C47);
         }
       </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
+
+
   </head>
 
   <body class="bg-gainsboro">
@@ -255,63 +260,102 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                   <div id="predictedWeeklySales"></div>
               </div>
           </div>
+        </div>
 
-          <!-- Third Quarter: Larger Container -->
-          <div class="col-md-12 mt-2"> <!-- Increased py-4 for more padding -->
-              <div class="col-md-12 mb-3 bg-white rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 390px;"> <!-- Added box-shadow style for drop shadow -->
-                  <!-- Larger Container 2 -->
+        <div class="row">         
+          <div class="col-md-9"> <!-- Increased py-4 for more padding -->
+              <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
+                  <!-- Larger Container 3 -->
                   <div class="p-2 mb-2 fw-semibold text-carbon-grey">
-                    WEEKLY TOP SOLD PRODUCTS
-                  </div>                              
-                  <div class="table-container">
-                  <table id="example" class="styled-table">
-                      <thead>
-                          <tr>
-                              <th>Top Pick</th>
-                              <th></th>
-                              <th>Popular Combo</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <?php
-                              // Run the apriori_algo.py script
-                              $output = shell_exec('python apriori/apriori_algo.py 2>&1');
+                      WEEKLY TOP SOLD PRODUCTS
+                    </div>                              
+                    <div class="table-container">
+                      <table id="example" class="styled-table">
+                          <thead>
+                              <tr>
+                                  <th>Top Pick</th>
+                                  <th></th>
+                                  <th>Popular Combo</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <?php
+                                  // Run the apriori_algo.py script
+                                  $output = shell_exec('python apriori/apriori_algo.py 2>&1');
 
-                              // Fetch the specific item with ID 1 from the database
-                              $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
-                              $result = $db->query($sql);
+                                  // Fetch the specific item with ID 1 from the database
+                                  $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
+                                  $result = $db->query($sql);
 
-                              if ($row = $result->fetch_assoc()) {
-                                  echo "<tr>
-                                          <td>
-                                              <div class='product-info'>
-                                                  
-                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                  <span class='spaced-text'>" . htmlspecialchars($row["antecedent"]) . "</span>
-                                              </div>
-                                          </td>
-                                          <td class='plus-sign' style='color: #C57C47;';>+</td>
-                                          <td>
-                                              <div class='product-info'>
-                                                  
-                                                  <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                  <span class='spaced-text'>" . htmlspecialchars($row["consequent"]) . "</span>
-                                              </div>
-                                          </td>
-                                      </tr>";
-                              }
-
-                              $db->close();
-                          ?>
-                      </tbody>
-                  </table>
+                                  $topPickData = [];
+                                  if ($result->num_rows > 0) {
+                                      while ($row = $result->fetch_assoc()) {
+                                        $topPickData[] = [addslashes($row["antecedent"]), '+', addslashes($row["consequent"])];
+                                          echo "<tr>
+                                                  <td>
+                                                      <div class='product-info'>
+                                                          <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                          <span class='spaced-text text-capitalize fw-semibold'>" . htmlspecialchars($row["antecedent"]) . "</span>
+                                                      </div>
+                                                  </td>
+                                                  <td class='plus-sign' style='color: #C57C47;'>+</td>
+                                                  <td>
+                                                      <div class='product-info'>
+                                                          <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
+                                                          <span class='spaced-text text-capitalize fw-semibold'>" . htmlspecialchars($row["consequent"]) . "</span>
+                                                      </div>
+                                                  </td>
+                                              </tr>";
+                                      }
+                                  } else {
+                                      $topPickData[] = ['No data available'];
+                                      echo "<tr>
+                                              <td colspan='3' style='text-align: center;'>
+                                                  <img class='pt-2 card-img-top' src='images/empty.png' style='max-width: 250px; max-height: 250px;'>
+                                                  <br>
+                                                  Oops! It looks like there's no data available.
+                                              </td>
+                                            </tr>";
+                                  }
+                                  $jsonTopPickData = json_encode($topPickData);
+                              ?>
+                          </tbody>
+                      </table>
+                  </div>
               </div>
-
-              </div>
-          </div>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;">
+                    <div class="p-2 mb-2 fw-semibold text-carbon-grey fs-4 text-center">
+                        Generate Report Here
+                    </div>
+                    <div class="col-auto text-center mb-3"> <!-- Centering the image -->
+                        <img src="images/arrow.png" height="175px" width="175px" alt="arrow">
+                    </div>
+                    <div class="text-center"> <!-- Centering the button -->
+                        <button onclick="downloadPDF()" style="background-color: #88531E; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                            Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
     </div>
+    </div>
+
+    <!-- Data used for generating reports -->
+    <script>
+      const user = <?php echo json_encode($full_name); ?>;
+      const todaySale = <?php echo json_encode(number_format($today_sale, 2)); ?>;
+      const orderToday = <?php echo json_encode($order_today); ?>;
+      const weeklySale = <?php echo json_encode(number_format($weekly_sale, 2)); ?>;
+      const weekDuration = <?php echo json_encode($week_duration); ?>;
+      const monthlySale = <?php echo json_encode(number_format($monthly_sale, 2)); ?>;
+      const dateRange = <?php echo json_encode($date_range); ?>;
+      const weeklySalesData = <?php echo $json_sales_data; ?>;
+      const topPickData = <?php echo $jsonTopPickData; ?>;
+    </script>
 
     <!--Bootstrap JavaScript-->
     <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -327,6 +371,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
     <script src="javascript/preloader.js"></script>
+    <script src="javascript/reports.js"></script>
 
   </body>
 </html>
