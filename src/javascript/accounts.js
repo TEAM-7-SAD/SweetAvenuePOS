@@ -95,7 +95,6 @@ $(document).ready(function () {
     const inputs = [
       $("#lastName")[0],
       $("#firstName")[0],
-      $("#middleName")[0],
       $("#username")[0],
       $("#email")[0],
       $("#password")[0],
@@ -188,14 +187,27 @@ $(document).ready(function () {
   });
 
   $("#middleName").on("input change", function () {
-    validateInput(
-      this,
-      /^(?!\s)[^\d]+$/,
-      "Please use a valid middle name.",
-      document.getElementById("errorMiddleName"),
-      "Middle name looks good!",
-      document.getElementById("validMiddleName")
-    );
+    const value = this.value.trim();
+    if (value === "") {
+      // Middle name is empty, clear any error messages and mark as valid
+      this.classList.remove("is-invalid", "was-validated");
+      document.getElementById("errorMiddleName").textContent = "";
+      document.getElementById("validMiddleName").textContent = "";
+
+      // Enable the button if all other inputs are valid
+      if (areAllInputsValid()) {
+        addAccountButton.disabled = false;
+      }
+    } else {
+      validateInput(
+        this,
+        /^(?!\s)[^\d]+$/,
+        "Please use a valid middle name.",
+        document.getElementById("errorMiddleName"),
+        "Middle name looks good!",
+        document.getElementById("validMiddleName")
+      );
+    }
   });
 
   $("#username").on("input change", function () {

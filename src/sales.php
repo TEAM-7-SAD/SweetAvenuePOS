@@ -79,7 +79,6 @@ if(isset($_SESSION['id'])) {
                         <th class="text-start text-medium-brown fw-semibold font-15">Date</th>
                         <th class="text-medium-brown fw-semibold font-15">Time</th>
                         <th class="text-medium-brown fw-semibold font-15">Processed by</th>
-                        <th class="text-medium-brown fw-semibold font-15">Receipt</th>
                         <th class="text-start text-medium-brown fw-semibold font-15">Total</th>
                     </tr>
                 </thead>
@@ -103,7 +102,6 @@ if(isset($_SESSION['id'])) {
                         <td class="text-start text-carbon-grey fw-medium font-14">'.$row['transaction_date'].'</td>
                         <td class="text-carbon-grey fw-medium font-14">'.$row['transaction_time'].'</td>
                         <td class="text-carbon-grey fw-medium font-14">'.$row['full_name'].'</td>
-                        <td class="text-carbon-grey fw-medium font-14">'.$row['receipt'].'</td>
                         <td class="text-start text-carbon-grey fw-medium font-14">'.$row['total_amount'].'</td>
                     </tr>
                     ';
