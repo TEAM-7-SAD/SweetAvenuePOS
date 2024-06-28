@@ -1,6 +1,6 @@
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const logo = "images/logo-removebg-preview.png";
+  const logo = "images/logo_with_bg.png";
 
   // Create a new PDF document
   const doc = new jsPDF();
@@ -151,12 +151,12 @@ async function downloadPDF() {
     },
   });
 
-  // Top Pick and Popular Combo Table
+  // Top Pick and Likely Paired With Table
   doc.setFontSize(14);
   doc.setFont("Helvetica", "bold");
   doc.text("Weekly Top Sold Products", 15, doc.previousAutoTable.finalY + 10);
 
-  const topPickHeaders = ["Top Pick", "", "Popular Combo"];
+  const topPickHeaders = ["Top Pick", "", "Likely Paired With"];
   doc.autoTable({
     startY: doc.previousAutoTable.finalY + 15,
     head: [topPickHeaders],
