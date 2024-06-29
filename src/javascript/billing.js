@@ -222,55 +222,112 @@ $(document).ready(function () {
   function generatePrintableContent(tenderedAmount) {
     const processedBy = currentUser;
     const orderDetails = {
-      items: [],
-      subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
-      discount: parseFloat($("#discountInput").val()),
-      grandTotal: parseFloat($("#grandTotalValue").text()),
-      tenderedAmount: tenderedAmount,
+        items: [],
+        subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
+        discountPercentage: parseFloat($("#discountInput").val()) || 0, // Set to 0 if NaN
+        grandTotal: parseFloat($("#grandTotalValue").text()),
+        tenderedAmount: tenderedAmount,
     };
 
     const change = tenderedAmount - orderDetails.grandTotal;
+    const discountAmount = orderDetails.subtotal * (orderDetails.discountPercentage / 100);
 
     $("#orderCart tr").each(function () {
-      const cells = $(this).find("td");
-      orderDetails.items.push({
-        productName: cells.eq(1).find(".text-capitalize").text().trim(),
-        quantity: cells.eq(0).find("p").text().trim().slice(1),
-        price: parseFloat(
-          cells
-            .eq(2)
-            .find(".text-carbon-grey")
-            .text()
-            .trim()
-            .replace(/[^\d.]/g, "")
-        ),
-      });
+        const cells = $(this).find("td");
+        orderDetails.items.push({
+            productName: cells.eq(1).find(".text-capitalize").text().trim(),
+            quantity: cells.eq(0).find("p").text().trim().slice(1),
+            price: parseFloat(
+                cells
+                    .eq(2)
+                    .find(".text-carbon-grey")
+                    .text()
+                    .trim()
+                    .replace(/[^\d.]/g, "")
+            ),
+        });
     });
 
     return `
-            <html>
-                <head>
-                    <title>Receipt</title>
-                </head>
-                <body>
-                    <div style="text-align: center;">
+        <html>
+            <head>
+                <title>Receipt</title>
+                <style>
+                    @media print {
+                        .receipt {
+                            width: auto;
+                            margin: 0 auto;
+                            padding: 10px;
+                        }
+                        .table, .table tr, .table th, .table td {
+                            page-break-inside: avoid;
+                        }
+                    }
+                    html, body {
+                        width: 100%;
+                        height: 100%;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-family: Arial, sans-serif;
+                        background-color: #f8f8f8;
+                    }
+                    .receipt {
+                        width: 80mm; /* Width of a typical thermal paper */
+                        padding: 10px;
+                        box-sizing: border-box;
+                        background-color: white;
+                        page-break-inside: avoid;
+                    }
+                    .center-text {
+                        text-align: center;
+                    }
+                    .table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        page-break-inside: avoid;
+                    }
+                    .table th, .table td {
+                        border-bottom: 1px dashed #000;
+                        padding: 5px 0;
+                        text-align: center;
+                        page-break-inside: avoid;
+                    }
+                    .table th {
+                        border-top: 1px dashed #000;
+                    }
+                    .table .text-end {
+                        text-align: right;
+                    }
+                    .roboto-mono {
+                        font-family: 'Roboto Mono', monospace;
+                    }
+                    h4, h5, p {
+                        margin: 5px 0;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    <div class="center-text">
                         <div style="display: flex; align-items: center; justify-content: center;">
-                            <img src="images/logo-removebg-preview.png" alt="Sweet Avenue Logo" style="max-width: 75px; margin-right: 10px;">
                             <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                                <h4 style="margin: 0;"><strong>SWEET AVENUE</strong></h4>
-                                <h5 style="margin: 0;"><strong>COFFEE • BAKESHOP</strong></h5>
+                                <h4><strong>SWEET AVENUE</strong></h4>
+                                <h5><strong>COFFEE • BAKESHOP</strong></h5>
                             </div>
                         </div>
                         <br>
                         <p class="roboto-mono"><b>${new Date().toLocaleString()}</b></p>
                         <hr>
                     </div>
-                    <table class="table table-borderless text-center" style="margin-bottom: 20px;">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th style="text-align: center;">Product</th>
-                                <th style="text-align: center;">Quantity</th>
-                                <th style="text-align: center;">Price</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
                             </tr>
                         </thead>
                         <tbody class="roboto-mono">
@@ -278,15 +335,9 @@ $(document).ready(function () {
                               .map(
                                 (item) => `
                                 <tr>
-                                    <td class="center-text">${capitalizeEachWord(
-                                      item.productName
-                                    )}</td>
-                                    <td style="text-align: center;">${
-                                      item.quantity
-                                    }</td>
-                                    <td style="text-align: center;">₱${item.price.toFixed(
-                                      2
-                                    )}</td>
+                                    <td>${capitalizeEachWord(item.productName)}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>₱${item.price.toFixed(2)}</td>
                                 </tr>
                             `
                               )
@@ -295,30 +346,29 @@ $(document).ready(function () {
                     </table>
                     <hr>
                     <div class="roboto-mono">
-                        <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Discount:</strong> ${orderDetails.discount.toFixed(
-                          2
-                        )} %</p>
-                        <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(
-                          2
-                        )}</p>
+                        <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(2)}</p>
+                        <p><strong>Discount Percentage:</strong> ${orderDetails.discountPercentage.toFixed(2)} %</p>
+                        <p><strong>Discount Amount:</strong> - ₱${discountAmount.toFixed(2)}</p>
+                        <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(2)}</p>
+                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(2)}</p>
                         <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
                     </div>
                     <hr>
-                    <p class="roboto-mono"><strong>Processed by: ${processedBy}</strong></p><br><br>'
+                    <p class="roboto-mono"><strong>Processed by: ${processedBy}</strong></p>
+                    <p class="roboto-mono"><strong>Wifi Password: Sweet_Avenue123</strong></p><br><br>
                     <hr>
-                    <div class="text-center roboto-mono">
+                    <div class="center-text roboto-mono">
                         <p>Thank you for your patronage. We’d love to see you again soon. You're always welcome here!</p>
                     </div>
-                </body>
-            </html>
-        `;
-  }
+                </div>
+            </body>
+        </html>
+    `;
+}
+
+function capitalizeEachWord(str) {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+}
 
   // Calculate grand total
   function calculateGrandTotal() {
