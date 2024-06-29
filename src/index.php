@@ -275,7 +275,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                               <tr>
                                   <th>Top Pick</th>
                                   <th></th>
-                                  <th>Popular Combo</th>
+                                  <th>Likely Paired With</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -313,7 +313,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                               <td colspan='3' style='text-align: center;'>
                                                   <img class='pt-2 card-img-top' src='images/empty.png' style='max-width: 250px; max-height: 250px;'>
                                                   <br>
-                                                  Oops! It looks like there's no data available.
+                                                  Oops! It looks like there's no available data.
                                               </td>
                                             </tr>";
                                   }
