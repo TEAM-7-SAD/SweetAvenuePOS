@@ -165,7 +165,7 @@ if(isset($_SESSION['id'])) {
 
 <!-- Sale Details Modal -->
 <div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-labelledby="saleDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="saleDetailsModalLabel">Sale Details</h5>
