@@ -154,7 +154,7 @@ input[type="number"] {
         <div class="modal-content">
             <form id="orderForm" method="post">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName">Product Name</h1>
+                    <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName"><!-- Product name will be loaded here --></h1>
                 </div>
                 <div class="modal-body" id="productVariation">
                     <input type="hidden" name="product_id" id="product_id">
@@ -260,7 +260,7 @@ $(document).ready(function() {
                             $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
                         });
                     } else {
-                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey">No variations available</span>');
+                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
                     }
 
                     if (flavorOrSizeSet.size > 0) {
@@ -268,7 +268,7 @@ $(document).ready(function() {
                             $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
                         });
                     } else {
-                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey">No variations available</span>');
+                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
                     }
 
                     $('#defaultServingOrType').val(defaultServingOrType);
