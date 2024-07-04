@@ -82,13 +82,52 @@ $(document).ready(function () {
     $(input).val(value);
   };
 
-  $("#lastName, #firstName, #middleName").on("input", function (event) {
-    preventLeadingSpace(event);
-  });
+  function truncateExceedingCharacters() {
+    let lastName = $("#lastName").val();
+    let firstName = $("#firstName").val();
+    let middleName = $("#middleName").val();
+    let username = $("#username").val();
+    let email = $("#email").val();
+    let password = $("#password").val();
 
-  $("#username, #email, #password").on("input", function (event) {
-    preventSpace(event);
-  });
+    if (lastName.length > 100) {
+      lastName = lastName.slice(0, 100);
+      $("#lastName").val(lastName);
+    }
+
+    if (firstName.length > 100) {
+      firstName = firstName.slice(0, 100);
+      $("#firstName").val(firstName);
+    }
+
+    if (middleName.length > 100) {
+      middleName = middleName.slice(0, 100);
+      $("#middleName").val(middleName);
+    }
+
+    if (username.length > 50) {
+      username = username.slice(0, 50);
+      $("#username").val(username);
+    }
+
+    if (email.length > 100) {
+      email = email.slice(0, 100);
+      $("#email").val(email);
+    }
+
+    if (password.length > 20) {
+      password = password.slice(0, 20);
+      $("#password").val(password);
+    }
+  }
+
+  $("#lastName, #firstName, #middleName, #username, #email, #password").on(
+    "input",
+    function (event) {
+      preventLeadingSpace(event);
+      truncateExceedingCharacters();
+    }
+  );
 
   // Function to check if all input fields are valid
   function areAllInputsValid() {
@@ -117,8 +156,8 @@ $(document).ready(function () {
     regex,
     errorMessage,
     errorContainer,
-    validMessage,
-    validContainer,
+    // validMessage,
+    // validContainer,
     isTaken = false,
     takenMessage = "",
     takenErrorContainer = null
@@ -139,19 +178,19 @@ $(document).ready(function () {
       input.classList.remove("was-validated");
       input.classList.remove("is-valid");
       errorContainer.textContent = errorMessage;
-      validContainer.textContent = "";
+      // validContainer.textContent = "";
     } else if (isTaken) {
       input.classList.add("is-invalid");
       input.classList.remove("was-validated");
       input.classList.remove("is-valid");
       takenErrorContainer.textContent = takenMessage;
-      validContainer.textContent = "";
+      // validContainer.textContent = "";
     } else {
       input.classList.remove("is-invalid");
       input.classList.add("is-valid");
       input.classList.remove("was-validated");
       errorContainer.textContent = "";
-      validContainer.textContent = validMessage;
+      // validContainer.textContent = validMessage;
     }
 
     // Check if all inputs are valid and enable/disable button accordingly
@@ -169,9 +208,9 @@ $(document).ready(function () {
       this,
       /^(?!\s)[^\d]+$/,
       "Please use a valid last name.",
-      document.getElementById("errorLastName"),
-      "Last name looks good!",
-      document.getElementById("validLastName")
+      document.getElementById("errorLastName")
+      // "Last name looks good!",
+      // document.getElementById("validLastName")
     );
   });
 
@@ -180,9 +219,9 @@ $(document).ready(function () {
       this,
       /^(?!\s)[^\d]+$/,
       "Please use a valid first name.",
-      document.getElementById("errorFirstName"),
-      "First name looks good!",
-      document.getElementById("validFirstName")
+      document.getElementById("errorFirstName")
+      // "First name looks good!",
+      // document.getElementById("validFirstName")
     );
   });
 
@@ -203,9 +242,9 @@ $(document).ready(function () {
         this,
         /^(?!\s)[^\d]+$/,
         "Please use a valid middle name.",
-        document.getElementById("errorMiddleName"),
-        "Middle name looks good!",
-        document.getElementById("validMiddleName")
+        document.getElementById("errorMiddleName")
+        // "Middle name looks good!",
+        // document.getElementById("validMiddleName")
       );
     }
   });
@@ -216,10 +255,10 @@ $(document).ready(function () {
     validateInput(
       this,
       /^[^\s]{1,50}$/,
-      "Please provide a valid username.",
+      "Please provide a valid username (50 characters max).",
       document.getElementById("errorUsername"),
-      "Username looks good!",
-      document.getElementById("validUsername"),
+      // "Username looks good!",
+      // document.getElementById("validUsername"),
       isUsernameTaken,
       "This username is already taken.",
       document.getElementById("errorUsername")
@@ -234,8 +273,8 @@ $(document).ready(function () {
       /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
       "Please provide a valid email address.",
       document.getElementById("errorEmailAddress"),
-      "Email address looks good!",
-      document.getElementById("validEmailAddress"),
+      // "Email address looks good!",
+      // document.getElementById("validEmailAddress"),
       isEmailTaken,
       "This email address is already taken.",
       document.getElementById("errorEmailAddress")
@@ -247,9 +286,9 @@ $(document).ready(function () {
       this,
       /^[^\s]{8,20}$/,
       "Password must range 8-20 characters.",
-      document.getElementById("errorPassword"),
-      "Password looks good!",
-      document.getElementById("validPassword")
+      document.getElementById("errorPassword")
+      // "Password looks good!",
+      // document.getElementById("validPassword")
     );
   });
 
