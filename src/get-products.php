@@ -53,17 +53,19 @@ if(isset($_POST['category'])) {
         // Output food products
         while($row = $foodResult->fetch_assoc()) {
             $image = !empty($row['image']) ? $row['image'] : 'uploads/coffee-img-placeholder.png';
+            $serving = !empty($row['serving']) ? $row['serving'] : 'None';
+            $flavor = !empty($row['flavor']) ? $row['flavor'] : 'None';
             echo '<div class="col">';
-            echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="food" data-product-name="' . $row['item_name'] . '" data-product-serving="' . $row['serving'] . '" data-product-flavor="' . $row['flavor'] . '" data-product-price="' . $row['price'] . '">';
+            echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="food" data-product-name="' . $row['item_name'] . '" data-product-serving="' . $serving . '" data-product-flavor="' . $flavor . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
             echo '<div class="text-capitalize pt-2">';
-            if (!empty($row['serving'])) {
-                echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $row['serving'] . '</span> ';
+            if ($serving !== 'None') {
+                echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $serving . '</span> ';
             }
-            if (!empty($row['flavor'])) {
-                echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['flavor'] . '</span><br> ';
+            if ($flavor !== 'None') {
+                echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $flavor . '</span><br> ';
             }
             echo '</div>';
             echo '<div class="col pt-1 ps-4 pe-4">';
@@ -92,18 +94,20 @@ if(isset($_POST['category'])) {
         // Output drink products
         while($row = $drinkResult->fetch_assoc()) {
             $image = !empty($row['image']) ? $row['image'] : 'uploads/coffee-img-placeholder.png';
+            $type = !empty($row['type']) ? $row['type'] : 'None';
+            $size = !empty($row['size']) ? $row['size'] : 'None';
             echo '<div class="col">';
-            echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="drink" data-product-name="' . $row['item_name'] . '" data-product-type-var="' . $row['type'] . '" data-product-size="' . $row['size'] . '" data-product-price="' . $row['price'] . '">';
+            echo '<a href="#" class="list-group-item" data-bs-toggle="modal" data-bs-target="#product" data-product-id="' . $row['item_id'] . '" data-product-type="drink" data-product-name="' . $row['item_name'] . '" data-product-type-var="' . $type . '" data-product-size="' . $size . '" data-product-price="' . $row['price'] . '">';
             echo '<div class="card h-100 bg-white shadow-sm rounded-4 zoom-on-hover" style="min-height: 200px">';
             echo '<div class="container">';
             echo '<div class="row">';
 
             echo '<div class="text-capitalize pt-2">';
-                if (!empty($row['type'])) {
-                    echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $row['type'] . '</span> ';
+                if ($type !== 'None') {
+                    echo '<span class="badge text-bg-medium-brown rounded-1 text-wrap">' . $type . '</span> ';
                 }
-                if (!empty($row['size'])) {
-                    echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['size'] . 'oz' . '</span><br> ';
+                if ($size !== 'None') {
+                    echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $size . 'oz' . '</span><br> ';
                 }
             echo '</div>';
             echo '<div class="col pt-1 ps-4 pe-4">';
@@ -134,6 +138,7 @@ if(isset($_POST['category'])) {
 }
 ?>
 
+
 <style>
     /* Hide the spinner arrows */
 input[type="number"]::-webkit-inner-spin-button,
@@ -146,6 +151,10 @@ input[type="number"] {
     /* Firefox */
     -moz-appearance: textfield;
 }
+.d-none {
+    display: none !important;
+}
+
 </style>
 
 <!-- Modal for Product Variations -->
@@ -165,6 +174,8 @@ input[type="number"] {
                     <input type="hidden" name="price" id="product_price">
                     <input type="hidden" id="defaultServingOrType" value="">
                     <input type="hidden" id="defaultFlavorOrSize" value="">
+                    <input type="hidden" id="noneServingOrType" value="">
+                    <input type="hidden" id="noneFlavorOrSize" value="">
 
                     <div class="mb-4">
                         <label for="servingOrType" class="col-form-label fw-medium text-carbon-grey mb-2">Serving/Type:</label><br/>
@@ -243,21 +254,28 @@ $(document).ready(function() {
                     var defaultServingOrType = 'Default';
                     var defaultFlavorOrSize = 'Default';
 
+                    var noneServingOrType = 'None';
+                    var noneFlavorOrSize = 'None';
+
                     var servingOrTypeSet = new Set();
                     var flavorOrSizeSet = new Set();
 
                     data.forEach(function(variation) {
-                        if (variation.servingOrType !== defaultServingOrType) {
+                        if (variation.servingOrType !== defaultServingOrType && variation.servingOrType !== noneServingOrType) {
                             servingOrTypeSet.add(variation.servingOrType);
                         }
-                        if (variation.flavorOrSize !== defaultFlavorOrSize) {
+                        if (variation.flavorOrSize !== defaultFlavorOrSize && variation.flavorOrSize !== noneFlavorOrSize) {
                             flavorOrSizeSet.add(variation.flavorOrSize);
                         }
                     });
 
                     if (servingOrTypeSet.size > 0) {
                         servingOrTypeSet.forEach(function(servingOrType) {
-                            $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
+                            var buttonHtml = '<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>';
+                            if (servingOrType === noneServingOrType) {
+                                buttonHtml = '<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4 d-none active">' + servingOrType + '</button>';
+                            }
+                            $('#servingOrTypeGroup').append(buttonHtml);
                         });
                     } else {
                         $('#servingOrTypeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
@@ -265,7 +283,11 @@ $(document).ready(function() {
 
                     if (flavorOrSizeSet.size > 0) {
                         flavorOrSizeSet.forEach(function(flavorOrSize) {
-                            $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
+                            var buttonHtml = '<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>';
+                            if (flavorOrSize === noneFlavorOrSize) {
+                                buttonHtml = '<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4 d-none active">' + flavorOrSize + '</button>';
+                            }
+                            $('#flavorOrSizeGroup').append(buttonHtml);
                         });
                     } else {
                         $('#flavorOrSizeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
@@ -273,15 +295,17 @@ $(document).ready(function() {
 
                     $('#defaultServingOrType').val(defaultServingOrType);
                     $('#defaultFlavorOrSize').val(defaultFlavorOrSize);
+                    $('#noneServingOrType').val(noneServingOrType);
+                    $('#noneFlavorOrSize').val(noneFlavorOrSize);
 
                     if ($('#servingOrTypeGroup button').length > 0) {
-                        $('#servingOrTypeGroup button:first-child').addClass('active');
+                        $('#servingOrTypeGroup button:not(.d-none):first-child').addClass('active');
                     } else {
                         $('#serving_or_type').val(defaultServingOrType);
                     }
 
                     if ($('#flavorOrSizeGroup button').length > 0) {
-                        $('#flavorOrSizeGroup button:first-child').addClass('active');
+                        $('#flavorOrSizeGroup button:not(.d-none):first-child').addClass('active');
                     } else {
                         $('#flavor_or_size').val(defaultFlavorOrSize);
                     }
@@ -326,14 +350,12 @@ $(document).ready(function() {
     });
 
     $('#quantityInput').on('keypress', function(event) {
-        // Prevent non-numeric input
         if (!/[0-9]/.test(String.fromCharCode(event.which))) {
             event.preventDefault();
         }
     });
 
     $('#quantityInput').on('paste', function(event) {
-        // Prevent pasting non-numeric values
         var clipboardData = event.originalEvent.clipboardData.getData('text');
         if (!/^\d+$/.test(clipboardData)) {
             event.preventDefault();
@@ -349,8 +371,8 @@ $(document).ready(function() {
     }
 
     function updatePrice() {
-        var selectedServingOrType = $('#servingOrTypeGroup .btn.active').text() || $('#defaultServingOrType').val();
-        var selectedFlavorOrSize = $('#flavorOrSizeGroup .btn.active').text() || $('#defaultFlavorOrSize').val();
+        var selectedServingOrType = $('#servingOrTypeGroup .btn.active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
+        var selectedFlavorOrSize = $('#flavorOrSizeGroup .btn.active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
         var quantity = parseInt($('#quantityInput').val(), 10);
 
         var selectedVariation = productData.find(function(variation) {
@@ -375,14 +397,13 @@ $(document).ready(function() {
         let productId = $('#product').data('product-id');
         let productType = $('#product').data('product-type');
         let productName = $('#productName').text();
-        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val();
-        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val();
+        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
+        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
         let quantity = $('#quantityInput').val();
         let price = $('#priceDisplay').val();
 
-        // Exclude default variations from being added to the cart
-        if (servingOrType === 'Default') servingOrType = '';
-        if (flavorOrSize === 'Default') flavorOrSize = '';
+        if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
+        if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
 
         $.ajax({
             url: 'add_to_order_cart.php',
@@ -444,6 +465,8 @@ $(document).ready(function() {
             }
         });
     }
+
+
 });
 </script>
 
