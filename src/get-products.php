@@ -163,6 +163,8 @@ input[type="number"] {
                     <input type="hidden" name="serving_or_type" id="serving_or_type">
                     <input type="hidden" name="flavor_or_size" id="flavor_or_size">
                     <input type="hidden" name="price" id="product_price">
+                    <input type="hidden" id="defaultServingOrType" value="">
+                    <input type="hidden" id="defaultFlavorOrSize" value="">
 
                     <div class="mb-4">
                         <label for="servingOrType" class="col-form-label fw-medium text-carbon-grey mb-2">Serving/Type:</label><br/>
@@ -238,14 +240,19 @@ $(document).ready(function() {
                     $('#priceDisplay').val('');
                     $('#quantityInput').val(1);
 
-                    // Use sets to filter out unique values
+                    var defaultServingOrType = 'Default';
+                    var defaultFlavorOrSize = 'Default';
+
                     var servingOrTypeSet = new Set();
                     var flavorOrSizeSet = new Set();
 
-                    // Populate unique serving/type buttons
                     data.forEach(function(variation) {
-                        servingOrTypeSet.add(variation.servingOrType);
-                        flavorOrSizeSet.add(variation.flavorOrSize);
+                        if (variation.servingOrType !== defaultServingOrType) {
+                            servingOrTypeSet.add(variation.servingOrType);
+                        }
+                        if (variation.flavorOrSize !== defaultFlavorOrSize) {
+                            flavorOrSizeSet.add(variation.flavorOrSize);
+                        }
                     });
 
                     servingOrTypeSet.forEach(function(servingOrType) {
@@ -255,6 +262,21 @@ $(document).ready(function() {
                     flavorOrSizeSet.forEach(function(flavorOrSize) {
                         $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
                     });
+
+                    $('#defaultServingOrType').val(defaultServingOrType);
+                    $('#defaultFlavorOrSize').val(defaultFlavorOrSize);
+
+                    if ($('#servingOrTypeGroup button').length > 0) {
+                        $('#servingOrTypeGroup button:first-child').addClass('active');
+                    } else {
+                        $('#serving_or_type').val(defaultServingOrType);
+                    }
+
+                    if ($('#flavorOrSizeGroup button').length > 0) {
+                        $('#flavorOrSizeGroup button:first-child').addClass('active');
+                    } else {
+                        $('#flavor_or_size').val(defaultFlavorOrSize);
+                    }
 
                     $('#servingOrTypeGroup, #flavorOrSizeGroup').on('click', 'button', function() {
                         $(this).siblings().removeClass('active');
@@ -295,7 +317,7 @@ $(document).ready(function() {
         updatePrice();
     });
 
-        $('#quantityInput').on('keypress', function(event) {
+    $('#quantityInput').on('keypress', function(event) {
         // Prevent non-numeric input
         if (!/[0-9]/.test(String.fromCharCode(event.which))) {
             event.preventDefault();
@@ -319,20 +341,20 @@ $(document).ready(function() {
     }
 
     function updatePrice() {
-        var selectedServing = $('#servingOrTypeGroup .active').text();
-        var selectedFlavor = $('#flavorOrSizeGroup .active').text();
+        var selectedServingOrType = $('#servingOrTypeGroup .btn.active').text() || $('#defaultServingOrType').val();
+        var selectedFlavorOrSize = $('#flavorOrSizeGroup .btn.active').text() || $('#defaultFlavorOrSize').val();
         var quantity = parseInt($('#quantityInput').val(), 10);
 
         var selectedVariation = productData.find(function(variation) {
-            return variation.servingOrType === selectedServing && variation.flavorOrSize === selectedFlavor;
+            return variation.servingOrType === selectedServingOrType && variation.flavorOrSize === selectedFlavorOrSize;
         });
 
         if (selectedVariation) {
             var price = selectedVariation.price * quantity;
             $('#priceDisplay').val(price.toFixed(2));
             $('#product_price').val(price.toFixed(2));
-            $('#serving_or_type').val(selectedServing);
-            $('#flavor_or_size').val(selectedFlavor);
+            $('#serving_or_type').val(selectedServingOrType);
+            $('#flavor_or_size').val(selectedFlavorOrSize);
         } else {
             var defaultPrice = productData[0].price;
             var totalPrice = defaultPrice * quantity;
@@ -345,10 +367,14 @@ $(document).ready(function() {
         let productId = $('#product').data('product-id');
         let productType = $('#product').data('product-type');
         let productName = $('#productName').text();
-        let servingOrType = $('#servingOrTypeGroup .active').text() || '';
-        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || '';
+        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val();
+        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val();
         let quantity = $('#quantityInput').val();
         let price = $('#priceDisplay').val();
+
+        // Exclude default variations from being added to the cart
+        if (servingOrType === 'Default') servingOrType = '';
+        if (flavorOrSize === 'Default') flavorOrSize = '';
 
         $.ajax({
             url: 'add_to_order_cart.php',
@@ -365,11 +391,9 @@ $(document).ready(function() {
             success: function(response) {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
-                    // alert('Item added to order cart');
                     fetchCartItems();
                     calculateSubtotal();
                     $('#product').modal('hide');
-                    console.log(data);
                 } else {
                     alert('Failed to add item to order cart');
                 }
@@ -380,7 +404,7 @@ $(document).ready(function() {
         });
     }
 
-    $("#addToOrderCart").on("click", function() {
+    $("#addToOrderCart").on("click", function(event) {
         event.preventDefault();
         addToCart();
     });
@@ -413,5 +437,5 @@ $(document).ready(function() {
         });
     }
 });
-
 </script>
+
