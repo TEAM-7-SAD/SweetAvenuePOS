@@ -285,7 +285,15 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                               </td>
                                             </tr>";
                                   }
-                                  $jsonTopPickData = json_encode($topPickData);
+                                  // Fetch the all the items from the database
+                                  $sql = "SELECT antecedent, consequent FROM frequent_items";
+                                  $result = $db->query($sql);
+
+                                  $topPickDatas = [];
+                                  if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                      $topPickDatas[] = [addslashes($row["antecedent"]), '+', addslashes($row["consequent"])];}}
+                                  $jsonTopPickData = json_encode($topPickDatas);
                               ?>
                           </tbody>
                       </table>
