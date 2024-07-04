@@ -7,7 +7,7 @@ include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-timezone.php');
 
 function fetchAndProcessSalesData($db) {
   $prev_week_start = date('Y-m-d', strtotime('monday last week'));
-  $prev_week_end = date('Y-m-d', strtotime('saturday last week'));
+  $prev_week_end = date('Y-m-d', strtotime('sunday last week'));
 
   $sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales 
           FROM transaction 
