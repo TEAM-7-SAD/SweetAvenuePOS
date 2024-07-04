@@ -44,22 +44,19 @@ if (isset($_SESSION['error_message'])) {
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
 
-    <style>
-        body {
-            background-image: url('images/sweet_background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-    </style>
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Custom JavaScript -->
+    <script src="javascript/login.js" defer></script>
+    <script src="javascript/preloader.js" defer></script>
 
     <script>
         const existingEmails = <?php echo json_encode($emails); ?>;
     </script>
 </head>
 
-<body>
+<body class="bg-image">
 
     <?php include FileUtils::normalizeFilePath('includes/preloader.html'); ?>
 
@@ -96,7 +93,7 @@ if (isset($_SESSION['error_message'])) {
 
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
-            <div class="col-md-6 col-lg-4">
+            <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
                 <div class="text-center login-form-gradient shadow-lg">
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Shop Logo and Name -->
@@ -164,13 +161,6 @@ if (isset($_SESSION['error_message'])) {
             </div>
         </div>
     </div>
-    
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- Custom JavaScript -->
-    <script src="javascript/login.js"></script>
-    <script src="javascript/preloader.js"></script>
 
 </body>
 

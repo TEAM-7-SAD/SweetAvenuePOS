@@ -48,25 +48,15 @@ if (isset($_SESSION['error_message'])) {
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
-
-    <style>
-        body {
-            background-image: url('images/sweet_background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-    </style>
 </head>
 
-<body>
+<body class="bg-image">
 
     <?php include FileUtils::normalizeFilePath('includes/preloader.html'); ?>
 
     <div class="container-fluid position-absolute top-50 start-50 translate-middle">
         <div class="row justify-content-center align-items-center">
-            <div class="col-md-6 col-lg-4">
+            <div class="col-sm-10 col-md-7 col-lg-4">
                 <div class="text-center password-reset-form-gradient shadow-lg">
                     <div class="d-flex align-items-center">
                         <!-- Shop Logo and Name -->

@@ -4,6 +4,7 @@ from mlxtend.frequent_patterns import apriori, association_rules
 import datetime
 from sqlalchemy import create_engine, text
 import logging
+import json
 
 # Enable SQLAlchemy logging
 logging.basicConfig()
@@ -44,23 +45,29 @@ today = datetime.datetime.now()
 one_week_ago = today - datetime.timedelta(days=7)
 
 query = """
-SELECT ip.transaction_id, d.name AS item_name
-FROM items_purchased ip
-JOIN drink_item d ON ip.item_id = d.id
-JOIN transaction t ON ip.transaction_id = t.id
-WHERE DATE(t.timestamp) BETWEEN :one_week_ago AND :today
-UNION
-SELECT ip.transaction_id, f.name AS item_name
-FROM items_purchased ip
-JOIN food_item f ON ip.item_id = f.id
-JOIN transaction t ON ip.transaction_id = t.id
-WHERE DATE(t.timestamp) BETWEEN :one_week_ago AND :today
+SELECT id, items
+FROM transaction
+WHERE DATE(timestamp) BETWEEN :one_week_ago AND :today
 """
 result = connection.execute(text(query), {"one_week_ago": one_week_ago, "today": today})
 rows = result.fetchall()
 
 # Convert data to a DataFrame
-df = pd.DataFrame(rows, columns=['transaction_id', 'item_name'])
+df = pd.DataFrame(rows, columns=['transaction_id', 'items'])
+
+# Function to load JSON items with error handling
+def load_json(items):
+    try:
+        return json.loads(items)
+    except json.JSONDecodeError:
+        return None
+
+# Convert JSON items to lists and explode the lists into separate rows
+df['items'] = df['items'].apply(load_json)
+df = df.explode('items').dropna(subset=['items']).reset_index(drop=True)
+
+# Rename 'items' column to 'item_name'
+df = df.rename(columns={'items': 'item_name'})
 
 # Print the raw data for inspection
 print("Raw DataFrame:")
@@ -95,9 +102,10 @@ else:
     print("Association Rules DataFrame:")
     print(rules.head())
 
-    # Insert only the rule with the highest conviction
-    if not rules.empty:
-        top_rule = rules.iloc[0]  # Get the rule with the highest conviction
+# Insert the top 5 rules into the database
+if not rules.empty:
+    top_rules = rules.head(5)  # Get the top 5 rules with the highest conviction
+    for index, top_rule in top_rules.iterrows():
         antecedents = ', '.join(list(top_rule['antecedents']))
         consequents = ', '.join(list(top_rule['consequents']))
 
@@ -118,11 +126,13 @@ else:
                     "conviction": float(top_rule['conviction'])
                 }
             )
-            print("Inserted top rule successfully.")
-            connection.commit()  # Commit the transaction
+            print(f"Inserted rule {index + 1} successfully.")
         except Exception as e:
-            print(f"Error inserting top rule: {str(e)}")
+            print(f"Error inserting rule {index + 1}: {str(e)}")
             # Handle error (rollback, logging, etc.)
+
+    connection.commit()  # Commit all transactions once all rules are inserted
+
 
 # Close the connection
 connection.close()

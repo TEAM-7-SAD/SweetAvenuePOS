@@ -66,14 +66,14 @@ if(isset($_POST['category'])) {
                 echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['flavor'] . '</span><br> ';
             }
             echo '</div>';
-            echo '<div class="col pt-1 ps-4 pe-4">';
+            echo '<div class="col px-4">';
             echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
 
             echo '<div class="text-center text-carbon-grey text-truncate text-capitalize">';
-            echo '<span class="fw-medium " style="font-size: 15px;"> ' . $row['item_name'] . ' </span><br>';
+            echo '<span class="fw-medium font-14"> ' . $row['item_name'] . ' </span><br>';
             echo '<span class="fw-bold">' . $row['price'] . '</span>';
             
             echo '</div>';
@@ -106,14 +106,14 @@ if(isset($_POST['category'])) {
                     echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['size'] . 'oz' . '</span><br> ';
                 }
             echo '</div>';
-            echo '<div class="col pt-1 ps-4 pe-4">';
+            echo '<div class="col px-4">';
             echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
 
             echo '<div class="text-center text-carbon-grey text-truncate text-capitalize">';
-            echo '<span class="fw-medium " style="font-size: 15px;"> ' . $row['item_name'] . ' </span><br>';
+            echo '<span class="fw-medium font-14"> ' . $row['item_name'] . ' </span><br>';
             echo '<span class="fw-bold">' . $row['price'] . '</span>';
             
             echo '</div>';
@@ -149,12 +149,12 @@ input[type="number"] {
 </style>
 
 <!-- Modal for Product Variations -->
-<div class="modal fade" id="product" tabindex="-1" aria-labelledby="productName" aria-hidden="true">
+<div class="modal fade" id="product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form id="orderForm" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName">Product Name</h1>
+                <div class="modal-header bg-medium-brown">
+                    <h1 class="modal-title fs-6 fw-semibold text-light text-uppercase" id="productName"><!-- Product name will be loaded here --></h1>
                 </div>
                 <div class="modal-body" id="productVariation">
                     <input type="hidden" name="product_id" id="product_id">
@@ -163,6 +163,8 @@ input[type="number"] {
                     <input type="hidden" name="serving_or_type" id="serving_or_type">
                     <input type="hidden" name="flavor_or_size" id="flavor_or_size">
                     <input type="hidden" name="price" id="product_price">
+                    <input type="hidden" id="defaultServingOrType" value="">
+                    <input type="hidden" id="defaultFlavorOrSize" value="">
 
                     <div class="mb-4">
                         <label for="servingOrType" class="col-form-label fw-medium text-carbon-grey mb-2">Serving/Type:</label><br/>
@@ -186,7 +188,7 @@ input[type="number"] {
                                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
                                 </svg>
                             </button>
-                            <input type="number" id="quantityInput" name="quantity" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3" value="1" min="1">
+                            <input type="number" id="quantityInput" name="quantity" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3 shadow-sm" value="1" min="1">
                             <button class="btn btn-lg btn-outline-carbon-grey input-group-text fw-bold py-3 px-5" type="button" id="quantityPlus">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
@@ -196,7 +198,7 @@ input[type="number"] {
                     </div>
                     <div class="col-md mb-2">
                         <div class="form-floating py-3">
-                            <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey bg-white" id="priceDisplay" name="price">
+                            <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey bg-white shadow-sm" id="priceDisplay" name="price">
                             <label for="priceDisplay" class="text-carbon-grey fw-medium fs-5">Price</label>
                         </div>
                     </div>
@@ -238,23 +240,51 @@ $(document).ready(function() {
                     $('#priceDisplay').val('');
                     $('#quantityInput').val(1);
 
-                    // Use sets to filter out unique values
+                    var defaultServingOrType = 'Default';
+                    var defaultFlavorOrSize = 'Default';
+
                     var servingOrTypeSet = new Set();
                     var flavorOrSizeSet = new Set();
 
-                    // Populate unique serving/type buttons
                     data.forEach(function(variation) {
-                        servingOrTypeSet.add(variation.servingOrType);
-                        flavorOrSizeSet.add(variation.flavorOrSize);
+                        if (variation.servingOrType !== defaultServingOrType) {
+                            servingOrTypeSet.add(variation.servingOrType);
+                        }
+                        if (variation.flavorOrSize !== defaultFlavorOrSize) {
+                            flavorOrSizeSet.add(variation.flavorOrSize);
+                        }
                     });
 
-                    servingOrTypeSet.forEach(function(servingOrType) {
-                        $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
-                    });
+                    if (servingOrTypeSet.size > 0) {
+                        servingOrTypeSet.forEach(function(servingOrType) {
+                            $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
+                        });
+                    } else {
+                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey font-13 fst-italic">No variations available</span>');
+                    }
 
-                    flavorOrSizeSet.forEach(function(flavorOrSize) {
-                        $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
-                    });
+                    if (flavorOrSizeSet.size > 0) {
+                        flavorOrSizeSet.forEach(function(flavorOrSize) {
+                            $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
+                        });
+                    } else {
+                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey font-13 fst-italic">No variations available</span>');
+                    }
+
+                    $('#defaultServingOrType').val(defaultServingOrType);
+                    $('#defaultFlavorOrSize').val(defaultFlavorOrSize);
+
+                    if ($('#servingOrTypeGroup button').length > 0) {
+                        $('#servingOrTypeGroup button:first-child').addClass('active');
+                    } else {
+                        $('#serving_or_type').val(defaultServingOrType);
+                    }
+
+                    if ($('#flavorOrSizeGroup button').length > 0) {
+                        $('#flavorOrSizeGroup button:first-child').addClass('active');
+                    } else {
+                        $('#flavor_or_size').val(defaultFlavorOrSize);
+                    }
 
                     $('#servingOrTypeGroup, #flavorOrSizeGroup').on('click', 'button', function() {
                         $(this).siblings().removeClass('active');
@@ -295,7 +325,7 @@ $(document).ready(function() {
         updatePrice();
     });
 
-        $('#quantityInput').on('keypress', function(event) {
+    $('#quantityInput').on('keypress', function(event) {
         // Prevent non-numeric input
         if (!/[0-9]/.test(String.fromCharCode(event.which))) {
             event.preventDefault();
@@ -319,20 +349,20 @@ $(document).ready(function() {
     }
 
     function updatePrice() {
-        var selectedServing = $('#servingOrTypeGroup .active').text();
-        var selectedFlavor = $('#flavorOrSizeGroup .active').text();
+        var selectedServingOrType = $('#servingOrTypeGroup .btn.active').text() || $('#defaultServingOrType').val();
+        var selectedFlavorOrSize = $('#flavorOrSizeGroup .btn.active').text() || $('#defaultFlavorOrSize').val();
         var quantity = parseInt($('#quantityInput').val(), 10);
 
         var selectedVariation = productData.find(function(variation) {
-            return variation.servingOrType === selectedServing && variation.flavorOrSize === selectedFlavor;
+            return variation.servingOrType === selectedServingOrType && variation.flavorOrSize === selectedFlavorOrSize;
         });
 
         if (selectedVariation) {
             var price = selectedVariation.price * quantity;
             $('#priceDisplay').val(price.toFixed(2));
             $('#product_price').val(price.toFixed(2));
-            $('#serving_or_type').val(selectedServing);
-            $('#flavor_or_size').val(selectedFlavor);
+            $('#serving_or_type').val(selectedServingOrType);
+            $('#flavor_or_size').val(selectedFlavorOrSize);
         } else {
             var defaultPrice = productData[0].price;
             var totalPrice = defaultPrice * quantity;
@@ -345,10 +375,14 @@ $(document).ready(function() {
         let productId = $('#product').data('product-id');
         let productType = $('#product').data('product-type');
         let productName = $('#productName').text();
-        let servingOrType = $('#servingOrTypeGroup .active').text() || '';
-        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || '';
+        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val();
+        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val();
         let quantity = $('#quantityInput').val();
         let price = $('#priceDisplay').val();
+
+        // Exclude default variations from being added to the cart
+        if (servingOrType === 'Default') servingOrType = '';
+        if (flavorOrSize === 'Default') flavorOrSize = '';
 
         $.ajax({
             url: 'add_to_order_cart.php',
@@ -365,11 +399,9 @@ $(document).ready(function() {
             success: function(response) {
                 let data = JSON.parse(response);
                 if (data.status === 'success') {
-                    // alert('Item added to order cart');
                     fetchCartItems();
                     calculateSubtotal();
                     $('#product').modal('hide');
-                    console.log(data);
                 } else {
                     alert('Failed to add item to order cart');
                 }
@@ -380,7 +412,7 @@ $(document).ready(function() {
         });
     }
 
-    $("#addToOrderCart").on("click", function() {
+    $("#addToOrderCart").on("click", function(event) {
         event.preventDefault();
         addToCart();
     });
@@ -413,5 +445,6 @@ $(document).ready(function() {
         });
     }
 });
-
 </script>
+
+

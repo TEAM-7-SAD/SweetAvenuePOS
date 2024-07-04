@@ -11,6 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity = $_POST['quantity'];
     $price = $_POST['price'];
 
+        // Exclude default variations
+        $servingOrType = $servingOrType === 'Default' ? '' : $servingOrType;
+        $flavorOrSize = $flavorOrSize === 'Default' ? '' : $flavorOrSize;
+
     $orderItem = [
         // 'product_id' => $productId,
         'product_name' => $productName,

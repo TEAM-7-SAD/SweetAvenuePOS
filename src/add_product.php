@@ -9,12 +9,12 @@ $response = ['success' => false, 'message' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? null;
     $category = $_POST['category'] ?? null;
-    $servingType = $_POST['servingType'] ?? null;
-    $flavorSize = $_POST['flavorSize'] ?? null;
+    $servingType = !empty($_POST['servingType']) ? $_POST['servingType'] : null;
+    $flavorSize = !empty($_POST['flavorSize']) ? $_POST['flavorSize'] : null;
     $price = $_POST['price'] ?? null;
     $image = $_FILES['image'] ?? null;
 
-    if ($name && $category && $price) { // Removed image check here, see below
+    if ($name && $category && $price) {
         // Determine the table based on the category type
         $categoryLower = strtolower($category);
         if (strpos($categoryLower, 'drink') !== false || in_array($categoryLower, ['froyo', 'coffee & blended'])) {
@@ -23,14 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $variationTable = 'drink_variation';
             $servingField = 'type';
             $flavorField = 'size';
-            $idField = 'drink_id';  // Add this line for dynamic ID field
+            $idField = 'drink_id';
         } else {
             $categoryTable = 'food_item';
             $categoryField = 'food_category';
             $variationTable = 'food_variation';
             $servingField = 'serving';
             $flavorField = 'flavor';
-            $idField = 'food_id';  // Add this line for dynamic ID field
+            $idField = 'food_id';
         }
 
         // Check if the product already exists
@@ -89,23 +89,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Insert into variations table
-        if ($servingType || $flavorSize) {
-            $sql = "INSERT INTO $variationTable ($idField, $servingField, $flavorField, price) VALUES (?, ?, ?, ?)";
-            $stmt = $db->prepare($sql);
-            if ($stmt) {
-                $stmt->bind_param("issd", $productId, $servingType, $flavorSize, $price);
-                if ($stmt->execute()) {
-                    $response['success'] = true;
-                } else {
-                    $response['message'] = 'Failed to insert product variations: ' . $stmt->error;
-                }
-                $stmt->close();
+        // Always insert the price, even if servingType and flavorSize are not provided
+        $sql = "INSERT INTO $variationTable ($idField, $servingField, $flavorField, price) VALUES (?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("issd", $productId, $servingType, $flavorSize, $price);
+            if ($stmt->execute()) {
+                $response['success'] = true;
             } else {
-                $response['message'] = 'Failed to prepare variation insertion statement: ' . $db->error;
+                $response['message'] = 'Failed to insert product variations: ' . $stmt->error;
             }
+            $stmt->close();
         } else {
-            $response['success'] = true;
+            $response['message'] = 'Failed to prepare variation insertion statement: ' . $db->error;
         }
     } else {
         $response['message'] = 'Name, category, and price are required';

@@ -11,39 +11,19 @@ if(!isset($_SESSION['id'])) {
   exit();
 }
 
-// Get the first name of the logged-in user
-$sql = "SELECT first_name FROM user WHERE id = ?";
-$stmt = $db->prepare($sql);
-$stmt->bind_param('i', $_SESSION['id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-
-$user = $row['first_name'];
-$stmt->close();
-
-// Get total sales for today
 $today = date("Y-m-d");
-$sql = "SELECT SUM(total_amount) AS today_sale FROM transaction WHERE DATE(timestamp) = ?";
-$stmt = $db->prepare($sql);
-$stmt->bind_param('s', $today);
-$stmt->execute();
-$stmt->bind_result($today_sale);
-$stmt->fetch();
-$stmt->close();
 
-$sql = "SELECT COUNT(timestamp) AS today_order FROM transaction WHERE DATE(timestamp) = ?";
-$stmt = $db->prepare($sql);
-$stmt->bind_param('s', $today);
-$stmt->execute();
-$stmt->bind_result($order_today);
-$stmt->fetch();
-$stmt->close();
+$sql = "
+    SELECT 
+        SUM(CASE WHEN DATE(timestamp) = ? THEN total_amount ELSE 0 END) AS today_sale,
+        COUNT(CASE WHEN DATE(timestamp) = ? THEN 1 ELSE NULL END) AS today_order,
+        SUM(CASE WHEN YEAR(timestamp) = YEAR(CURRENT_DATE()) AND MONTH(timestamp) = MONTH(CURRENT_DATE()) AND DAY(timestamp) <= DAY(CURRENT_DATE()) THEN total_amount ELSE 0 END) AS monthly_sale
+    FROM transaction";
 
-$sql = "SELECT SUM(total_amount) AS monthly_sale FROM transaction WHERE YEAR(timestamp) = YEAR(CURRENT_DATE()) AND MONTH(timestamp) = MONTH(CURRENT_DATE()) AND DAY(timestamp) <= DAY(CURRENT_DATE())";
 $stmt = $db->prepare($sql);
+$stmt->bind_param('ss', $today, $today);
 $stmt->execute();
-$stmt->bind_result($monthly_sale);
+$stmt->bind_result($today_sale, $today_order, $monthly_sale);
 $stmt->fetch();
 $stmt->close();
 
@@ -51,24 +31,15 @@ $start_of_month = date('F 01');
 $current_day = date('F d, Y');
 $date_range = $start_of_month . ' - ' . $current_day;
 
-// Weekly Sale
-$current_day_of_week = date('N');
-
 // Calculate the start and end dates of the current week
-if ($current_day_of_week == 1) {
-    // If today is Monday, start from today (Monday) and end on Saturday
-    $start_of_week = date('Y-m-d');
-    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
-} else {
-    // If today is not Monday, start from last Monday and end on next Saturday
-    $start_of_week = date('Y-m-d', strtotime('last Monday'));
-    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
-}
+$start_of_week = date('Y-m-d', strtotime('last Monday', strtotime('next Sunday')));
+$end_of_week = date('Y-m-d', strtotime('next Saturday'));
 
-// SQL query to get the sum of total_amount for the current week
-$sql = "SELECT SUM(total_amount) AS weekly_sale 
-        FROM transaction 
-        WHERE timestamp >= ? AND timestamp <= ?";
+// Get the sum of total_amount for the current week
+$sql = "
+    SELECT SUM(total_amount) AS weekly_sale 
+    FROM transaction 
+    WHERE timestamp >= ? AND timestamp <= ?";
 $stmt = $db->prepare($sql);
 $stmt->bind_param("ss", $start_of_week, $end_of_week);
 $stmt->execute();
@@ -132,7 +103,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                   <div class="col-md-auto">
                     <div class="mx-3">
                       <div class="fw-semibold text-carbon-grey fs-3 pb-1 pt-2">
-                        Hello there, <span class="text-medium-brown fw-bold text-capitalize"><?php echo htmlspecialchars($user) . '!'; ?></span>
+                        Hello there, <span class="text-medium-brown fw-bold text-capitalize"><?php echo htmlspecialchars($current_user['first_name']) . '!'; ?></span>
                       </div>
                       <div class="text-carbon-grey fw-medium">Here's what's happening with the store.</div>
                     </div>                    
@@ -191,7 +162,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                         echo $order_today; 
                       }
                       else {
-                        echo "No order.";
+                        echo "<span class='fs-5 pt-3 fst-italic fw-normal'>No order</span>";
                       }
                       ?>
                     </div> 
@@ -275,7 +246,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                               <tr>
                                   <th>Top Pick</th>
                                   <th></th>
-                                  <th>Popular Combo</th>
+                                  <th>Likely Paired With</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -313,7 +284,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                               <td colspan='3' style='text-align: center;'>
                                                   <img class='pt-2 card-img-top' src='images/empty.png' style='max-width: 250px; max-height: 250px;'>
                                                   <br>
-                                                  Oops! It looks like there's no data available.
+                                                  Oops! It looks like there's no available data.
                                               </td>
                                             </tr>";
                                   }

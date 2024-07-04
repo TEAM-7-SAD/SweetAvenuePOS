@@ -36,6 +36,16 @@ if(isset($_SESSION['id'])) {
   <!--Site Icon-->
   <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png" />
 
+    <!-- Bootstrap JavaScript -->
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CDN Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <!-- Custom JavacScript -->
+    <script src="javascript/preloader.js" defer></script>
+    <script src="javascript/accounts.js" defer></script>
+
   <script>
     // This will be used to check if an email or username is already taken
     const takenEmails = <?php echo json_encode($emails); ?>;
@@ -286,17 +296,6 @@ if(isset($_SESSION['id'])) {
         </div>
       </div>
     </div>
-
-
-    <!-- Bootstrap JavaScript -->
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- CDN Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
-    <!-- Custom JavacScript -->
-    <script src="javascript/preloader.js"></script>
-    <script src="javascript/accounts.js"></script>
 
   </body>
 </html>

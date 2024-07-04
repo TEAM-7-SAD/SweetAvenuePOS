@@ -5,20 +5,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 $font-family-base: 'Poppins', sans-serif;
 
-// Customizes navbar text color
 $nav-link-color: #5B5B5B;
-
-// Customizes navbar text color when hovered
 $nav-link-hover-color: #C57C47;
-
-// Customize dropdown item color when clicked
 $dropdown-link-active-color: #ffffff;
-
-// Customize dropdown item background color when clicked
 $dropdown-link-active-bg: #ebebeb;
 
 
-// Add custom colors for UI
 $custom-colors: (
     "rose-white": #FFF0E9,
     "tiger-orange": #C57C47,
@@ -142,11 +134,20 @@ $input-focus-border-color: var(--bs-medium-brown);
     --bs-link-color: : var(--bs-medium-brown);
 }
 
+.bg-image {
+    background-image: url('../images/sweet_background.jpg');
+    background-size: cover;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 .form-select:focus {
     border-color: var(--bs-tiger-orange);
     box-shadow: 0 0 0 0.0.5rem rgba(var(--bs-gainsboro-rgb));
 }
-.navbar {
+.navbar,
+.modal {
     z-index: 10000;
 }
 .table-container {
@@ -296,3 +297,8 @@ $input-focus-border-color: var(--bs-medium-brown);
     position: relative;
     left: -28px;
 }
+// @media (max-width: 1024px) {
+//     .login-container {
+//         padding: 0px -90px 0px;
+//     }
+// }

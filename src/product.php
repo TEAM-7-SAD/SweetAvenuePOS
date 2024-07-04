@@ -101,7 +101,7 @@ if(isset($_SESSION['id'])) {
                                         food_variation fv ON fi.id = fv.food_id";
                             $result = $db->query($query);
                             while($row = $result->fetch_assoc()) {
-                                echo "<tr data-id='".$row['id']."' data-variation-id='".$row['variation_id']."' class='text-capitalize text-truncate fw-semibold'>";
+                                echo "<tr data-id='".$row['id']."' data-variation-id='".$row['variation_id']."' data-product-type='food' class='text-capitalize text-truncate fw-semibold'>";
                                 echo "<td class='text-carbon-grey fw-medium font-14'><input type='checkbox' class='product-checkbox' data-product-id='" . $row['id'] . "' data-variation-id='" . $row['variation_id'] . "'></td>";
                                 echo "<td class='text-carbon-grey fw-medium font-14'><img src='" . $row['Image'] . "' alt='Product Image' style='max-width: 50px; max-height: 50px; border-radius: 50%;'></td>";
                                 echo "<td class='text-carbon-grey fw-medium font-14'>".$row['Name']."</td>";
@@ -157,7 +157,7 @@ if(isset($_SESSION['id'])) {
                                 drink_variation dv ON di.id = dv.drink_id";
                     $result = $db->query($query);
                     while($row = $result->fetch_assoc()) {
-                        echo "<tr data-id='".$row['id']."' data-variation-id='".$row['variation_id']."' class='text-capitalize text-truncate fw-semibold'>";
+                        echo "<tr data-id='".$row['id']."' data-variation-id='".$row['variation_id']."'data-product-type='drink' class='text-capitalize text-truncate fw-semibold'>";
                         echo "<td class='text-carbon-grey fw-medium font-14'><input type='checkbox' class='product-checkbox' data-product-id='" . $row['id'] . "' data-variation-id='" . $row['variation_id'] . "'></td>";
                         echo "<td class='text-carbon-grey fw-medium font-14'><img src='" . $row['Image'] . "' alt='Product Image' style='max-width: 50px; max-height: 50px; border-radius: 50%;'></td>";
                         echo "<td class='text-carbon-grey fw-medium font-14'>".$row['Name']."</td>";
@@ -228,8 +228,8 @@ if(isset($_SESSION['id'])) {
                     </div>
                     <form id="addProductForm" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png, .svg">
+                            <label for="image" class="form-label">Image<span style="color: red;"> *</span></label>
+                            <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png, .svg" required>
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Name<span style="color: red;"> *</span></label>
@@ -251,7 +251,7 @@ if(isset($_SESSION['id'])) {
                             <input type="text" class="form-control" id="servingType" name="servingType">
                         </div>
                         <div class="mb-3">
-                            <label for="flavorSize" class="form-label">Flavor/Size</label>
+                            <label for="flavorSize" class="form-label">Flavor/Size<span style="color: red;">(It must have a size if you're adding a product to a drink category.) </span></label>
                             <input type="text" class="form-control" id="flavorSize" name="flavorSize">
                         </div>
                         <div class="mb-3">
@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('saveChangesBtn').addEventListener('click', addNewProduct);
+    //document.getElementById('saveChangesBtn').addEventListener('click', addNewProduct);
     $('#addProductModal').on('hidden.bs.modal', function () {
         resetForm();
     });
@@ -506,8 +506,14 @@ function addNewProduct() {
     var category = document.getElementById('category').value.trim();
     var priceInput = document.getElementById('price');
     var price = priceInput.value.trim();
+    var imageInput = document.getElementById('image');
+    var image = imageInput.value.trim();
 
     // Validate form fields
+    if (!image) {
+        showError('Image is required.');
+        return;
+    }
     if (!name) {
         showError('Name is required.');
         return;
@@ -553,6 +559,7 @@ function showError(message) {
     document.getElementById('errorMessage').innerText = message;
     document.getElementById('errorContainer').style.display = 'block';
 }
+
 function resetForm() {
     document.getElementById('addProductForm').reset();
     document.getElementById('errorContainer').style.display = 'none';
@@ -569,13 +576,15 @@ $(document).ready(function () {
     $('#drink').DataTable();
 
     // Capture product data when a row is clicked
-    $('body').on('click', '.product-checkbox', function() {
+        $('body').on('click', '.product-checkbox', function() {
         var productId = $(this).closest('tr').data('id'); // Fetch the product ID from the data attribute of the closest <tr> element
         var variationId = $(this).closest('tr').data('variation-id'); // Fetch the variation ID from the data attribute of the closest <tr> element
+        var productType = $(this).closest('tr').data('product-type'); // Fetch the product type (drink or food)
         var row = $(this).closest('tr');
         selectedProduct = {
             id: productId,
             variationId: variationId,
+            productType: productType,
             image: row.find('img').attr('src'),
             name: row.find('td:eq(2)').text().trim(),
             category: row.find('td:eq(3)').text().trim(),
@@ -585,7 +594,6 @@ $(document).ready(function () {
         };
     });
 
-    // Populate the edit modal with the selected product data
     $('#editProductModal').on('show.bs.modal', function () {
         if (!selectedProduct) {
             $('#noProductSelectedModal').modal('show');
@@ -600,15 +608,11 @@ $(document).ready(function () {
         $('#editPrice').val(selectedProduct.price);
         $('#productId').val(selectedProduct.id); 
         $('#variationId').val(selectedProduct.variationId); // Set variationId in the hidden input field
+        $('#productType').val(selectedProduct.productType); // Set productType in the hidden input field
 
         // Clear previous error messages
         $('#editErrorContainer').hide().text('');
         $('#priceError').hide();
-    });
-
-    // Handle save changes for editing product
-    $('#saveChangesEditBtn').on('click', function() {
-        saveChangesEdit();
     });
 });
 

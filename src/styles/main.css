@@ -12750,12 +12750,21 @@ textarea.form-control-lg {
   --bs-link-color: : var(--bs-medium-brown);
 }
 
+.bg-image {
+  background-image: url("../images/sweet_background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .form-select:focus {
   border-color: var(--bs-tiger-orange);
   box-shadow: 0 0 0 0 0.5rem rgba(var(--bs-gainsboro-rgb));
 }
 
-.navbar {
+.navbar,
+.modal {
   z-index: 10000;
 }
 

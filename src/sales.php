@@ -61,10 +61,11 @@ if(isset($_SESSION['id'])) {
               <div class="row">
                 <div class="col me-5 align-items-end">
                   <div class="container d-flex justify-content-end">
-                    <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-sm btn-tiger-orange text-white">Deselect All</button>
+                    <button id="selectAll" style="cursor: pointer;" class="btn btn-sm mx-2 btn-tiger-orange text-white">Select All</button>
+                    <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-sm mx-2 btn-tiger-orange text-white">Deselect All</button>
                     <button type="button" class="btn btn-sm py-2 px-3 text-carbon-grey btn-light fw-semibold view-sale">View</button>
                     <div class="mx-2"></div>
-                    <button class="btn btn-sm btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button>
+                    <!-- <button class="btn btn-sm btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button> -->
                   </div>
                 </div>
               </div>  
@@ -164,7 +165,7 @@ if(isset($_SESSION['id'])) {
 
 <!-- Sale Details Modal -->
 <div class="modal fade" id="saleDetailsModal" tabindex="-1" aria-labelledby="saleDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="saleDetailsModalLabel">Sale Details</h5>
@@ -344,6 +345,144 @@ if(isset($_SESSION['id'])) {
                             $('#saleDetailsContent').append('<p><strong>Processed By:</strong> ' + saleDetails.full_name + '</p>');
                             $('#saleDetailsContent').append('<p><strong>Total:</strong> ' + saleDetails.total_amount + '</p>');
                             // Add a line break after displaying the total
+                            $('#saleDetailsContent').append('<br>');
+                        },
+                        error: function() {
+                            alert('Failed to fetch sale details. Please try again later.');
+                        }
+                    });
+                });
+            } else {
+                alert("Please select at least one sale to view.");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable only if not already initialized
+        if (!$.fn.DataTable.isDataTable('#example')) {
+            $('#example').DataTable({
+                responsive: true
+            });
+        }
+
+        // Disable delete and view buttons by default
+        $('.delete-sale').prop('disabled', true);
+        $('.view-sale').prop('disabled', true);
+
+        // Function to update button states
+        function updateButtonStates() {
+            var anyChecked = $('.sale-checkbox:checked').length > 0;
+            var allChecked = $('.sale-checkbox').length === $('.sale-checkbox:checked').length;
+            $('.delete-sale').prop('disabled', !anyChecked);
+            $('.view-sale').prop('disabled', !anyChecked);
+            $('#selectAll').toggle(!allChecked);
+            $('#deselectAll').toggle(allChecked);
+        }
+
+        // Add event listener to table rows for row selection
+        $('.selectable').click(function(event) {
+            if (!$(event.target).is('input[type="checkbox"]')) {
+                $(this).find('.sale-checkbox').prop('checked', !$(this).find('.sale-checkbox').prop('checked'));
+            }
+            updateButtonStates(); // Update button states
+        });
+
+        // Add event listener to checkboxes for selection
+        $('.sale-checkbox').change(function() {
+            updateButtonStates(); // Update button states
+        });
+
+        // Select All button click handler
+        $('#selectAll').click(function() {
+            $('.sale-checkbox').prop('checked', true);
+            updateButtonStates(); // Update button states
+        });
+
+        // Deselect All button click handler
+        $('#deselectAll').click(function() {
+            $('.sale-checkbox').prop('checked', false);
+            updateButtonStates(); // Update button states
+        });
+
+        // Add event listener to delete buttons
+        $('.delete-sale').click(function() {
+            $('#deleteConfirmationModal').modal('show');
+            $('#confirmDeleteBtn').attr('data-sale-id', $(this).data('sale-id'));
+        });
+
+        // Function to handle single account deletion
+        $('#confirmDeleteBtn').click(function() {
+            var saleId = $('#deleteConfirmationModal').data('sale-id');
+            $.ajax({
+                url: 'delete-sale.php',
+                method: 'POST',
+                data: { saleIds: [saleId] },
+                success: function(response) {
+                    if (response === 'success') {
+                        $('#deleteConfirmationModal').modal('hide');
+                        $('#successModal').modal('show');
+                        $('tr[data-id="' + saleId + '"]').remove();
+                        updateButtonStates(); // Update button states
+                    }
+                },
+                error: function() {
+                    alert('Failed to delete the sale. Please try again later.');
+                }
+            });
+        });
+
+        // Function to handle batch deletion
+        $('.delete-selected-sales').click(function() {
+            var selectedSales = [];
+            $('.sale-checkbox:checked').each(function() {
+                selectedSales.push($(this).data('sale-id'));
+            });
+
+            $.ajax({
+                url: 'delete-sale.php',
+                method: 'POST',
+                data: { saleIds: selectedSales },
+                success: function(response) {
+                    if (response === 'success') {
+                        $('#deleteConfirmationModal').modal('hide');
+                        $('#successModal').modal('show');
+                        selectedSales.forEach(function(saleId) {
+                            $('tr[data-id="' + saleId + '"]').remove();
+                        });
+                        updateButtonStates(); // Update button states
+                    } else {
+                        alert('Failed to delete the selected sales.');
+                    }
+                },
+                error: function() {
+                    alert('Failed to delete the selected sales. Please try again later.');
+                }
+            });
+        });
+
+        // Function to handle "View" button click
+        $('.view-sale').click(function() {
+            var selectedSales = [];
+            $('.sale-checkbox:checked').each(function() {
+                selectedSales.push($(this).attr('data-sale-id'));
+            });
+
+            if (selectedSales.length > 0) {
+                $('#saleDetailsContent').html('');
+                selectedSales.forEach(function(saleId) {
+                    $.ajax({
+                        url: 'view-sales.php',
+                        method: 'GET',
+                        data: { saleId: saleId },
+                        success: function(response) {
+                            var saleDetails = JSON.parse(response);
+                            $('#saleDetailsModal').modal('show');
+                            $('#saleDetailsContent').append('<p><strong>Date:</strong> ' + saleDetails.transaction_date + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Time:</strong> ' + saleDetails.transaction_time + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Processed By:</strong> ' + saleDetails.full_name + '</p>');
+                            $('#saleDetailsContent').append('<p><strong>Total:</strong> ' + saleDetails.total_amount + '</p>');
                             $('#saleDetailsContent').append('<br>');
                         },
                         error: function() {
