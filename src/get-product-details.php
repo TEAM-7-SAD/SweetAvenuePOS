@@ -76,11 +76,13 @@ if (isset($_POST['productId']) && isset($_POST['productType'])) {
                 if (!in_array($key, $uniqueKeys)) { // Check if the key already exists
                     $uniqueKeys[] = $key; // Add the key to the list of seen keys
 
+                    $sizeWithOz = $row['size'] . 'oz';
+
                     $productDetails[] = array(
                         // 'id' => $row['item_id'],
                         'name' => $row['item_name'],
                         'servingOrType' => $row['type'],
-                        'flavorOrSize' => $row['size'],
+                        'flavorOrSize' => $sizeWithOz,
                         'price' => $row['price']
                     );
                 }
