@@ -255,13 +255,21 @@ $(document).ready(function() {
                         }
                     });
 
-                    servingOrTypeSet.forEach(function(servingOrType) {
-                        $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
-                    });
+                    if (servingOrTypeSet.size > 0) {
+                        servingOrTypeSet.forEach(function(servingOrType) {
+                            $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
+                        });
+                    } else {
+                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey">No variations available</span>');
+                    }
 
-                    flavorOrSizeSet.forEach(function(flavorOrSize) {
-                        $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
-                    });
+                    if (flavorOrSizeSet.size > 0) {
+                        flavorOrSizeSet.forEach(function(flavorOrSize) {
+                            $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
+                        });
+                    } else {
+                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey">No variations available</span>');
+                    }
 
                     $('#defaultServingOrType').val(defaultServingOrType);
                     $('#defaultFlavorOrSize').val(defaultFlavorOrSize);
@@ -438,4 +446,5 @@ $(document).ready(function() {
     }
 });
 </script>
+
 
