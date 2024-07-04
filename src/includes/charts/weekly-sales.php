@@ -1,23 +1,22 @@
 <?php
 
 include_once str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../file-utilities.php');
+require_once FileUtils::normalizeFilePath(__DIR__ . '/../db-connector.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../error-reporting.php');
 include_once FileUtils::normalizeFilePath(__DIR__ . '/../default-timezone.php');
 
-$sales_data = array();
-$weekly_sales = 0;
+function fetchAndProcessSalesData($db) {
+  $prev_week_start = date('Y-m-d', strtotime('monday last week'));
+  $prev_week_end = date('Y-m-d', strtotime('sunday last week'));
 
-if(date('N') == 7) {
-
-  $prev_week_start = date('Y-m-d', strtotime('last Monday'));
-  $prev_week_end = date('Y-m-d', strtotime('last Saturday'));
-
-  // Fetching sales data from the database
   $sql = "SELECT DATE(timestamp) AS date, SUM(total_amount) AS total_sales 
           FROM transaction 
-          WHERE timestamp >= '$prev_week_start' AND timestamp <= '$prev_week_end'
+          WHERE timestamp >= ? AND timestamp <= ?
           GROUP BY DATE(timestamp)";
-  $result = $db->query($sql);
+  $stmt = $db->prepare($sql);
+  $stmt->bind_param('ss', $prev_week_start, $prev_week_end);
+  $stmt->execute();
+  $result = $stmt->get_result();
 
   $sales_data = array();
   $weekly_sales = 0;
@@ -25,23 +24,33 @@ if(date('N') == 7) {
   // Process the query result
   if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
-          // Extract date and total sales from the row
           $date = $row['date'];
-          $total_sales = $row['total_sales'];
-          
-          // Update sales data for the corresponding day
+          $total_sales = floatval($row['total_sales']);
+
           $sales_data[] = [
               'date' => $date,
-              'total_sales' => floatval($total_sales)
+              'total_sales' => $total_sales
           ];
           $weekly_sales += $total_sales;
       }
   }
 
+  $stmt->close();
+
+  $json_sales_data = json_encode($sales_data); 
+  $json_file = __DIR__ . '/weekly_sales_data.json';
+  file_put_contents($json_file, $json_sales_data);
+
+  return $json_sales_data;
 }
 
-// Encode the data as JSON
-$json_sales_data = json_encode($sales_data); 
+// Check if today is monday
+if(date('N') == 1) {
+  $json_sales_data = fetchAndProcessSalesData($db);
+} else {
+  $json_file = __DIR__ . '/weekly_sales_data.json';
+  $json_sales_data = file_get_contents($json_file);
+}
 
 ?>
 

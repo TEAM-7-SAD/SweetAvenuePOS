@@ -1,5 +1,5 @@
 (() => {
-  ("use strict");
+  "use strict";
 
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   const forms = document.querySelectorAll(".needs-validation");
@@ -37,11 +37,35 @@ function togglePassword() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const sendButton = document.querySelector("#sendEmailBtn");
-  const emailInput = document.querySelector("#email");
+  const sendButton = $("#sendEmailBtn");
+  const emailInput = $("#email");
+  const usernameInput = $("#username");
+  const passwordInput = $("#password");
+
+  function truncateExceedingCharacters() {
+    let emailValue = emailInput.val();
+    let usernameValue = usernameInput.val();
+    let passwordValue = passwordInput.val();
+
+    if (emailValue.length > 100) {
+      emailValue = emailValue.slice(0, 100);
+      emailInput.val(emailValue);
+    }
+
+    if (usernameValue.length > 50) {
+      usernameValue = usernameValue.slice(0, 50);
+      usernameInput.val(usernameValue);
+    }
+
+    if (passwordValue.length > 20) {
+      passwordValue = passwordValue.slice(0, 20);
+      passwordInput.val(passwordValue);
+    }
+  }
 
   $("#username, #password, #email").on("input", function (event) {
     preventSpaces(event);
+    truncateExceedingCharacters();
   });
 
   // Clear server-side error message
@@ -67,10 +91,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Initially disable the Send button
-  sendButton.disabled = true;
+  sendButton.prop("disabled", true);
 
   const validateEmail = () => {
-    const email = emailInput.value;
+    const email = emailInput.val();
     const isExistingEmail = existingEmails.includes(email);
     // Email format validation
     const isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(
@@ -78,49 +102,42 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     if (!isValid) {
-      emailInput.classList.add("is-invalid");
-      emailInput.classList.remove("was-validated");
-      emailInput.classList.remove("is-valid");
-      document.querySelector("#email-error").textContent =
-        "Please provide a valid email address.";
-      document.querySelector("#email-valid").textContent = "";
+      emailInput.addClass("is-invalid").removeClass("was-validated is-valid");
+      $("#email-error").text("Please provide a valid email address.");
+      $("#email-valid").text("");
     } else if (!isExistingEmail) {
-      emailInput.classList.add("is-invalid");
-      emailInput.classList.remove("was-validated");
-      emailInput.classList.remove("is-valid");
-      document.querySelector("#email-error").textContent =
-        "User with this email cannot be found.";
-      document.querySelector("#email-valid").textContent = "";
+      emailInput.addClass("is-invalid").removeClass("was-validated is-valid");
+      $("#email-error").text("We couldn't find your email address.");
+      $("#email-valid").text("");
     } else {
-      emailInput.classList.remove("is-invalid");
-      emailInput.classList.add("is-valid");
-      emailInput.classList.add("was-validated");
-      document.querySelector("#email-error").textContent = "";
-      document.querySelector("#email-valid").textContent = "Looks right!";
+      emailInput.removeClass("is-invalid").addClass("is-valid was-validated");
+      $("#email-error").text("");
+      // $("#email-valid").text("Looks right!");
     }
 
-    sendButton.disabled = !isValid || !isExistingEmail;
+    sendButton.prop("disabled", !isValid || !isExistingEmail);
   };
 
   // Validate the email input on input and change events
-  emailInput.addEventListener("input", validateEmail);
-  emailInput.addEventListener("change", validateEmail);
+  emailInput.on("input change", validateEmail);
 
   // Password Reset Link
   $("#sendEmailBtn").click(function (event) {
     event.preventDefault();
-    const email = $("#email").val();
+    const email = emailInput.val();
     if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
       // Basic email format validation
-      const emailError = document.querySelector("#email-error");
-      emailError.textContent = "Please provide a valid email address.";
-      emailInput.classList.add("is-invalid");
+      $("#email-error").text("Please provide a valid email address.");
+      emailInput.addClass("is-invalid");
       return;
     }
 
     // Disable the button while the request is being processed
-    sendButton.disabled = true;
-    sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending...`;
+    sendButton
+      .prop("disabled", true)
+      .html(
+        `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending...`
+      );
 
     $.ajax({
       url: "includes/send-password-reset.php",
@@ -140,10 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
             location.reload();
           });
         } else {
-          const emailError = document.querySelector("#email-error");
-          emailError.textContent = response.message;
-          emailInput.classList.remove("is-valid");
-          emailInput.classList.add("is-invalid");
+          $("#email-error").text(response.message);
+          emailInput.removeClass("is-valid").addClass("is-invalid");
         }
       },
       error: function (xhr, status, error) {
@@ -151,8 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       complete: function () {
         // Reset the button content and enable it after the request is complete (whether success or error)
-        sendButton.innerHTML = "Send Link";
-        sendButton.disabled = false;
+        sendButton.html("Send Link").prop("disabled", false);
       },
     });
   });

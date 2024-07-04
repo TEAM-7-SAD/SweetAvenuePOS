@@ -11,70 +11,48 @@ if(!isset($_SESSION['id'])) {
   exit();
 }
 
-// Get the first name of the logged-in user
-$sql = "SELECT first_name FROM user WHERE id = ?";
-$stmt = $db->prepare($sql);
-$stmt->bind_param('i', $_SESSION['id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-
-$user = $row['first_name'];
-$stmt->close();
-
-// Get total sales for today
 $today = date("Y-m-d");
-$sql = "SELECT SUM(total_amount) AS today_sale FROM transaction WHERE DATE(timestamp) = ?";
+
+$sql = "
+    SELECT 
+        SUM(CASE WHEN DATE(timestamp) = ? THEN total_amount ELSE 0 END) AS today_sale,
+        COUNT(CASE WHEN DATE(timestamp) = ? THEN 1 ELSE NULL END) AS today_order,
+        SUM(CASE WHEN YEAR(timestamp) = YEAR(CURRENT_DATE()) AND MONTH(timestamp) = MONTH(CURRENT_DATE()) AND DAY(timestamp) <= DAY(CURRENT_DATE()) THEN total_amount ELSE 0 END) AS monthly_sale
+    FROM transaction";
+
 $stmt = $db->prepare($sql);
-$stmt->bind_param('s', $today);
+$stmt->bind_param('ss', $today, $today);
 $stmt->execute();
-$stmt->bind_result($today_sale);
+$stmt->bind_result($today_sale, $today_order, $monthly_sale);
 $stmt->fetch();
 $stmt->close();
 
-$sql = "SELECT COUNT(timestamp) AS today_order FROM transaction WHERE DATE(timestamp) = ?";
-$stmt = $db->prepare($sql);
-$stmt->bind_param('s', $today);
-$stmt->execute();
-$stmt->bind_result($order_today);
-$stmt->fetch();
-$stmt->close();
-
-$sql = "SELECT SUM(total_amount) AS monthly_sale FROM transaction WHERE YEAR(timestamp) = YEAR(CURRENT_DATE()) AND MONTH(timestamp) = MONTH(CURRENT_DATE()) AND DAY(timestamp) <= DAY(CURRENT_DATE())";
-$stmt = $db->prepare($sql);
-$stmt->execute();
-$stmt->bind_result($monthly_sale);
-$stmt->fetch();
-$stmt->close();
+// Proper format and checking if value is not null
+$today_sale_formatted = ($today_sale !== NULL) ? number_format($today_sale, 2) : 0.00;
+$monthly_sale_formatted = ($monthly_sale !== NULL) ? number_format($monthly_sale, 2) : 0.00;
+$today_order_count = ($today_order !== NULL) ? $today_order : 0;
 
 $start_of_month = date('F 01');
 $current_day = date('F d, Y');
 $date_range = $start_of_month . ' - ' . $current_day;
 
-// Weekly Sale
-$current_day_of_week = date('N');
-
 // Calculate the start and end dates of the current week
-if ($current_day_of_week == 1) {
-    // If today is Monday, start from today (Monday) and end on Saturday
-    $start_of_week = date('Y-m-d');
-    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
-} else {
-    // If today is not Monday, start from last Monday and end on next Saturday
-    $start_of_week = date('Y-m-d', strtotime('last Monday'));
-    $end_of_week = date('Y-m-d', strtotime('next Saturday'));
-}
+$start_of_week = date('Y-m-d', strtotime('last Monday', strtotime('next Sunday')));
+$end_of_week = date('Y-m-d', strtotime('next Saturday'));
 
-// SQL query to get the sum of total_amount for the current week
-$sql = "SELECT SUM(total_amount) AS weekly_sale 
-        FROM transaction 
-        WHERE timestamp >= ? AND timestamp <= ?";
+// Get the sum of total_amount for the current week
+$sql = "
+    SELECT SUM(total_amount) AS weekly_sale 
+    FROM transaction 
+    WHERE timestamp >= ? AND timestamp <= ?";
 $stmt = $db->prepare($sql);
 $stmt->bind_param("ss", $start_of_week, $end_of_week);
 $stmt->execute();
 $stmt->bind_result($weekly_sale);
 $stmt->fetch();
 $stmt->close();
+
+$weekly_sale_formatted = ($weekly_sale !== NULL) ? number_format($weekly_sale, 2) : 0.00;
 
 $start_of_week_formatted = date('F d', strtotime($start_of_week));
 $end_of_week_formatted = date('F d, Y', strtotime($end_of_week));
@@ -103,9 +81,27 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
       </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Bootstrap JavaScript -->
+    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
+    <!-- CDN  -->
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
 
-
+    <!-- Custom JavaScript -->
+    <script src="javascript/index.js" defer></script>
+    <script src="javascript/preloader.js" defer></script>
+    <script src="javascript/reports.js" defer></script>
   </head>
 
   <body class="bg-gainsboro">
@@ -132,7 +128,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                   <div class="col-md-auto">
                     <div class="mx-3">
                       <div class="fw-semibold text-carbon-grey fs-3 pb-1 pt-2">
-                        Hello there, <span class="text-medium-brown fw-bold text-capitalize"><?php echo htmlspecialchars($user) . '!'; ?></span>
+                        Hello there, <span class="text-medium-brown fw-bold text-capitalize"><?php echo htmlspecialchars($current_user['first_name']) . '!'; ?></span>
                       </div>
                       <div class="text-carbon-grey fw-medium">Here's what's happening with the store.</div>
                     </div>                    
@@ -167,14 +163,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                     <span class="fw-semibold fs-5">Sales Today</span>
                     <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
-                      <?php
-                      if ($today_sale !== NULL) {
-                        echo number_format($today_sale, 2); 
-                      }
-                      else {
-                        echo "0.00";
-                      } 
-                      ?>
+                      <?php echo htmlspecialchars($today_sale_formatted); ?>
                     </div> 
                   </div>
                 </div>
@@ -186,14 +175,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                     <span class="fw-semibold fs-5">Orders Today</span>
                     <div class="font-12"><?php echo htmlspecialchars($current_day); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
-                      <?php 
-                      if ($order_today !== NULL) {
-                        echo $order_today; 
-                      }
-                      else {
-                        echo "No order.";
-                      }
-                      ?>
+                      <?php echo htmlspecialchars($today_order_count); ?>
                     </div> 
                   </div>
                 </div>
@@ -207,14 +189,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                     <span class="fw-semibold fs-5">Weekly Sales</span>
                     <div class="font-12"><?php echo htmlspecialchars($week_duration); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
-                      <?php
-                      if ($weekly_sale !== NULL) {
-                        echo number_format($weekly_sale, 2); 
-                      }
-                      else {
-                        echo "0.00";
-                      }
-                      ?>
+                      <?php echo htmlspecialchars($weekly_sale_formatted); ?>
                     </div> 
                   </div>
               </div>
@@ -226,14 +201,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                     <span class="fw-semibold fs-5">Monthly Sales</span>
                     <div class="font-12"><?php echo htmlspecialchars($date_range); ?></div>
                     <div class="pb-4 pt-2 d-flex justify-content-center fw-semibold" style="font-size: 31px;">
-                      <?php
-                      if ($monthly_sale !== NULL) {
-                        echo number_format($monthly_sale, 2);
-                      } 
-                      else {
-                          echo "0.00";
-                      }
-                      ?>
+                      <?php echo htmlspecialchars($monthly_sale_formatted) ?>
                     </div> 
                   </div>
                 </div>
@@ -246,7 +214,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
               <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 3 -->
                   <div class="p-2 fw-semibold text-carbon-grey">
-                    WEEKLY SALE
+                    FROM PREVIOUS WEEK
                   </div>
                   <div id="weeklySales"></div>
               </div>
@@ -317,7 +285,15 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                               </td>
                                             </tr>";
                                   }
-                                  $jsonTopPickData = json_encode($topPickData);
+                                  // Fetch the all the items from the database
+                                  $sql = "SELECT antecedent, consequent FROM frequent_items";
+                                  $result = $db->query($sql);
+
+                                  $topPickDatas = [];
+                                  if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                      $topPickDatas[] = [addslashes($row["antecedent"]), '+', addslashes($row["consequent"])];}}
+                                  $jsonTopPickData = json_encode($topPickDatas);
                               ?>
                           </tbody>
                       </table>
@@ -344,34 +320,18 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
     </div>
     </div>
 
-    <!-- Data used for generating reports -->
     <script>
+      // Data used for generating reports
       const user = <?php echo json_encode($full_name); ?>;
-      const todaySale = <?php echo json_encode(number_format($today_sale, 2)); ?>;
-      const orderToday = <?php echo json_encode($order_today); ?>;
-      const weeklySale = <?php echo json_encode(number_format($weekly_sale, 2)); ?>;
+      const todaySale = <?php echo json_encode($today_sale_formatted); ?>;
+      const orderToday = <?php echo json_encode($today_order); ?>;
+      const weeklySale = <?php echo json_encode($weekly_sale_formatted); ?>;
       const weekDuration = <?php echo json_encode($week_duration); ?>;
-      const monthlySale = <?php echo json_encode(number_format($monthly_sale, 2)); ?>;
+      const monthlySale = <?php echo json_encode($monthly_sale_formatted); ?>;
       const dateRange = <?php echo json_encode($date_range); ?>;
       const weeklySalesData = <?php echo $json_sales_data; ?>;
       const topPickData = <?php echo $jsonTopPickData; ?>;
     </script>
-
-    <!--Bootstrap JavaScript-->
-    <script src="../vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="javascript/index.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
-    <script src="javascript/preloader.js"></script>
-    <script src="javascript/reports.js"></script>
 
   </body>
 </html>

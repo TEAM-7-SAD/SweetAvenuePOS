@@ -66,14 +66,14 @@ if(isset($_POST['category'])) {
                 echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['flavor'] . '</span><br> ';
             }
             echo '</div>';
-            echo '<div class="col pt-1 ps-4 pe-4">';
+            echo '<div class="col px-4">';
             echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
 
             echo '<div class="text-center text-carbon-grey text-truncate text-capitalize">';
-            echo '<span class="fw-medium " style="font-size: 15px;"> ' . $row['item_name'] . ' </span><br>';
+            echo '<span class="fw-medium font-14"> ' . $row['item_name'] . ' </span><br>';
             echo '<span class="fw-bold">' . $row['price'] . '</span>';
             
             echo '</div>';
@@ -106,14 +106,14 @@ if(isset($_POST['category'])) {
                     echo '<span class="badge text-bg-carbon-grey rounded-1 text-wrap">' . $row['size'] . 'oz' . '</span><br> ';
                 }
             echo '</div>';
-            echo '<div class="col pt-1 ps-4 pe-4">';
+            echo '<div class="col px-4">';
             echo '<img src="' . $image . '" alt="Product Image" class="pt-2 card-img-top rounded-circle">';
             echo '</div>';
             echo '<div class="pt-1 card-body">';
             echo '<div class="card-text text-capitalize">';
 
             echo '<div class="text-center text-carbon-grey text-truncate text-capitalize">';
-            echo '<span class="fw-medium " style="font-size: 15px;"> ' . $row['item_name'] . ' </span><br>';
+            echo '<span class="fw-medium font-14"> ' . $row['item_name'] . ' </span><br>';
             echo '<span class="fw-bold">' . $row['price'] . '</span>';
             
             echo '</div>';
@@ -149,12 +149,12 @@ input[type="number"] {
 </style>
 
 <!-- Modal for Product Variations -->
-<div class="modal fade" id="product" tabindex="-1" aria-labelledby="productName" aria-hidden="true">
+<div class="modal fade" id="product" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form id="orderForm" method="post">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-6 fw-semibold text-carbon-grey text-capitalize" id="productName"><!-- Product name will be loaded here --></h1>
+                <div class="modal-header bg-medium-brown">
+                    <h1 class="modal-title fs-6 fw-semibold text-light text-uppercase" id="productName"><!-- Product name will be loaded here --></h1>
                 </div>
                 <div class="modal-body" id="productVariation">
                     <input type="hidden" name="product_id" id="product_id">
@@ -188,7 +188,7 @@ input[type="number"] {
                                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8"/>
                                 </svg>
                             </button>
-                            <input type="number" id="quantityInput" name="quantity" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3" value="1" min="1">
+                            <input type="number" id="quantityInput" name="quantity" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3 shadow-sm" value="1" min="1">
                             <button class="btn btn-lg btn-outline-carbon-grey input-group-text fw-bold py-3 px-5" type="button" id="quantityPlus">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
@@ -198,7 +198,7 @@ input[type="number"] {
                     </div>
                     <div class="col-md mb-2">
                         <div class="form-floating py-3">
-                            <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey bg-white" id="priceDisplay" name="price">
+                            <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey bg-white shadow-sm" id="priceDisplay" name="price">
                             <label for="priceDisplay" class="text-carbon-grey fw-medium fs-5">Price</label>
                         </div>
                     </div>
@@ -260,7 +260,7 @@ $(document).ready(function() {
                             $('#servingOrTypeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + servingOrType + '</button>');
                         });
                     } else {
-                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
+                        $('#servingOrTypeGroup').append('<span class="text-carbon-grey font-13 fst-italic">No variations available</span>');
                     }
 
                     if (flavorOrSizeSet.size > 0) {
@@ -268,7 +268,7 @@ $(document).ready(function() {
                             $('#flavorOrSizeGroup').append('<button type="button" class="btn btn-sm btn-outline-product text-capitalize fw-semibold rounded-4">' + flavorOrSize + '</button>');
                         });
                     } else {
-                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey font-12 fst-italic">No variations available</span>');
+                        $('#flavorOrSizeGroup').append('<span class="text-carbon-grey font-13 fst-italic">No variations available</span>');
                     }
 
                     $('#defaultServingOrType').val(defaultServingOrType);

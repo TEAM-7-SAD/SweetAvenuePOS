@@ -135,16 +135,16 @@ def main():
     output_directory = 'src/sales-prediction-algorithm/'
     store_predictions(next_week_sales_pred, next_week_timestamps, output_directory)
     
-    # # Calculate Absolute Percentage Error (APE)
-    # ape = np.abs((regressor.predict(X_test) - y_test.values) / y_test.values) * 100
+    # Calculate Absolute Percentage Error (APE)
+    ape = np.abs((regressor.predict(X_test) - y_test.values) / y_test.values) * 100
     
-    # # Format MAPE to two decimal points only
-    # mape = np.mean(ape)
+    # Format MAPE to two decimal points only
+    mape = np.mean(ape)
     
-    # print(f"Mean Absolute Error of the model is : {metrics.mean_absolute_error(y_test, regressor.predict(X_test))}")
-    # print(f"Mean Squared Error of the model is : {metrics.mean_squared_error(y_test, regressor.predict(X_test))}") 
-    # print(f"Root Mean Squared Error of the model is : {np.sqrt(metrics.mean_squared_error(y_test, regressor.predict(X_test)))}") 
-    # print(f"Mean Absolute Percentage Error of the model is : {mape: .2f}%") 
+    print(f"Mean Absolute Error of the model is : {metrics.mean_absolute_error(y_test, regressor.predict(X_test))}")
+    print(f"Mean Squared Error of the model is : {metrics.mean_squared_error(y_test, regressor.predict(X_test))}") 
+    print(f"Root Mean Squared Error of the model is : {np.sqrt(metrics.mean_squared_error(y_test, regressor.predict(X_test)))}") 
+    print(f"Mean Absolute Percentage Error of the model is : {mape: .2f}%") 
     
     # # Visualising the Training and Testing set results
     # plt.scatter(X_train, y_train, color='green', label='Training points')
