@@ -85,6 +85,13 @@ $(document).ready(function () {
     checkCart();
   }
 
+  function resetTenderedAmountInput() {
+    $("#tenderedAmount").val(""); // Clear the input field
+    $("#proceedOrder").prop("disabled", true); // Disable the Proceed Order button
+    $("#changeDisplay").html(""); // Clear the change display
+  }
+
+
   // Run the checkCart function on page load
   checkCart();
 
@@ -191,6 +198,8 @@ $(document).ready(function () {
       },
     });
 
+    resetTenderedAmountInput();
+
     $("#orderConfirmationModal").modal("hide");
     $("#receiptModal").modal("show");
 
@@ -204,6 +213,11 @@ $(document).ready(function () {
 
     checkCart();
   });
+
+
+    $("#orderConfirmationModal").on("hidden.bs.modal", function () {
+      resetTenderedAmountInput();
+    });
 
   function printOrderConfirmation(tenderedAmount) {
     const printableContent = generatePrintableContent(tenderedAmount);
@@ -222,69 +236,72 @@ $(document).ready(function () {
   function generatePrintableContent(tenderedAmount) {
     const processedBy = currentUser;
     const orderDetails = {
-        items: [],
-        subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
-        discountPercentage: parseFloat($("#discountInput").val()) || 0, // Set to 0 if NaN
-        grandTotal: parseFloat($("#grandTotalValue").text()),
-        tenderedAmount: tenderedAmount,
+      items: [],
+      subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
+      discountPercentage: parseFloat($("#discountInput").val()) || 0, // Set to 0 if NaN
+      grandTotal: parseFloat($("#grandTotalValue").text()),
+      tenderedAmount: tenderedAmount,
     };
 
     const change = tenderedAmount - orderDetails.grandTotal;
     const discountAmount = orderDetails.subtotal * (orderDetails.discountPercentage / 100);
 
     $("#orderCart tr").each(function () {
-        const cells = $(this).find("td");
-        orderDetails.items.push({
-            productName: cells.eq(1).find(".text-capitalize").text().trim(),
-            quantity: cells.eq(0).find("p").text().trim().slice(1),
-            price: parseFloat(
-                cells
-                    .eq(2)
-                    .find(".text-carbon-grey")
-                    .text()
-                    .trim()
-                    .replace(/[^\d.]/g, "")
-            ),
-        });
+      const cells = $(this).find("td");
+      const productName = cells.eq(1).text().trim();
+      const quantity = cells.eq(0).text().trim().slice(1);
+      const price = parseFloat(
+        cells
+          .eq(2)
+          .text()
+          .trim()
+          .replace(/[^\d.]/g, "")
+      );
+
+      orderDetails.items.push({
+        productName: productName,
+        quantity: quantity,
+        price: price,
+      });
     });
 
     return `
-        <html>
-            <head>
-                <title>Receipt</title>
-                <style>
-                    @media print {
-                        .receipt {
-                            width: auto;
-                            margin: 0 auto;
-                            padding: 10px;
-                        }
-                        .table, .table tr, .table th, .table td {
-                            page-break-inside: avoid;
-                        }
-                    }
-                    html, body {
-                        width: 100%;
-                        height: 100%;
-                        margin: 0;
-                        padding: 0;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        font-family: Arial, sans-serif;
-                        background-color: #f8f8f8;
-                    }
-                    .receipt {
-                        width: 80mm; /* Width of a typical thermal paper */
-                        padding: 10px;
-                        box-sizing: border-box;
-                        background-color: white;
-                        page-break-inside: avoid;
-                    }
-                    .center-text {
-                        text-align: center;
-                    }
-                    .table {
+      <html>
+        <head>
+          <title>Receipt</title>
+          <style>
+            @media print {
+              .receipt {
+                width: auto;
+                margin: 0 auto;
+                padding: 10px;
+              }
+              .table, .table tr, .table th, .table td {
+                page-break-inside: avoid;
+              }
+            }
+            html, body {
+              width: 100%;
+              height: 100%;
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-family: Arial, sans-serif;
+              background-color: #f8f8f8;
+            }
+            .receipt {
+              width: 80mm; /* Width of a typical thermal paper */
+              padding: 10px;
+              box-sizing: border-box;
+              background-color: white;
+              page-break-inside: avoid;
+            }
+            .center-text {
+              text-align: center;
+            }
+                                .table {
                         width: 100%;
                         border-collapse: collapse;
                         page-break-inside: avoid;
@@ -307,10 +324,10 @@ $(document).ready(function () {
                     h4, h5, p {
                         margin: 5px 0;
                     }
-                </style>
-            </head>
-            <body>
-                <div class="receipt">
+          </style>
+        </head>
+        <body>
+          <div class="receipt">
                     <div class="center-text">
                         <div style="display: flex; align-items: center; justify-content: center;">
                             <div style="display: flex; flex-direction: column; align-items: flex-start;">
@@ -322,28 +339,28 @@ $(document).ready(function () {
                         <p class="roboto-mono"><b>${new Date().toLocaleString()}</b></p>
                         <hr>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
                                 <th>Quantity</th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
+                  <th>Price</th>
+                </tr>
+              </thead>
                         <tbody class="roboto-mono">
-                            ${orderDetails.items
-                              .map(
-                                (item) => `
-                                <tr>
-                                    <td>${capitalizeEachWord(item.productName)}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>₱${item.price.toFixed(2)}</td>
-                                </tr>
-                            `
-                              )
-                              .join("")}
-                        </tbody>
-                    </table>
+                ${orderDetails.items
+                  .map(
+                    (item) => `
+                  <tr>
+                    <td>${capitalizeEachWord(item.productName)}</td>
+                    <td>${item.quantity}</td>
+                    <td>₱${item.price.toFixed(2)}</td>
+                  </tr>
+                `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
                     <hr>
                     <div class="roboto-mono">
                         <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(2)}</p>
@@ -360,109 +377,111 @@ $(document).ready(function () {
                     <div class="center-text roboto-mono">
                         <p>Thank you for your patronage. We’d love to see you again soon. You're always welcome here!</p>
                     </div>
-                </div>
-            </body>
-        </html>
+          </div>
+        </body>
+      </html>
     `;
-}
+  }
 
-function capitalizeEachWord(str) {
-    return str.replace(/\b\w/g, char => char.toUpperCase());
-}
-
-  // Calculate grand total
-  function calculateGrandTotal() {
-    const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
-    let discount = parseFloat($("#discountInput").val()) || 0;
-
-    if (isNaN(discount) || discount < 0 || discount > 20) {
-      alert("Please enter a valid discount percentage (0-20).");
-      $("#discountInput").val(0);
-      discount = 0;
+    function capitalizeEachWord(str) {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
     }
 
-    const grandTotal = (subtotal - subtotal * (discount / 100)).toFixed(2);
-    $("#grandTotalValue").text(grandTotal);
-  }
+    // Calculate grand total
+    function calculateGrandTotal() {
+      const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
+      let discount = parseFloat($("#discountInput").val()) || 0;
 
-  function capitalizeEachWord(string) {
-    return string.replace(/\b\w/g, (char) => char.toUpperCase());
-  }
+      if (isNaN(discount) || discount < 0 || discount > 20) {
+        alert("Please enter a valid discount percentage (0-20).");
+        $("#discountInput").val(0);
+        discount = 0;
+      }
 
-  function validateDiscountInput(event) {
-    const input = event.target.value;
+      const grandTotal = (subtotal - subtotal * (discount / 100)).toFixed(2);
+      $("#grandTotalValue").text(grandTotal);
+    }
 
-    // Remove non-digit characters
-    const cleanedInput = input.replace(/[^\d]/g, "");
+    function capitalizeEachWord(string) {
+      return string.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
-    // Reset input value
-    event.target.value = cleanedInput;
+    function validateDiscountInput(event) {
+      const input = event.target.value;
 
-    // Calculate grand total with the validated input
-    calculateGrandTotal();
-  }
+      // Remove non-digit characters
+      const cleanedInput = input.replace(/[^\d]/g, "");
 
-  // Set discount to 0 if the input is blank on blur
-  function resetDiscountIfBlank(event) {
-    if (event.target.value === "") {
-      event.target.value = 0;
+      // Reset input value
+      event.target.value = cleanedInput;
+
+      // Calculate grand total with the validated input
       calculateGrandTotal();
     }
-  }
 
-  // Attach the validation function to the input event
-  $("#discountInput").on("input", validateDiscountInput);
-
-  // Attach the reset function to the blur event
-  $("#discountInput").on("blur", resetDiscountIfBlank);
-
-  // Initial calculation of the grand total
-  calculateGrandTotal();
-
-  // Tendered amount validation and change calculation
-  function enforceTenDigits(event) {
-    const input = event.target.value;
-    if (input.length > 10) {
-      event.target.value = input.slice(0, 10);
-    }
-  }
-
-  function calculateChange() {
-    const grandTotal = parseFloat($("#grandTotalValue").text());
-    const tenderedAmount = parseFloat($("#tenderedAmount").val());
-
-    if (isNaN(tenderedAmount)) {
-      $("#changeDisplay").html(
-        "<p style='color: red;'>Please enter a valid amount</p>"
-      );
-      return;
+    // Set discount to 0 if the input is blank on blur
+    function resetDiscountIfBlank(event) {
+      if (event.target.value === "") {
+        event.target.value = 0;
+        calculateGrandTotal();
+      }
     }
 
-    const change = tenderedAmount - grandTotal;
-    if (change >= 0) {
-      $("#changeDisplay").html(
-        "<p><strong>Change:</strong> " + change.toFixed(2) + "</p>"
-      );
-    } else {
-      $("#changeDisplay").html(
-        "<p style='color: red;'>Insufficient amount tendered</p>"
-      );
+    // Attach the validation function to the input event
+    $("#discountInput").on("input", validateDiscountInput);
+
+    // Attach the reset function to the blur event
+    $("#discountInput").on("blur", resetDiscountIfBlank);
+
+    // Initial calculation of the grand total
+    calculateGrandTotal();
+
+    // Tendered amount validation and change calculation
+    function enforceTenDigits(event) {
+      const input = event.target.value;
+      if (input.length > 21) {
+        event.target.value = input.slice(0, 21);
+      }
     }
+
+    function calculateChange() {
+      const grandTotal = parseFloat($("#grandTotalValue").text());
+      const tenderedAmount = parseFloat($("#tenderedAmount").val());
+  
+      if (isNaN(tenderedAmount)) {
+          $("#changeDisplay").html(""); 
+          $("#proceedOrder").prop("disabled", true);
+          return;
+      }
+  
+      const change = tenderedAmount - grandTotal;
+      if (change >= 0) {
+          $("#changeDisplay").html(
+              "<p><strong>Change:</strong> " + change.toFixed(2) + "</p>"
+          );
+          $("#proceedOrder").prop("disabled", false); 
+      } else {
+          $("#changeDisplay").html(
+              "<p style='color: red;'>Insufficient amount tendered</p>"
+          );
+          $("#proceedOrder").prop("disabled", true);
+      }
   }
+  
 
-  $("#tenderedAmount")
-    .on("input", enforceTenDigits)
-    .on("input", calculateChange);
+    $("#tenderedAmount")
+      .on("input", enforceTenDigits)
+      .on("input", calculateChange);
 
-  // Remove order item
-  $(document).on("click", ".remove-order", function (event) {
-    event.preventDefault();
-    const row = $(this).closest("tr");
-    const productName = row.find(".text-capitalize").text().trim();
+    // Remove order item
+    $(document).on("click", ".remove-order", function (event) {
+      event.preventDefault();
+      const row = $(this).closest("tr");
+      const productName = row.find(".text-capitalize").text().trim();
 
-    $.post("remove_order.php", { product_name: productName }, function () {
-      row.remove();
-      window.location.reload();
+      $.post("remove_order.php", { product_name: productName }, function () {
+        row.remove();
+        window.location.reload();
+      });
     });
-  });
 });
