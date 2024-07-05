@@ -192,7 +192,7 @@ input[type="number"] {
                     </div>
                     <hr>
                     <div class="mb-1">
-                        <label for="quantityInput" class="col-form-label fw-medium text-carbon-grey">Quantity:</label>
+                        <label for="quantityInput" class="col-form-label fw-medium text-carbon-grey">Quantity:</label max="10">
                         <div class="input-group mt-2 mb-3">
                             <button class="btn btn-lg btn-outline-carbon-grey input-group-text fw-bold py-3 px-5" type="button" id="quantityMinus">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
@@ -323,8 +323,12 @@ $(document).ready(function() {
     });
 
     $('#quantityInput').on('input', function() {
-        validateQuantity();
-        updatePrice();
+    let value = $(this).val();
+    if (value.length > 2) {
+        $(this).val(value.slice(0, 2));
+    }
+    validateQuantity();
+    updatePrice();
     });
 
     $('#quantityMinus').on('click', function() {
@@ -394,53 +398,49 @@ $(document).ready(function() {
     }
 
     function addToCart() {
-    let productId = $('#product').data('product-id');
-    let productType = $('#product').data('product-type');
-    let productName = $('#productName').text();
-    let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
-    let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
-    let quantity = $('#quantityInput').val();
-    let price = $('#priceDisplay').val();
+        let productId = $('#product').data('product-id');
+        let productType = $('#product').data('product-type');
+        let productName = $('#productName').text();
+        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
+        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
+        let quantity = $('#quantityInput').val();
+        let price = $('#priceDisplay').val();
 
-    if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
-    if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
+        if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
+        if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
 
-    $.ajax({
-        url: 'add_to_order_cart.php',
-        type: 'POST',
-        data: {
-            product_id: productId,
-            product_type: productType,
-            product_name: productName,
-            serving_or_type: servingOrType,
-            flavor_or_size: flavorOrSize,
-            quantity: quantity,
-            price: price
-        },
-        success: function(response) {
-            let data = JSON.parse(response);
-            if (data.status === 'success') {
-                fetchCartItems();
-                calculateSubtotal();
-                $('#product').modal('hide');
-            } else {
-                alert('Failed to add item to order cart');
+        $.ajax({
+            url: 'add_to_order_cart.php',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                product_type: productType,
+                product_name: productName,
+                serving_or_type: servingOrType,
+                flavor_or_size: flavorOrSize,
+                quantity: quantity,
+                price: price
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                if (data.status === 'success') {
+                    fetchCartItems();
+                    calculateSubtotal();
+                    $('#product').modal('hide');
+                } else {
+                    alert('Failed to add item to order cart');
+                }
+            },
+            error: function() {
+                alert('An error occurred. Please try again.');
             }
-            $("#addToOrderCart").prop("disabled", false);
-        },
-        error: function() {
-            alert('An error occurred. Please try again.');
-            $("#addToOrderCart").prop("disabled", false);
-        }
+        });
+    }
+
+    $("#addToOrderCart").on("click", function(event) {
+        event.preventDefault();
+        addToCart();
     });
-}
-
-$("#addToOrderCart").on("click", function(event) {
-    event.preventDefault();
-    $(this).prop("disabled", true);
-    addToCart();
-});
-
 
     function fetchCartItems() {
         $.ajax({
