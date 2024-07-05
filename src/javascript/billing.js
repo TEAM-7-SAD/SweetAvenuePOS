@@ -439,8 +439,8 @@ $(document).ready(function () {
     // Tendered amount validation and change calculation
     function enforceTenDigits(event) {
       const input = event.target.value;
-      if (input.length > 21) {
-        event.target.value = input.slice(0, 21);
+      if (input.length > 10) {
+        event.target.value = input.slice(0, 10);
       }
     }
 
