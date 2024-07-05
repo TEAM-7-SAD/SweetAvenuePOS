@@ -394,49 +394,53 @@ $(document).ready(function() {
     }
 
     function addToCart() {
-        let productId = $('#product').data('product-id');
-        let productType = $('#product').data('product-type');
-        let productName = $('#productName').text();
-        let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
-        let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
-        let quantity = $('#quantityInput').val();
-        let price = $('#priceDisplay').val();
+    let productId = $('#product').data('product-id');
+    let productType = $('#product').data('product-type');
+    let productName = $('#productName').text();
+    let servingOrType = $('#servingOrTypeGroup .active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
+    let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
+    let quantity = $('#quantityInput').val();
+    let price = $('#priceDisplay').val();
 
-        if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
-        if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
+    if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
+    if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
 
-        $.ajax({
-            url: 'add_to_order_cart.php',
-            type: 'POST',
-            data: {
-                product_id: productId,
-                product_type: productType,
-                product_name: productName,
-                serving_or_type: servingOrType,
-                flavor_or_size: flavorOrSize,
-                quantity: quantity,
-                price: price
-            },
-            success: function(response) {
-                let data = JSON.parse(response);
-                if (data.status === 'success') {
-                    fetchCartItems();
-                    calculateSubtotal();
-                    $('#product').modal('hide');
-                } else {
-                    alert('Failed to add item to order cart');
-                }
-            },
-            error: function() {
-                alert('An error occurred. Please try again.');
+    $.ajax({
+        url: 'add_to_order_cart.php',
+        type: 'POST',
+        data: {
+            product_id: productId,
+            product_type: productType,
+            product_name: productName,
+            serving_or_type: servingOrType,
+            flavor_or_size: flavorOrSize,
+            quantity: quantity,
+            price: price
+        },
+        success: function(response) {
+            let data = JSON.parse(response);
+            if (data.status === 'success') {
+                fetchCartItems();
+                calculateSubtotal();
+                $('#product').modal('hide');
+            } else {
+                alert('Failed to add item to order cart');
             }
-        });
-    }
-
-    $("#addToOrderCart").on("click", function(event) {
-        event.preventDefault();
-        addToCart();
+            $("#addToOrderCart").prop("disabled", false);
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+            $("#addToOrderCart").prop("disabled", false);
+        }
     });
+}
+
+$("#addToOrderCart").on("click", function(event) {
+    event.preventDefault();
+    $(this).prop("disabled", true);
+    addToCart();
+});
+
 
     function fetchCartItems() {
         $.ajax({
