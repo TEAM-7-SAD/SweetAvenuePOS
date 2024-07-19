@@ -3,3 +3,4 @@ src/includes/error-logs.txt
 src/sales-prediction-algorithm/sales_prediction.json
 src/includes/charts/weekly_sales_data.json
 .phpunit.result.cache
+src/uploads/receipt/
