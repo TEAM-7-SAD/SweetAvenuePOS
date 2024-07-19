@@ -12795,7 +12795,7 @@ textarea.form-control-lg {
 .styled-table thead tr {
   background-color: #FFFFFF;
   /* Changed background color */
-  color: #343a40;
+  color: #C57C47;
 }
 
 .styled-table th,
@@ -12817,11 +12817,6 @@ textarea.form-control-lg {
 .styled-table tbody tr:last-of-type {
   border-bottom: none;
   background-color: #FFFFFF;
-}
-
-.styled-table tbody tr.active-row {
-  font-weight: bold;
-  color: #343a40;
 }
 
 .plus-sign {

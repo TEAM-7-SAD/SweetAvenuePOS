@@ -230,12 +230,12 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
           </div>
         </div>
 
-        <div class="row">         
+        <div class="row mt-2">         
           <div class="col-md-9"> <!-- Increased py-4 for more padding -->
               <div class="col-md-12 bg-white mb-3 rounded-3 p-4" style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); height: 410px;"> <!-- Added box-shadow style for drop shadow -->
                   <!-- Larger Container 3 -->
                   <div class="p-2 mb-2 fw-semibold text-carbon-grey">
-                      WEEKLY TOP SOLD PRODUCTS
+                      TOP PRODUCT PAIRINGS OF THE WEEK
                     </div>                              
                     <div class="table-container">
                       <table id="example" class="styled-table">
@@ -252,7 +252,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                   $output = shell_exec('python apriori/apriori_algo.py 2>&1');
 
                                   // Fetch the specific item with ID 1 from the database
-                                  $sql = "SELECT antecedent, consequent FROM frequent_items WHERE id = 1";
+                                  $sql = "SELECT antecedent, consequent FROM frequent_items";
                                   $result = $db->query($sql);
 
                                   $topPickData = [];
@@ -262,15 +262,13 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                           echo "<tr>
                                                   <td>
                                                       <div class='product-info'>
-                                                          <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                          <span class='spaced-text text-capitalize fw-semibold'>" . htmlspecialchars($row["antecedent"]) . "</span>
+                                                          <span class='spaced-text text-capitalize'>" . htmlspecialchars($row["antecedent"]) . "</span>
                                                       </div>
                                                   </td>
-                                                  <td class='plus-sign' style='color: #C57C47;'>+</td>
+                                                  <td class='fw-bold' style='color: #343a40;'>+</td>
                                                   <td>
                                                       <div class='product-info'>
-                                                          <img class='pt-2 card-img-top' src='images/coffee-img-placeholder.png'>
-                                                          <span class='spaced-text text-capitalize fw-semibold'>" . htmlspecialchars($row["consequent"]) . "</span>
+                                                          <span class='spaced-text text-capitalize'>" . htmlspecialchars($row["consequent"]) . "</span>
                                                       </div>
                                                   </td>
                                               </tr>";
@@ -285,15 +283,7 @@ $week_duration = $start_of_week_formatted . ' - ' . $end_of_week_formatted;
                                               </td>
                                             </tr>";
                                   }
-                                  // Fetch the all the items from the database
-                                  $sql = "SELECT antecedent, consequent FROM frequent_items";
-                                  $result = $db->query($sql);
-
-                                  $topPickDatas = [];
-                                  if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                      $topPickDatas[] = [addslashes($row["antecedent"]), '+', addslashes($row["consequent"])];}}
-                                  $jsonTopPickData = json_encode($topPickDatas);
+                                  $jsonTopPickData = json_encode($topPickData);
                               ?>
                           </tbody>
                       </table>
