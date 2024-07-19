@@ -100,7 +100,7 @@ async function downloadPDF() {
     },
     bodyStyles: {
       fillColor: "#ffffff",
-      textColor: "#88531E",
+      textColor: "#000000",
     },
   });
 
@@ -147,14 +147,14 @@ async function downloadPDF() {
     },
     bodyStyles: {
       fillColor: "#ffffff",
-      textColor: "#88531E",
+      textColor: "#000000",
     },
   });
 
   // Top Pick and Likely Paired With Table
   doc.setFontSize(14);
   doc.setFont("Helvetica", "bold");
-  doc.text("Weekly Top Sold Products", 15, doc.previousAutoTable.finalY + 10);
+  doc.text("Top Product Pairings of the Week", 15, doc.previousAutoTable.finalY + 10);
 
   const topPickHeaders = ["Top Pick", "", "Likely Paired With"];
   doc.autoTable({
@@ -163,19 +163,23 @@ async function downloadPDF() {
     body: topPickData,
     theme: "grid",
     styles: {
-      textColor: "#88531E",
-      fillColor: "#ffffff",
+      textColor: "#ffffff",
+      fillColor: "#88531E",
       halign: "center",
     },
     headStyles: {
-      fillColor: "#ffffff",
-      textColor: "#88531E",
+      fillColor: "#88531E",
+      textColor: "#ffffff",
     },
     bodyStyles: {
       fillColor: "#ffffff",
-      textColor: "#88531E",
+      textColor: "#000000",
     },
   });
 
-  doc.save("report.pdf");
+  // Format the date for the filename
+  const formattedDate = today.toLocaleDateString('en-GB').replace(/\//g, '-');
+  const fileName = `Reports for ${formattedDate}.pdf`;
+
+  doc.save(fileName);
 }
