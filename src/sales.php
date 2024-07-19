@@ -65,7 +65,11 @@ if(isset($_SESSION['id'])) {
                     <button id="deselectAll" style="display: none; cursor: pointer;" class="btn btn-sm mx-2 btn-tiger-orange text-white">Deselect All</button>
                     <button type="button" class="btn btn-sm py-2 px-3 text-carbon-grey btn-light fw-semibold view-sale">View</button>
                     <div class="mx-2"></div>
-                    <!-- <button class="btn btn-sm btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="<?php echo $row['id']; ?>">Delete</button> -->
+                    <!-- <button class="btn btn-sm btn-danger fw-semibold px-3 py-2 delete-sale" data-sale-id="
+                    <?php 
+                    // echo $row['id']; 
+                    ?>">
+                    Delete</button> -->
                   </div>
                 </div>
               </div>  
@@ -74,6 +78,7 @@ if(isset($_SESSION['id'])) {
           <div class="container px-5 py-4 bg-white shadow rounded-bottom">
 
             <table id="example" class="table table-hover table-striped table-borderless mt-4">
+                <div class="mb-4 font-14 fw-semibold text-carbon-grey fst-italic">Click the date to view receipt.</div>
                 <thead>
                     <tr>
                         <th class="text-medium-brown fw-semibold font-15"></th>
@@ -99,10 +104,15 @@ if(isset($_SESSION['id'])) {
                 $result = $db->query($sql);
 
                 while($row = $result->fetch_assoc()) {
+                    $receiptUrl = 'uploads/receipt/' . $row['receipt'];
                     echo '
                     <tr data-id="'.$row['id'].'" class="selectable">
                         <td><input type="checkbox" class="sale-checkbox" data-sale-id="'.$row['id'].'"></td>
-                        <td class="text-start text-carbon-grey fw-medium font-14">'.$row['transaction_date'].'</td>
+                        <td class="text-start text-carbon-grey fw-medium font-14">
+                            <a href="'.$receiptUrl.'" target="_blank" class="fw-bold text-carbon-grey link-underline-carbon-grey">
+                                '.$row['transaction_date'].'
+                            </a>
+                        </td>
                         <td class="text-carbon-grey fw-medium font-14">'.$row['transaction_time'].'</td>
                         <td class="text-carbon-grey fw-medium font-14">'.$row['full_name'].'</td>
                         <td class="text-start text-carbon-grey fw-medium font-14">'.$row['total_amount'].'</td>
@@ -110,14 +120,13 @@ if(isset($_SESSION['id'])) {
                     ';
                 }       
                 ?>
-
                 </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="3" class="text-medium-brown"><strong>Total Sales:</strong></td>
-                    <td colspan="3" class="text-medium-brown text-end pe-5"><strong id="totalSalesAmount"><?php echo number_format($totalSales, 2); ?></strong></td>
-                </tr>
-              </tfoot>
+                <!-- <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-medium-brown"><strong>Total Sales:</strong></td>
+                        <td colspan="3" class="text-medium-brown text-end pe-5"><strong id="totalSalesAmount"><?php echo number_format($totalSales, 2); ?></strong></td>
+                    </tr>
+                </tfoot> -->
             </table>
             <br>
           </div>    

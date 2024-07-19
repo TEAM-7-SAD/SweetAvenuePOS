@@ -13,8 +13,11 @@ function checkCart() {
   );
 }
 
+const items = [];
+
 $(document).ready(function () {
   $("#placeOrderButton").on("click", function () {
+    items.length = 0;
     $.ajax({
       url: "process-order.php",
       type: "POST",
@@ -37,7 +40,7 @@ $(document).ready(function () {
             orderItemsHtml +=
               '<div class="d-flex flex-column align-items-start py-2">';
             orderItemsHtml +=
-              '<p class="fw-semibold text-muted mb-0 text-capitalize font-14">' +
+              '<p class="fw-semibold text-muted mb-0 text-capitalize font-14" id="actualProduct">' +
               item.product_name +
               "</p>";
             orderItemsHtml +=
@@ -57,7 +60,8 @@ $(document).ready(function () {
               "</div>";
             orderItemsHtml += "</td>";
             orderItemsHtml += "</tr>";
-            console.log(item.id);
+            console.log(item.product_name);
+            items.push(item.product_name);
           });
 
           $("#orderReview").html(orderItemsHtml);
@@ -91,7 +95,6 @@ $(document).ready(function () {
     $("#changeDisplay").html(""); // Clear the change display
   }
 
-
   // Run the checkCart function on page load
   checkCart();
 
@@ -112,32 +115,10 @@ $(document).ready(function () {
     const tenderedAmount = parseFloat($("#tenderedAmount").val());
     const change = tenderedAmount - parseFloat($("#grandTotalValue").text());
 
-    const items = [];
-    $("#orderCart tr").each(function () {
-      const itemId = $(this).data("item-id");
-      const quantity = parseFloat(
-        $(this).find("td:eq(0) p").text().trim().slice(1)
-      );
-      const price = parseFloat(
-        $(this)
-          .find("td:eq(2) .text-carbon-grey")
-          .text()
-          .trim()
-          .replace(/[^\d.]/g, "")
-      );
+    // $("#orderCart tr").each(function () {});
 
-      items.push({
-        id: itemId,
-        quantity: quantity,
-        price: price,
-      });
-    });
-
-    const subtotal = items.reduce(
-      (acc, item) => acc + item.quantity * item.price,
-      0
-    );
-
+    const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
+    const htmlContent = generatePrintableContent(tenderedAmount);
     // Log items to verify
     console.log("Items:", items);
 
@@ -149,6 +130,7 @@ $(document).ready(function () {
       tendered_amount: tenderedAmount,
       change: change,
       items: JSON.stringify(items),
+      html_content: htmlContent,
     });
 
     $.ajax({
@@ -156,16 +138,18 @@ $(document).ready(function () {
       type: "POST",
       dataType: "json",
       data: {
-        subtotal: subtotal,
+        subtotal: parseFloat(subtotal),
         discount: parseFloat($("#discountInput").val()) || 0,
         grand_total: parseFloat($("#grandTotalValue").text()),
-        tendered_amount: tenderedAmount,
-        change: change,
+        tendered_amount: parseFloat(tenderedAmount),
+        change: parseFloat(change),
         items: JSON.stringify(items),
+        html_content: htmlContent,
       },
       success: function (response) {
         if (response.success) {
           console.log("Order processed successfully");
+
           $.ajax({
             type: "POST",
             url: "clear_cart.php",
@@ -199,7 +183,6 @@ $(document).ready(function () {
     });
 
     resetTenderedAmountInput();
-
     $("#orderConfirmationModal").modal("hide");
     $("#receiptModal").modal("show");
 
@@ -210,14 +193,12 @@ $(document).ready(function () {
     $("#changeDisplay").html("");
 
     printOrderConfirmation(tenderedAmount);
-
     checkCart();
   });
 
-
-    $("#orderConfirmationModal").on("hidden.bs.modal", function () {
-      resetTenderedAmountInput();
-    });
+  $("#orderConfirmationModal").on("hidden.bs.modal", function () {
+    resetTenderedAmountInput();
+  });
 
   function printOrderConfirmation(tenderedAmount) {
     const printableContent = generatePrintableContent(tenderedAmount);
@@ -244,7 +225,8 @@ $(document).ready(function () {
     };
 
     const change = tenderedAmount - orderDetails.grandTotal;
-    const discountAmount = orderDetails.subtotal * (orderDetails.discountPercentage / 100);
+    const discountAmount =
+      orderDetails.subtotal * (orderDetails.discountPercentage / 100);
 
     $("#orderCart tr").each(function () {
       const cells = $(this).find("td");
@@ -363,11 +345,21 @@ $(document).ready(function () {
             </table>
                     <hr>
                     <div class="roboto-mono">
-                        <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(2)}</p>
-                        <p><strong>Discount Percentage:</strong> ${orderDetails.discountPercentage.toFixed(2)} %</p>
-                        <p><strong>Discount Amount:</strong> - ₱${discountAmount.toFixed(2)}</p>
-                        <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(2)}</p>
-                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(2)}</p>
+                        <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(
+                          2
+                        )}</p>
+                        <p><strong>Discount Percentage:</strong> ${orderDetails.discountPercentage.toFixed(
+                          2
+                        )} %</p>
+                        <p><strong>Discount Amount:</strong> - ₱${discountAmount.toFixed(
+                          2
+                        )}</p>
+                        <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(
+                          2
+                        )}</p>
+                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(
+                          2
+                        )}</p>
                         <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
                     </div>
                     <hr>
@@ -383,105 +375,104 @@ $(document).ready(function () {
     `;
   }
 
-    function capitalizeEachWord(str) {
-        return str.replace(/\b\w/g, char => char.toUpperCase());
+  function capitalizeEachWord(str) {
+    return str.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  // Calculate grand total
+  function calculateGrandTotal() {
+    const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
+    let discount = parseFloat($("#discountInput").val()) || 0;
+
+    if (isNaN(discount) || discount < 0 || discount > 20) {
+      alert("Please enter a valid discount percentage (0-20).");
+      $("#discountInput").val(0);
+      discount = 0;
     }
 
-    // Calculate grand total
-    function calculateGrandTotal() {
-      const subtotal = parseFloat($("#subtotalValue").text().replace(/,/g, ""));
-      let discount = parseFloat($("#discountInput").val()) || 0;
+    const grandTotal = (subtotal - subtotal * (discount / 100)).toFixed(2);
+    $("#grandTotalValue").text(grandTotal);
+  }
 
-      if (isNaN(discount) || discount < 0 || discount > 20) {
-        alert("Please enter a valid discount percentage (0-20).");
-        $("#discountInput").val(0);
-        discount = 0;
-      }
+  function capitalizeEachWord(string) {
+    return string.replace(/\b\w/g, (char) => char.toUpperCase());
+  }
 
-      const grandTotal = (subtotal - subtotal * (discount / 100)).toFixed(2);
-      $("#grandTotalValue").text(grandTotal);
-    }
+  function validateDiscountInput(event) {
+    const input = event.target.value;
 
-    function capitalizeEachWord(string) {
-      return string.replace(/\b\w/g, (char) => char.toUpperCase());
-    }
+    // Remove non-digit characters
+    const cleanedInput = input.replace(/[^\d]/g, "");
 
-    function validateDiscountInput(event) {
-      const input = event.target.value;
+    // Reset input value
+    event.target.value = cleanedInput;
 
-      // Remove non-digit characters
-      const cleanedInput = input.replace(/[^\d]/g, "");
+    // Calculate grand total with the validated input
+    calculateGrandTotal();
+  }
 
-      // Reset input value
-      event.target.value = cleanedInput;
-
-      // Calculate grand total with the validated input
+  // Set discount to 0 if the input is blank on blur
+  function resetDiscountIfBlank(event) {
+    if (event.target.value === "") {
+      event.target.value = 0;
       calculateGrandTotal();
     }
-
-    // Set discount to 0 if the input is blank on blur
-    function resetDiscountIfBlank(event) {
-      if (event.target.value === "") {
-        event.target.value = 0;
-        calculateGrandTotal();
-      }
-    }
-
-    // Attach the validation function to the input event
-    $("#discountInput").on("input", validateDiscountInput);
-
-    // Attach the reset function to the blur event
-    $("#discountInput").on("blur", resetDiscountIfBlank);
-
-    // Initial calculation of the grand total
-    calculateGrandTotal();
-
-    // Tendered amount validation and change calculation
-    function enforceTenDigits(event) {
-      const input = event.target.value;
-      if (input.length > 10) {
-        event.target.value = input.slice(0, 10);
-      }
-    }
-
-    function calculateChange() {
-      const grandTotal = parseFloat($("#grandTotalValue").text());
-      const tenderedAmount = parseFloat($("#tenderedAmount").val());
-  
-      if (isNaN(tenderedAmount)) {
-          $("#changeDisplay").html(""); 
-          $("#proceedOrder").prop("disabled", true);
-          return;
-      }
-  
-      const change = tenderedAmount - grandTotal;
-      if (change >= 0) {
-          $("#changeDisplay").html(
-              "<p><strong>Change:</strong> " + change.toFixed(2) + "</p>"
-          );
-          $("#proceedOrder").prop("disabled", false); 
-      } else {
-          $("#changeDisplay").html(
-              "<p style='color: red;'>Insufficient amount tendered</p>"
-          );
-          $("#proceedOrder").prop("disabled", true);
-      }
   }
-  
 
-    $("#tenderedAmount")
-      .on("input", enforceTenDigits)
-      .on("input", calculateChange);
+  // Attach the validation function to the input event
+  $("#discountInput").on("input", validateDiscountInput);
 
-    // Remove order item
-    $(document).on("click", ".remove-order", function (event) {
-      event.preventDefault();
-      const row = $(this).closest("tr");
-      const productName = row.find(".text-capitalize").text().trim();
+  // Attach the reset function to the blur event
+  $("#discountInput").on("blur", resetDiscountIfBlank);
 
-      $.post("remove_order.php", { product_name: productName }, function () {
-        row.remove();
-        window.location.reload();
-      });
+  // Initial calculation of the grand total
+  calculateGrandTotal();
+
+  // Tendered amount validation and change calculation
+  function enforceTenDigits(event) {
+    const input = event.target.value;
+    if (input.length > 10) {
+      event.target.value = input.slice(0, 10);
+    }
+  }
+
+  function calculateChange() {
+    const grandTotal = parseFloat($("#grandTotalValue").text());
+    const tenderedAmount = parseFloat($("#tenderedAmount").val());
+
+    if (isNaN(tenderedAmount)) {
+      $("#changeDisplay").html("");
+      $("#proceedOrder").prop("disabled", true);
+      return;
+    }
+
+    const change = tenderedAmount - grandTotal;
+    if (change >= 0) {
+      $("#changeDisplay").html(
+        "<p><strong>Change:</strong> " + change.toFixed(2) + "</p>"
+      );
+      $("#proceedOrder").prop("disabled", false);
+    } else {
+      $("#changeDisplay").html(
+        "<p style='color: red;'>Insufficient amount tendered</p>"
+      );
+      $("#proceedOrder").prop("disabled", true);
+    }
+  }
+
+  $("#tenderedAmount")
+    .on("input", enforceTenDigits)
+    .on("input", calculateChange);
+
+  // Remove order item
+  $(document).on("click", ".remove-order", function (event) {
+    event.preventDefault();
+    const row = $(this).closest("tr");
+    const productName = row.find(".text-capitalize").text().trim();
+
+    $.post("remove_order.php", { product_name: productName }, function () {
+      row.remove();
+      window.location.reload();
     });
+  });
 });
