@@ -33,9 +33,6 @@ if (isset($_SESSION['order_cart']) && count($_SESSION['order_cart']) > 0) {
         } else {
             echo '<p class="mb-0 text-muted">Price not available</p>';
         }
-        echo '</td>';
-        // echo '<td class="visually-hidden">' . htmlspecialchars($item['item_id']) . '</td>';
-        echo '</tr>';
     }    
 } 
 else {

@@ -11,10 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $order_cart = $_SESSION['order_cart'];
         $subtotal = 0;
+        $items = [];
 
         foreach ($order_cart as $item) {
             if (isset($item['price'])) {
                 $subtotal += $item['price'];
+                $items[] = $item['product_name'];
             }
         }
 
@@ -22,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response['message'] = 'Order placed successfully!';
         $response['order_cart'] = $order_cart;
         $response['subtotal'] = $subtotal;
+        $response['items'] = $items;
 
     } else {
         $response['message'] = 'No items in the cart.';
