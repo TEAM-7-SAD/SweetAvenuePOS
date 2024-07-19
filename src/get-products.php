@@ -207,6 +207,15 @@ input[type="number"] {
                             </button>
                         </div>
                     </div>
+                    <div class="mb-1">
+                        <label for="discountSelect" class="col-form-label fw-medium text-carbon-grey">Discount:</label>
+                        <div class="input-group mt-2 mb-3">
+                            <select id="discountSelect" class="form-control text-center border border-carbon-grey bg-white text-carbon-grey fw-medium py-3 shadow-sm">
+                                <option value="0">0%</option>
+                                <option value="20">20%</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md mb-2">
                         <div class="form-floating py-3">
                             <input type="text" readonly class="form-control fw-bold fs-5 text-carbon-grey border border-carbon-grey bg-white shadow-sm" id="priceDisplay" name="price">
@@ -250,6 +259,7 @@ $(document).ready(function() {
                     $('#flavorOrSizeGroup').empty();
                     $('#priceDisplay').val('');
                     $('#quantityInput').val(1);
+                    $('#discountSelect').val(0); // Initialize discount select
 
                     var defaultServingOrType = 'Default';
                     var defaultFlavorOrSize = 'Default';
@@ -366,6 +376,10 @@ $(document).ready(function() {
         }
     });
 
+    $('#discountSelect').change(function() { // Add event listener for discount selection change
+        updatePrice();
+    });
+
     function validateQuantity() {
         let input = $('#quantityInput');
         let currentValue = parseInt(input.val(), 10);
@@ -378,6 +392,7 @@ $(document).ready(function() {
         var selectedServingOrType = $('#servingOrTypeGroup .btn.active').text() || $('#defaultServingOrType').val() || $('#noneServingOrType').val();
         var selectedFlavorOrSize = $('#flavorOrSizeGroup .btn.active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
         var quantity = parseInt($('#quantityInput').val(), 10);
+        var discount = parseInt($('#discountSelect').val(), 10); // Get the selected discount
 
         var selectedVariation = productData.find(function(variation) {
             return variation.servingOrType === selectedServingOrType && variation.flavorOrSize === selectedFlavorOrSize;
@@ -385,15 +400,17 @@ $(document).ready(function() {
 
         if (selectedVariation) {
             var price = selectedVariation.price * quantity;
-            $('#priceDisplay').val(price.toFixed(2));
-            $('#product_price').val(price.toFixed(2));
+            var discountedPrice = price - (price * discount / 100); // Apply discount
+            $('#priceDisplay').val(discountedPrice.toFixed(2));
+            $('#product_price').val(discountedPrice.toFixed(2));
             $('#serving_or_type').val(selectedServingOrType);
             $('#flavor_or_size').val(selectedFlavorOrSize);
         } else {
             var defaultPrice = productData[0].price;
             var totalPrice = defaultPrice * quantity;
-            $('#priceDisplay').val(totalPrice.toFixed(2));
-            $('#product_price').val(totalPrice.toFixed(2));
+            var discountedTotalPrice = totalPrice - (totalPrice * discount / 100); // Apply discount
+            $('#priceDisplay').val(discountedTotalPrice.toFixed(2));
+            $('#product_price').val(discountedTotalPrice.toFixed(2));
         }
     }
 
@@ -405,6 +422,7 @@ $(document).ready(function() {
         let flavorOrSize = $('#flavorOrSizeGroup .active').text() || $('#defaultFlavorOrSize').val() || $('#noneFlavorOrSize').val();
         let quantity = $('#quantityInput').val();
         let price = $('#priceDisplay').val();
+        let discount = $('#discountSelect').val(); // Get the discount percentage
 
         if (servingOrType === 'Default' || servingOrType === 'None') servingOrType = '';
         if (flavorOrSize === 'Default' || flavorOrSize === 'None') flavorOrSize = '';
@@ -419,7 +437,8 @@ $(document).ready(function() {
                 serving_or_type: servingOrType,
                 flavor_or_size: flavorOrSize,
                 quantity: quantity,
-                price: price
+                price: price,
+                discount: discount // Pass the discount to the backend
             },
             success: function(response) {
                 let data = JSON.parse(response);
@@ -470,8 +489,8 @@ $(document).ready(function() {
         });
     }
 
-
 });
 </script>
+
 
 

@@ -106,11 +106,11 @@ require_once FileUtils::normalizeFilePath('includes/error-reporting.php');
                                 <td>Subtotal:</td>
                                 <td class="text-carbon-grey fw-bold text-end pe-2" id="orderSubtotalReview"></td>
                             </tr>
-                            <!--Discount-->
+                            <!--Discount
                             <tr>
                                 <td>Discount (%):</td>
                                 <td><input class="form-control text-carbon-grey shadow-sm" type="number" id="discountInput" min="0" max="100" step="0.01" placeholder="Enter discount" oninput="calculateGrandTotal()"></td>
-                            </tr>
+                            </tr>-->
                             <!--Grand Total-->
                             <tr class="fw-bolder h5 text-capitalize">
                                 <td class="text-carbon-grey">Grand Total:</td>

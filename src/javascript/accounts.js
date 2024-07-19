@@ -334,17 +334,17 @@ $(document).ready(function () {
     form.classList.add("was-validated");
   });
 
-  // Disable delete button by default
+    // Disable delete button by default
   $(".delete-account").prop("disabled", true);
 
-  // Add event listener to table rows for row selection
-  $(".selectable").click(function () {
-    // Toggle checkbox when clicking anywhere on the row
-    $(this)
-      .find(".account-checkbox")
-      .prop("checked", !$(this).find(".account-checkbox").prop("checked"));
+  // Add event listener to checkboxes for row selection
+  $(".account-checkbox").click(function (event) {
+    // Prevent the click from affecting the row
+    event.stopPropagation();
+
     // Check if at least one checkbox is checked
     var anyChecked = $(".account-checkbox:checked").length > 0;
+
     // Enable or disable the delete button based on checkbox status
     $(".delete-account").prop("disabled", !anyChecked);
   });

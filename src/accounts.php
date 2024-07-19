@@ -80,13 +80,13 @@ if(isset($_SESSION['id'])) {
                   </svg>
                   <span class="font-13">Add Account</span>
                 </button>
-                <!-- <div class="mx-2"></div>
+                 <div class="mx-2"></div>
                 <button class="btn btn-danger fw-semibold delete-account" data-account-id=">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                   </svg>
                   <span>Delete</span>
-                </button> -->
+                </button>
               </div>
             </div>
           </div>
@@ -99,6 +99,7 @@ if(isset($_SESSION['id'])) {
           <table id="example" class="table table-hover table-striped table-borderless mt-4">
             <thead>
               <tr>
+              <th class="text-medium-brown fw-semibold font-15"></th>
                 <th class="text-medium-brown fw-semibold font-15">Last Name</th>
                 <th class="text-medium-brown fw-semibold font-15">First Name</th>
                 <th class="text-medium-brown fw-semibold font-15">Middle Name</th>
@@ -120,7 +121,8 @@ if(isset($_SESSION['id'])) {
                   // </tr>
                   // ';
                   echo '
-                  <tr>
+                  <tr data-id="'.$row['id'].'" class="selectable">
+                      <td><input type="checkbox" class="account-checkbox" data-account-id="'.$row['id'].'"></td>
                       <td class="text-carbon-grey fw-medium font-14">'.$row['last_name'].'</td>
                       <td class="text-carbon-grey fw-medium font-14">'.$row["first_name"].'</td>
                       <td class="text-carbon-grey fw-medium font-14">'.$row['middle_name'].'</td>

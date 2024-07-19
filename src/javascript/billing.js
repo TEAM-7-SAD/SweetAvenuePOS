@@ -214,43 +214,65 @@ $(document).ready(function () {
     $("#subtotalValue").text("0.00");
   }
 
-  function generatePrintableContent(tenderedAmount) {
+  
+  // Assuming this is where you handle the discount selection
+  $("#discountSelect").change(function() {
+    const selectedDiscount = parseFloat($(this).val()); // Example: 20 for 20%
+    // Update UI to reflect selected discount if necessary
+  });
+
+  function generateReceiptName() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const dateTime = `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+    return `Receipt_${dateTime}`;
+}
+
+function generatePrintableContent(tenderedAmount) {
     const processedBy = currentUser;
     const orderDetails = {
-      items: [],
-      subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
-      discountPercentage: parseFloat($("#discountInput").val()) || 0, // Set to 0 if NaN
-      grandTotal: parseFloat($("#grandTotalValue").text()),
-      tenderedAmount: tenderedAmount,
+        items: [],
+        subtotal: parseFloat($("#subtotalValue").text().replace(/,/g, "")),
+        discountPercentage: parseFloat($("#discountSelect").val()) || 0, // Set to 0 if NaN
+        grandTotal: parseFloat($("#grandTotalValue").text()),
+        tenderedAmount: tenderedAmount,
     };
 
     const change = tenderedAmount - orderDetails.grandTotal;
-    const discountAmount =
-      orderDetails.subtotal * (orderDetails.discountPercentage / 100);
+    const discountAmount = orderDetails.subtotal * (orderDetails.discountPercentage / 100);
 
     $("#orderCart tr").each(function () {
-      const cells = $(this).find("td");
-      const productName = cells.eq(1).text().trim();
-      const quantity = cells.eq(0).text().trim().slice(1);
-      const price = parseFloat(
-        cells
-          .eq(2)
-          .text()
-          .trim()
-          .replace(/[^\d.]/g, "")
-      );
+        const cells = $(this).find("td");
+        const productName = cells.eq(1).text().trim();
+        const quantity = cells.eq(0).text().trim().slice(1);
+        const price = parseFloat(
+            cells
+                .eq(2)
+                .text()
+                .trim()
+                .replace(/[^\d.]/g, "")
+        );
 
-      orderDetails.items.push({
-        productName: productName,
-        quantity: quantity,
-        price: price,
-      });
+        orderDetails.items.push({
+            productName: productName,
+            quantity: quantity,
+            price: price,
+            discount: orderDetails.discountPercentage, // Assign the current discount percentage
+        });
     });
+
+    // Generate the receipt name
+    const receiptName = generateReceiptName();
 
     return `
       <html>
         <head>
-          <title>Receipt</title>
+          <title>${receiptName}</title>
           <style>
             @media print {
               .receipt {
@@ -283,97 +305,89 @@ $(document).ready(function () {
             .center-text {
               text-align: center;
             }
-                                .table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        page-break-inside: avoid;
-                    }
-                    .table th, .table td {
-                        border-bottom: 1px dashed #000;
-                        padding: 5px 0;
-                        text-align: center;
-                        page-break-inside: avoid;
-                    }
-                    .table th {
-                        border-top: 1px dashed #000;
-                    }
-                    .table .text-end {
-                        text-align: right;
-                    }
-                    .roboto-mono {
-                        font-family: 'Roboto Mono', monospace;
-                    }
-                    h4, h5, p {
-                        margin: 5px 0;
-                    }
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+                page-break-inside: avoid;
+            }
+            .table th, .table td {
+                border-bottom: 1px dashed #000;
+                padding: 5px 0;
+                text-align: center;
+                page-break-inside: avoid;
+            }
+            .table th {
+                border-top: 1px dashed #000;
+            }
+            .table .text-end {
+                text-align: right;
+            }
+            .roboto-mono {
+                font-family: 'Roboto Mono', monospace;
+            }
+            h4, h5, p {
+                margin: 5px 0;
+            }
           </style>
         </head>
         <body>
           <div class="receipt">
-                    <div class="center-text">
-                        <div style="display: flex; align-items: center; justify-content: center;">
-                            <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                                <h4><strong>SWEET AVENUE</strong></h4>
-                                <h5><strong>COFFEE • BAKESHOP</strong></h5>
-                            </div>
+                <div class="center-text">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                            <h4><strong>SWEET AVENUE</strong></h4>
+                            <h5><strong>COFFEE • BAKESHOP</strong></h5>
                         </div>
-                        <br>
-                        <p class="roboto-mono"><b>${new Date().toLocaleString()}</b></p>
-                        <hr>
                     </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                                <th>Quantity</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-                        <tbody class="roboto-mono">
-                ${orderDetails.items
-                  .map(
-                    (item) => `
-                  <tr>
-                    <td>${capitalizeEachWord(item.productName)}</td>
-                    <td>${item.quantity}</td>
-                    <td>₱${item.price.toFixed(2)}</td>
-                  </tr>
-                `
-                  )
-                  .join("")}
-              </tbody>
-            </table>
+                    <br>
+                    <p class="roboto-mono"><b>${new Date().toLocaleString()}</b></p>
                     <hr>
-                    <div class="roboto-mono">
-                        <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Discount Percentage:</strong> ${orderDetails.discountPercentage.toFixed(
-                          2
-                        )} %</p>
-                        <p><strong>Discount Amount:</strong> - ₱${discountAmount.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(
-                          2
-                        )}</p>
-                        <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
-                    </div>
-                    <hr>
-                    <p class="roboto-mono"><strong>Processed by: ${processedBy}</strong></p>
-                    <p class="roboto-mono"><strong>Wifi Password: Sweet_Avenue123</strong></p><br><br>
-                    <hr>
-                    <div class="center-text roboto-mono">
-                        <p>Thank you for your patronage. We’d love to see you again soon. You're always welcome here!</p>
-                    </div>
+                </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+                <tbody class="roboto-mono">
+            ${orderDetails.items
+              .map(
+                (item) => `
+              <tr>
+                <td>${capitalizeEachWord(item.productName)}</td>
+                <td>${item.quantity}</td>
+                <td>₱${item.price.toFixed(2)}</td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+                <hr>
+                <div class="roboto-mono">
+                    <p><strong>Subtotal:</strong> ₱${orderDetails.subtotal.toFixed(2)}</p>
+                    <p><strong>Discount Percentage:</strong> ${orderDetails.discountPercentage.toFixed(2)} %</p>
+                    
+                    <p><strong>Grand Total:</strong> ₱${orderDetails.grandTotal.toFixed(2)}</p>
+                    <p><strong>Tendered Amount:</strong> ₱${orderDetails.tenderedAmount.toFixed(2)}</p>
+                    <p><strong>Change:</strong> ₱${change.toFixed(2)}</p>
+                </div>
+                <hr>
+                <p class="roboto-mono"><strong>Processed by: ${processedBy}</strong></p>
+                <p class="roboto-mono"><strong>Wifi Password: Sweet_Avenue123</strong></p><br><br>
+                <hr>
+                <div class="center-text roboto-mono">
+                    <p>Thank you for your patronage. We’d love to see you again soon. You're always welcome here!</p>
+                </div>
           </div>
         </body>
       </html>
     `;
-  }
+}
+
+  
 
   function capitalizeEachWord(str) {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());

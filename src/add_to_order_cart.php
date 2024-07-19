@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $flavorOrSize = $_POST['flavor_or_size'];
     $quantity = $_POST['quantity'];
     $price = $_POST['price'];
+    $discount = $_POST['discount']; // Add discount field
 
     // Exclude default and none variations
     $servingOrType = ($servingOrType === 'Default' || $servingOrType === 'None') ? '' : $servingOrType;
@@ -22,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'serving_or_type' => $servingOrType,
         'flavor_or_size' => $flavorOrSize,
         'quantity' => $quantity,
-        'price' => $price
+        'price' => $price,
+        'discount' => $discount // Include discount in the order item
     ];
 
     if (!isset($_SESSION['order_cart'])) {

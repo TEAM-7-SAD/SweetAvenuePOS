@@ -37,6 +37,20 @@ if(isset($_SESSION['id'])) {
     <link rel="stylesheet" href="styles/main.css" />   
     <!--Site Icon-->
     <link rel="icon" href="images/sweet-avenue-logo.png" type="image/png"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .fixed-toolbar {
+            position: fixed;
+            right: 0; /* Fixes the toolbar to the right side */
+            top: 30%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Adds space between the buttons */
+            
+        }
+    </style>
 </head>
 
   <body class="bg-gainsboro">
@@ -57,9 +71,9 @@ if(isset($_SESSION['id'])) {
             <div class="main-content mt-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-medium-brown fw-bolder text-capitalize mb-0">Products</h3>
-                    <div>
-                        <button type="button" class="btn btn-sm py-2 px-3 btn-medium-brown text-white fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
-                        <button type="button" class="btn btn-sm py-2 px-3 btn-medium-brown text-white fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+                    <div class = "fixed-toolbar">
+                        <button type="button" class="btn btn-sm py-2 px-3 btn-tiger-orange text-white fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
+                        <button type="button" class="btn btn-sm py-2 px-3 btn-tiger-orange text-white fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
                         <button type="button" class="btn btn-sm py-2 px-3 btn-carbon-grey fw-semibold me-2" id="editButton" data-bs-toggle="modal" data-bs-target="#editProductModal" disabled>Edit</button>
                         <button type="button" class="btn btn-sm py-2 px-3 btn-danger fw-semibold me-2 delete-product" disabled>Delete</button>
                     </div>
@@ -435,17 +449,29 @@ function addNewCategory() {
                 categoryType: categoryType
             },
             success: function(response) {
-                var res = JSON.parse(response);
-                if (res.success) {
-                    $('#addCategoryModal').modal('hide');
-                    location.reload();
-                    // Append the new category to the dropdown
-                    var newCategory = $("<option>").val(categoryName).text(categoryName);
-                    $("#category").append(newCategory);
-                    $("#editCategory").append(newCategory);
-                    alert('Category added successfully');
-                } else {
-                    $('#errorContainerCategory').show().text(res.message);
+                try {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        $('#addCategoryModal').modal('hide');
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Category added successfully",
+                            icon: "success",
+                            confirmButtonColor: "#88531E",
+                            confirmButtonText: "Close"
+                        }).then(function() {
+                            // Append the new category to the dropdown
+                            var newCategory = $("<option>").val(categoryName).text(categoryName);
+                            $("#category").append(newCategory);
+                            $("#editCategory").append(newCategory);
+                            location.reload(); // Reload the page to reflect the new category
+                        });
+                    } else {
+                        $('#errorContainerCategory').show().text(res.message);
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    $('#errorContainerCategory').show().text('Unexpected response format');
                 }
             },
             error: function() {
@@ -456,6 +482,7 @@ function addNewCategory() {
         $('#errorContainerCategory').show().text('Please fill out all fields');
     }
 }
+
 function resetCategoryForm() {
     document.getElementById('addCategoryForm').reset();
     $('#errorContainerCategory').hide().text('');
@@ -464,6 +491,7 @@ function resetCategoryForm() {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var priceInput = document.getElementById('price');
+    var imageInput = document.getElementById('image');
 
     priceInput.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9.]/g, '');
@@ -476,7 +504,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    //document.getElementById('saveChangesBtn').addEventListener('click', addNewProduct);
+    imageInput.addEventListener('change', function () {
+        validateImage();
+    });
+
     $('#addProductModal').on('hidden.bs.modal', function () {
         resetForm();
     });
@@ -496,6 +527,19 @@ function validatePrice() {
     }
 }
 
+function validateImage() {
+    var imageInput = document.getElementById('image');
+    var filePath = imageInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.svg)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        showError('Invalid file type. Only .jpg, .jpeg, .png, and .svg are allowed.');
+        imageInput.value = '';
+        return false;
+    }
+    return true;
+}
+
 function addNewProduct() {
     // Clear previous error messages
     document.getElementById('errorContainer').style.display = 'none';
@@ -512,6 +556,9 @@ function addNewProduct() {
     // Validate form fields
     if (!image) {
         showError('Image is required.');
+        return;
+    }
+    if (!validateImage()) {
         return;
     }
     if (!name) {
@@ -543,8 +590,15 @@ function addNewProduct() {
             var res = JSON.parse(response);
             if (res.success) {
                 $('#addProductModal').modal('hide');
-                alert('Product added successfully');
-                location.reload(); // Reload the page to see the new product
+                Swal.fire({
+                    title: "Success!",
+                    text: "Product added successfully",
+                    icon: "success",
+                    confirmButtonColor: "#88531E",
+                    confirmButtonText: "Close"
+                }).then(function() {
+                    location.reload(); // Reload the page to see the new product
+                });
             } else {
                 showError(res.message);
             }
@@ -565,6 +619,7 @@ function resetForm() {
     document.getElementById('errorContainer').style.display = 'none';
     document.getElementById('errorMessage').innerText = '';
     document.getElementById('price').classList.remove('is-invalid');
+    document.getElementById('image').value = '';
 }
 </script>
 <script>
@@ -576,7 +631,7 @@ $(document).ready(function () {
     $('#drink').DataTable();
 
     // Capture product data when a row is clicked
-        $('body').on('click', '.product-checkbox', function() {
+    $('body').on('click', '.product-checkbox', function() {
         var productId = $(this).closest('tr').data('id'); // Fetch the product ID from the data attribute of the closest <tr> element
         var variationId = $(this).closest('tr').data('variation-id'); // Fetch the variation ID from the data attribute of the closest <tr> element
         var productType = $(this).closest('tr').data('product-type'); // Fetch the product type (drink or food)
@@ -614,7 +669,30 @@ $(document).ready(function () {
         $('#editErrorContainer').hide().text('');
         $('#priceError').hide();
     });
+
+    $('#editImage').on('change', function() {
+        validateImageEdit();
+    });
 });
+
+function validateImageEdit() {
+    var imageInput = document.getElementById('editImage');
+    var filePath = imageInput.value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.svg)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        showErrorEdit('Invalid file type. Only .jpg, .jpeg, .png, and .svg are allowed.');
+        imageInput.value = '';
+        return false;
+    }
+    return true;
+}
+
+function showErrorEdit(message) {
+    var errorContainer = document.getElementById('editErrorContainer');
+    errorContainer.style.display = 'block';
+    errorContainer.innerHTML = `<div><img src="images/x-circle.svg"> ${message}</div>`;
+}
 
 function saveChangesEdit() {
     let priceInput = document.getElementById('editPrice').value;
@@ -625,6 +703,10 @@ function saveChangesEdit() {
         return;
     } else {
         priceError.style.display = 'none';
+    }
+
+    if (!validateImageEdit()) {
+        return;
     }
 
     let formData = new FormData(document.getElementById('editProductForm'));
@@ -651,16 +733,12 @@ function saveChangesEdit() {
             });
         } else {
             // Show error message
-            let errorContainer = document.getElementById('editErrorContainer');
-            errorContainer.style.display = 'block';
-            errorContainer.innerHTML = `<div><img src="images/x-circle.svg"> ${data.message}</div>`;
+            showErrorEdit(data.message);
         }
     })
     .catch(error => {
         // Handle unexpected error
-        let errorContainer = document.getElementById('editErrorContainer');
-        errorContainer.style.display = 'block';
-        errorContainer.innerHTML = `<div><img src="images/x-circle.svg"> An unexpected error occurred.</div>`;
+        showErrorEdit('An unexpected error occurred.');
     });
 }
 </script>
@@ -718,12 +796,22 @@ function saveChangesEdit() {
                 
             } else if (selectedProducts.length > 1) {
                 // Handle case where multiple products are selected
-                // You might want to implement a selection mechanism or choose the first product for editing
-                alert('Please select exactly one product to edit.');
-                
+                Swal.fire({
+                    title: "Error!",
+                    text: "Please select exactly one product to edit.",
+                    icon: "error",
+                    confirmButtonColor: "#88531E",
+                    confirmButtonText: "Close"
+                });
             } else {
                 // No product selected case (though ideally, edit button should be disabled)
-                alert('Please select a product to edit.');
+                Swal.fire({
+                    title: "Error!",
+                    text: "Please select a product to edit.",
+                    icon: "error",
+                    confirmButtonColor: "#88531E",
+                    confirmButtonText: "Close"
+                });
             }
         });
     });
@@ -779,7 +867,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     location.reload();
                 });
             } else {
-                alert('Failed to delete the selected products. Please try again.');
+                Swal.fire({
+                    title: "Error!",
+                    text: 'Failed to delete the selected products. Please try again.',
+                    icon: "error",
+                    confirmButtonColor: "#88531E",
+                    confirmButtonText: "Got it!"
+                });
                 console.error('Server Error:', data.error);
             }
         })
